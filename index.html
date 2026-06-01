@@ -1352,14 +1352,14 @@ textarea.sf-input{resize:vertical;min-height:90px}
 // ═══════════════════════════════════════
 //  FIREBASE CONFIG
 // ═══════════════════════════════════════
-// Init EmailJS
-(function(){emailjs.init("9hSWgXnySjFXKjUpI");})();
-
 import { initializeApp }           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, doc, getDocs, setDoc, updateDoc, onSnapshot, serverTimestamp }
                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject }
                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+// Init EmailJS (must be after imports in a module script)
+(function(){if(typeof emailjs!=='undefined') emailjs.init("9hSWgXnySjFXKjUpI");})();
 
 const firebaseConfig = {
   apiKey:            "AIzaSyANhxLFSzUsqSkxB0UvfnEXShrdaD8h8nE",
