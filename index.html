@@ -718,7 +718,6 @@ textarea.sf-input{resize:vertical;min-height:90px}
 .status-radio input{display:none}
 
 </style>
-</head>
 <body>
 
 <!-- Loading screen -->
@@ -795,7 +794,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
     <button class="tab-btn"        id="tabTree"  onclick="switchTab('tree')">🌳 Family Tree</button>
     <button class="tab-btn active" id="tabAbout" onclick="switchTab('about')">📖 About Us</button>
     <button class="tab-btn"        id="tabHelp"  onclick="switchTab('help')">💡 How To Use</button>
-    <button class="tab-btn"        id="tabAck"   onclick="switchTab('ack')">✦ Credits</button>
+    <button class="tab-btn"        id="tabAck"   onclick="switchTab('ack')">✦ Acknowledgements</button>
     <button class="tab-btn"        id="tabSugg"  onclick="switchTab('suggestions')" style="display:none">📋 Submissions <span id="subsBadge" style="background:#c03030;color:#fff;border-radius:10px;padding:1px 7px;font-size:.68rem;margin-left:4px;display:none">0</span></button>
   </div>
 </div>
@@ -1058,7 +1057,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
   <div class="static-page">
 
     <div class="sp-hero">
-      <h2>Credits</h2>
+      <h2>Acknowledgements</h2>
       <p>Honouring those who have dedicated their time, knowledge and care to preserving the Powathikunnel family history across the generations.</p>
     </div>
 
@@ -1640,84 +1639,6 @@ textarea.sf-input{resize:vertical;min-height:90px}
           <label class="fl">Year of Death <span style="font-weight:400;font-style:italic;color:var(--muted)">(4 digits, if applicable)</span></label>
           <input class="fi" id="fn_dod" placeholder="e.g. 2020" maxlength="4" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,4)"/></div>
 
-        <!-- Spouse 1 -->
-        <div class="fg full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-          <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;
-            color:var(--muted);font-weight:700;margin-bottom:8px">Spouse Details</div>
-        </div>
-        <div class="fg">
-          <label class="fl">Spouse 1 — Full Name</label>
-          <input class="fi" id="fn_s1" placeholder="e.g. Saramma Oommen (Omana)" oninput="fnSpouseCheck()"/></div>
-        <div class="fg">
-          <label class="fl">Spouse 1 — Location / House</label>
-          <input class="fi" id="fn_s1d" placeholder="e.g. Powathikunnel, Mavelikara"/></div>
-        <div class="fg">
-          <label class="fl">Spouse 1 — Year of Birth</label>
-          <input class="fi" id="fn_s1dob" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-        <div class="fg">
-          <label class="fl">Spouse 1 — Year of Marriage</label>
-          <input class="fi" id="fn_s1marry" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-        <div class="fg">
-          <label class="fl">Spouse 1 — Year of Death</label>
-          <input class="fi" id="fn_s1dod" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-
-        <!-- Add Spouse 2 button -->
-        <div class="fg full" id="fn_add_s2_wrap" style="margin-top:2px;display:none">
-          <button type="button" onclick="fnShowSpouse(2)" style="background:none;border:1px dashed var(--gold);color:var(--gold);border-radius:7px;padding:5px 14px;font-size:.78rem;cursor:pointer;">＋ Add Spouse 2</button>
-        </div>
-
-        <!-- Spouse 2 (hidden by default) -->
-        <div id="fn_s2_wrap" style="display:none;width:100%">
-          <div class="fg">
-            <label class="fl">Spouse 2 — Full Name</label>
-            <input class="fi" id="fn_s2" placeholder="If applicable" oninput="fnSpouseCheck()"/></div>
-        <div class="fg">
-            <label class="fl">Spouse 2 — Location / House</label>
-            <input class="fi" id="fn_s2d" placeholder="If applicable"/></div>
-        <div class="fg">
-            <label class="fl">Spouse 2 — Year of Birth</label>
-            <input class="fi" id="fn_s2dob" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-        <div class="fg">
-            <label class="fl">Spouse 2 — Year of Marriage</label>
-            <input class="fi" id="fn_s2marry" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-        <div class="fg">
-            <label class="fl">Spouse 2 — Year of Death</label>
-            <input class="fi" id="fn_s2dod" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-          <div class="fg full" id="fn_add_s3_wrap" style="margin-top:2px">
-            <button type="button" onclick="fnShowSpouse(3)" style="background:none;border:1px dashed var(--gold);color:var(--gold);border-radius:7px;padding:5px 14px;font-size:.78rem;cursor:pointer;">＋ Add Spouse 3</button>
-          </div>
-        </div>
-
-        <!-- Spouse 3 (hidden by default) -->
-        <div id="fn_s3_wrap" style="display:none;width:100%">
-          <div class="fg">
-            <label class="fl">Spouse 3 — Full Name</label>
-            <input class="fi" id="fn_s3" placeholder="If applicable"/></div>
-        <div class="fg">
-            <label class="fl">Spouse 3 — Location / House</label>
-            <input class="fi" id="fn_s3d" placeholder="If applicable"/></div>
-        <div class="fg">
-            <label class="fl">Spouse 3 — Year of Birth</label>
-            <input class="fi" id="fn_s3dob" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-        <div class="fg">
-            <label class="fl">Spouse 3 — Year of Marriage</label>
-            <input class="fi" id="fn_s3marry" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-        <div class="fg">
-            <label class="fl">Spouse 3 — Year of Death</label>
-            <input class="fi" id="fn_s3dod" placeholder="YYYY" maxlength="4" style="max-width:100px"/></div>
-        </div>
-
-        <!-- Bio & Notes -->
-        <div class="fg full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-          <label class="fl">Biography <span style="font-weight:400;font-style:italic;color:var(--muted)">(brief — key life events, profession, etc.)</span></label>
-          <textarea class="fi" id="fn_bio" style="min-height:80px" placeholder="Keep it brief — e.g. profession, where they studied, notable achievements…"></textarea></div>
-
-        <div class="fg full">
-          <label class="fl">Notes</label>
-          <input class="fi" id="fn_notes" placeholder="e.g. Unmarried, Died Young, etc."/></div>
-
-      </div>
-
         <!-- Profile Photo -->
         <div class="fg full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
           <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700;margin-bottom:10px">Profile Photo (optional)</div>
@@ -1743,6 +1664,35 @@ textarea.sf-input{resize:vertical;min-height:90px}
             </div>
           </div>
         </div>
+
+        <!-- Spouse 1 -->
+        <div class="fg full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+          <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.8px;
+            color:var(--muted);font-weight:700;margin-bottom:8px">Spouse Details</div>
+        </div>
+        <div class="fg">
+          <label class="fl">Spouse 1 — Full Name</label>
+          <input class="fi" id="fn_s1" placeholder="e.g. Saramma Oommen (Omana)"/></div>
+        <div class="fg">
+          <label class="fl">Spouse 1 — Location / House</label>
+          <input class="fi" id="fn_s1d" placeholder="e.g. Powathikunnel, Mavelikara"/></div>
+        <div class="fg">
+          <label class="fl">Spouse 2 — Full Name <span style="font-weight:400;font-style:italic;color:var(--muted)">(if any)</span></label>
+          <input class="fi" id="fn_s2" placeholder="If applicable"/></div>
+        <div class="fg">
+          <label class="fl">Spouse 2 — Location / House</label>
+          <input class="fi" id="fn_s2d" placeholder="If applicable"/></div>
+
+        <!-- Bio & Notes -->
+        <div class="fg full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+          <label class="fl">Biography <span style="font-weight:400;font-style:italic;color:var(--muted)">(brief — key life events, profession, etc.)</span></label>
+          <textarea class="fi" id="fn_bio" style="min-height:80px" placeholder="Keep it brief — e.g. profession, where they studied, notable achievements…"></textarea></div>
+
+        <div class="fg full">
+          <label class="fl">Notes</label>
+          <input class="fi" id="fn_notes" placeholder="e.g. Unmarried, Died Young, etc."/></div>
+
+      </div>
 
       <!-- Submit -->
       <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
@@ -1779,17 +1729,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
       <div class="ef"><label class="el">Father</label><input class="ei" id="ef_father"/></div>
       <div class="ef"><label class="el">Mother</label><input class="ei" id="ef_mother"/></div>
       <div class="ef full"><label class="el">Spouse 1</label><input class="ei" id="ef_spouse1"/></div>
-      <div class="ef"><label class="el">Spouse 1 — Married (YYYY)</label><input class="ei" id="ef_spouse1_marry" maxlength="4" placeholder="YYYY"/></div>
-      <div class="ef"><label class="el">Spouse 1 — Born (YYYY)</label><input class="ei" id="ef_spouse1_dob" maxlength="4" placeholder="YYYY"/></div>
-      <div class="ef"><label class="el">Spouse 1 — Died (YYYY)</label><input class="ei" id="ef_spouse1_dod" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef full"><label class="el">Spouse 2</label><input class="ei" id="ef_spouse2"/></div>
-      <div class="ef"><label class="el">Spouse 2 — Married (YYYY)</label><input class="ei" id="ef_spouse2_marry" maxlength="4" placeholder="YYYY"/></div>
-      <div class="ef"><label class="el">Spouse 2 — Born (YYYY)</label><input class="ei" id="ef_spouse2_dob" maxlength="4" placeholder="YYYY"/></div>
-      <div class="ef"><label class="el">Spouse 2 — Died (YYYY)</label><input class="ei" id="ef_spouse2_dod" maxlength="4" placeholder="YYYY"/></div>
-      <div class="ef full"><label class="el">Spouse 3</label><input class="ei" id="ef_spouse3"/></div>
-      <div class="ef"><label class="el">Spouse 3 — Married (YYYY)</label><input class="ei" id="ef_spouse3_marry" maxlength="4" placeholder="YYYY"/></div>
-      <div class="ef"><label class="el">Spouse 3 — Born (YYYY)</label><input class="ei" id="ef_spouse3_dob" maxlength="4" placeholder="YYYY"/></div>
-      <div class="ef"><label class="el">Spouse 3 — Died (YYYY)</label><input class="ei" id="ef_spouse3_dod" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef full"><label class="el">Biography</label><textarea class="ei" id="ef_bio"></textarea></div>
       <div class="ef full"><label class="el">Notes</label><input class="ei" id="ef_notes"/></div>
         <!-- Vital Status - Editor/Admin only -->
@@ -2023,7 +1963,7 @@ function buildCards(){
     if(gf&&m.gen!==gf)return false;
     if(gdf&&m.gender!==gdf)return false;
     if(tf&&m.tree!==tf)return false;
-    if(q){if(String(m.id)===q.trim()){return true;}const h=[m.name,m.other_name,m.location,m.father,m.mother,m.notes,m.bio,m.spouse1,m.spouse2,m.spouse3,m.gen].join(' ').toLowerCase();if(!h.includes(q))return false;}
+    if(q){if(String(m.id)===q.trim()){return true;}const h=[m.name,m.other_name,m.location,m.father,m.mother,m.notes,m.bio,m.spouse1,m.spouse2,m.gen].join(' ').toLowerCase();if(!h.includes(q))return false;}
     return true;
   });
   updateStats(filtered);
@@ -2041,13 +1981,11 @@ function cardHTML(m){
   const years=(dobY||dodY)?`${dobY||''}${dobY&&dodY?' - ':''}${dodY||''}`:'';
   const s1=m.spouse1&&m.spouse1.toLowerCase()!=='unmarried'?m.spouse1.trim():'';
   const s2=m.spouse2?m.spouse2.trim():'';
-  const s3=m.spouse3?m.spouse3.trim():'';
   let spousesHTML='';
-  if(s1||s2||s3){
+  if(s1||s2){
     spousesHTML='<div class="card-spouses">';
     if(s1)spousesHTML+=`<div class="card-spouse-line"><span class="sp-tilde">~</span><span>${s1}</span></div>`;
     if(s2)spousesHTML+=`<div class="card-spouse-line"><span class="sp-tilde">~</span><span>${s2}</span></div>`;
-    if(s3)spousesHTML+=`<div class="card-spouse-line"><span class="sp-tilde">~</span><span>${s3}</span></div>`;
     spousesHTML+='</div>';
   }
   const fatherName=m.father||''; const motherName=m.mother||m.mother2||'';
@@ -2115,7 +2053,7 @@ function openEditModal(id){
   }
   const overlay=document.getElementById('editOverlay');
   const fields=['name','other_name','gen','gender','dob','dod','location',
-                'father','mother','spouse1','spouse1_marry','spouse1_dob','spouse1_dod','spouse2','spouse2_marry','spouse2_dob','spouse2_dod','spouse3','spouse3_marry','spouse3_dob','spouse3_dod','bio','notes'];
+                'father','mother','spouse1','spouse2','bio','notes'];
   document.getElementById('editModalTitle').textContent=`Edit: ${m.name}`;
   document.getElementById('editModalSub').textContent=`ID ${m.id} · Gen ${m.gen||'?'}`;
   document.getElementById('editMemberId').value=m.id;
@@ -2162,7 +2100,7 @@ async function saveEdit(){
   const id=parseInt(document.getElementById('editMemberId').value);
   const m=MEMBERS.find(x=>x.id===id); if(!m)return;
   const fields=['name','other_name','gen','gender','dob','dod','location',
-                'father','mother','spouse1','spouse1_marry','spouse1_dob','spouse1_dod','spouse2','spouse2_marry','spouse2_dob','spouse2_dod','spouse3','spouse3_marry','spouse3_dob','spouse3_dod','bio','notes'];
+                'father','mother','spouse1','spouse2','bio','notes'];
   fields.forEach(f=>{
     const el=document.getElementById('ef_'+f);
     if(el) m[f]=el.value.trim();
@@ -2260,17 +2198,11 @@ function openModal(id){
     '<div class="ir"><div class="iv" style="color:var(--muted);font-style:italic;">No additional info recorded.</div></div>';
   const sp1=m.spouse1&&m.spouse1.toLowerCase()!=='unmarried'?m.spouse1.trim():'';
   const sp2=m.spouse2?m.spouse2.trim():'';
-  const sp3=m.spouse3?m.spouse3.trim():'';
   const s1d=m.spouse1_detail?` <span style="color:var(--muted);font-size:.8rem">· ${m.spouse1_detail}</span>`:'';
   const s2d=m.spouse2_detail?` <span style="color:var(--muted);font-size:.8rem">· ${m.spouse2_detail}</span>`:'';
-  const s3d=m.spouse3_detail?` <span style="color:var(--muted);font-size:.8rem">· ${m.spouse3_detail}</span>`:'';
-  const s1marry=m.spouse1_marry?` <span style="color:var(--muted);font-size:.8rem">m.${m.spouse1_marry}</span>`:'';  const s1yrs=(m.spouse1_dob||m.spouse1_dod)?` <span style="color:var(--muted);font-size:.8rem">(${m.spouse1_dob||''}${m.spouse1_dob&&m.spouse1_dod?' – ':''}${m.spouse1_dod||''})</span>`:'';
-  const s2marry=m.spouse2_marry?` <span style="color:var(--muted);font-size:.8rem">m.${m.spouse2_marry}</span>`:'';  const s2yrs=(m.spouse2_dob||m.spouse2_dod)?` <span style="color:var(--muted);font-size:.8rem">(${m.spouse2_dob||''}${m.spouse2_dob&&m.spouse2_dod?' – ':''}${m.spouse2_dod||''})</span>`:'';
-  const s3marry=m.spouse3_marry?` <span style="color:var(--muted);font-size:.8rem">m.${m.spouse3_marry}</span>`:'';  const s3yrs=(m.spouse3_dob||m.spouse3_dod)?` <span style="color:var(--muted);font-size:.8rem">(${m.spouse3_dob||''}${m.spouse3_dob&&m.spouse3_dod?' – ':''}${m.spouse3_dod||''})</span>`:'';
   let sp='';
-  if(sp1)sp+=`<div class="sp s1"><div class="sl">Spouse 1</div>${sp1}${s1d}${s1marry}${s1yrs}</div>`;
-  if(sp2)sp+=`<div class="sp s2"><div class="sl">Spouse 2</div>${sp2}${s2d}${s2marry}${s2yrs}</div>`;
-  if(sp3)sp+=`<div class="sp s3"><div class="sl">Spouse 3</div>${sp3}${s3d}${s3marry}${s3yrs}</div>`;
+  if(sp1)sp+=`<div class="sp s1"><div class="sl">Spouse 1</div>${sp1}${s1d}</div>`;
+  if(sp2)sp+=`<div class="sp s2"><div class="sl">Spouse 2</div>${sp2}${s2d}</div>`;
   if(!sp1&&m.spouse1&&m.spouse1.toLowerCase()==='unmarried')
     sp+=`<div class="sp s1"><div class="sl">Marital Status</div>Unmarried</div>`;
   document.getElementById('mSpouses').innerHTML=sp;
@@ -2440,21 +2372,6 @@ function showAddModal(){
 }
 window.showAddModal=showAddModal;
 
-function fnShowSpouse(n){
-  const wrap=document.getElementById('fn_s'+n+'_wrap');
-  const btn=document.getElementById('fn_add_s'+n+'_wrap');
-  if(wrap) wrap.style.display='';
-  if(btn)  btn.style.display='none';
-}
-window.fnShowSpouse=fnShowSpouse;
-
-function fnSpouseCheck(){
-  const s1=document.getElementById('fn_s1');
-  const s2btn=document.getElementById('fn_add_s2_wrap');
-  if(s1&&s2btn) s2btn.style.display=s1.value.trim()?'':'none';
-}
-window.fnSpouseCheck=fnSpouseCheck;
-
 async function addMember(){
   const name=document.getElementById('fn_name').value.trim();
   if(!name){alert('Please enter a first name.');return;}
@@ -2474,19 +2391,8 @@ async function addMember(){
     location:   document.getElementById('fn_location').value.trim(),
     spouse1:    document.getElementById('fn_s1').value.trim(),
     spouse1_detail: document.getElementById('fn_s1d').value.trim(),
-    spouse1_marry: document.getElementById('fn_s1marry').value.trim(),
-    spouse1_dob: document.getElementById('fn_s1dob').value.trim(),
-    spouse1_dod: document.getElementById('fn_s1dod').value.trim(),
     spouse2:    document.getElementById('fn_s2').value.trim(),
     spouse2_detail: document.getElementById('fn_s2d').value.trim(),
-    spouse2_marry: document.getElementById('fn_s2marry').value.trim(),
-    spouse2_dob: document.getElementById('fn_s2dob').value.trim(),
-    spouse2_dod: document.getElementById('fn_s2dod').value.trim(),
-    spouse3:    document.getElementById('fn_s3').value.trim(),
-    spouse3_detail: document.getElementById('fn_s3d').value.trim(),
-    spouse3_marry: document.getElementById('fn_s3marry').value.trim(),
-    spouse3_dob: document.getElementById('fn_s3dob').value.trim(),
-    spouse3_dod: document.getElementById('fn_s3dod').value.trim(),
     father:     document.getElementById('fn_father').value.trim(),
     mother:     document.getElementById('fn_mother').value.trim(),
     bio:        document.getElementById('fn_bio').value.trim(),
@@ -2548,9 +2454,8 @@ async function addMember(){
           location:          entryData.location    || 'Not provided',
           dob:               entryData.dob         || 'Not provided',
           dod:               entryData.dod         || 'Not provided',
-          spouse1: entryData.spouse1 ? entryData.spouse1+(entryData.spouse1_detail?' · '+entryData.spouse1_detail:'')+(entryData.spouse1_dob||entryData.spouse1_dod?' ('+(entryData.spouse1_dob||'')+(entryData.spouse1_dob&&entryData.spouse1_dod?' – ':'')+(entryData.spouse1_dod||'')+')':'') : 'Not provided',
-          spouse2: entryData.spouse2 ? entryData.spouse2+(entryData.spouse2_detail?' · '+entryData.spouse2_detail:'')+(entryData.spouse2_dob||entryData.spouse2_dod?' ('+(entryData.spouse2_dob||'')+(entryData.spouse2_dob&&entryData.spouse2_dod?' – ':'')+(entryData.spouse2_dod||'')+')':'') : 'Not provided',
-          spouse3: entryData.spouse3 ? entryData.spouse3+(entryData.spouse3_detail?' · '+entryData.spouse3_detail:'')+(entryData.spouse3_dob||entryData.spouse3_dod?' ('+(entryData.spouse3_dob||'')+(entryData.spouse3_dob&&entryData.spouse3_dod?' – ':'')+(entryData.spouse3_dod||'')+')':'') : 'Not provided',
+          spouse1:           entryData.spouse1     ? entryData.spouse1 + (entryData.spouse1_detail?' · '+entryData.spouse1_detail:'') : 'Not provided',
+          spouse2:           entryData.spouse2     ? entryData.spouse2 + (entryData.spouse2_detail?' · '+entryData.spouse2_detail:'') : 'Not provided',
           bio:               entryData.bio         || 'Not provided',
           notes:             entryData.notes       || 'Not provided',
           parent_id:         entryData.parent      || 'Not provided',
@@ -2872,8 +2777,7 @@ function focusCardHTML(m){
   const fatherName=m.father||''; const motherName=m.mother||m.mother2||'';
   const s1=m.spouse1&&m.spouse1.toLowerCase()!=='unmarried'?m.spouse1:'';
   const s2=m.spouse2||'';
-  const s3=m.spouse3||'';
-  const s1d=m.spouse1_detail||''; const s2d=m.spouse2_detail||''; const s3d=m.spouse3_detail||'';
+  const s1d=m.spouse1_detail||''; const s2d=m.spouse2_detail||'';
   const bioText=(m.bio&&m.bio!=='No information available')?m.bio:'';
   const bioUID='fcbio_'+m.id; const bioLong=bioText.length>120;
   const kids=getChildren(m.id);
@@ -2890,7 +2794,6 @@ function focusCardHTML(m){
       ${m.location?`<div class="fc-row"><b>📍</b>${m.location}</div>`:''}
       ${s1?`<div class="fc-row"><b>~</b>${s1}${s1d?` <span style="color:var(--muted);font-size:.65rem">· ${s1d}</span>`:''}</div>`:''}
       ${s2?`<div class="fc-row"><b>~</b>${s2}${s2d?` <span style="color:var(--muted);font-size:.65rem">· ${s2d}</span>`:''}</div>`:''}
-      ${s3?`<div class="fc-row"><b>~</b>${s3}${s3d?` <span style="color:var(--muted);font-size:.65rem">· ${s3d}</span>`:''}</div>`:''}
       ${bioText?`<div class="fc-bio-wrap">
         <div class="fc-bio-text" id="${bioUID}">${bioText}</div>
         ${bioLong?`<span class="fc-bio-toggle" onclick="toggleBio('${bioUID}',this)">Read more ▾</span>`:''}
@@ -3228,7 +3131,6 @@ async function loadSuggestions(){
             ${e.dod?`<div><span style="color:var(--muted)">DOD:</span> ${e.dod}</div>`:''}
             ${e.spouse1?`<div style="grid-column:1/-1"><span style="color:var(--muted)">Spouse 1:</span> ${e.spouse1}${e.spouse1_detail?' · '+e.spouse1_detail:''}</div>`:''}
             ${e.spouse2?`<div style="grid-column:1/-1"><span style="color:var(--muted)">Spouse 2:</span> ${e.spouse2}${e.spouse2_detail?' · '+e.spouse2_detail:''}</div>`:''}
-            ${e.spouse3?`<div style="grid-column:1/-1"><span style="color:var(--muted)">Spouse 3:</span> ${e.spouse3}${e.spouse3_detail?' · '+e.spouse3_detail:''}</div>`:''}
             ${e.bio?`<div style="grid-column:1/-1"><span style="color:var(--muted)">Bio:</span> ${e.bio}</div>`:''}
             ${e.notes?`<div style="grid-column:1/-1"><span style="color:var(--muted)">Notes:</span> ${e.notes}</div>`:''}
             ${e.tree?`<div><span style="color:var(--muted)">Tree:</span> ${e.tree==='ulahannan'?'Ulahannan Tree':'Varghese Tree'}</div>`:''}
@@ -3313,7 +3215,7 @@ function editBeforePublish(docId){
     document.getElementById('editMemberId').value = tempId;
     const fields = {name:e.name,other_name:e.other_name,gen:e.gen,gender:e.gender,
       dob:e.dob,dod:e.dod,location:e.location,father:e.father,mother:e.mother,
-      spouse1:e.spouse1, spouse1_marry:e.spouse1_marry, spouse1_dob:e.spouse1_dob, spouse1_dod:e.spouse1_dod, spouse2:e.spouse2, spouse2_marry:e.spouse2_marry, spouse2_dob:e.spouse2_dob, spouse2_dod:e.spouse2_dod, spouse3:e.spouse3, spouse3_marry:e.spouse3_marry, spouse3_dob:e.spouse3_dob, spouse3_dod:e.spouse3_dod, bio:e.bio, notes:e.notes};
+      spouse1:e.spouse1,spouse2:e.spouse2,bio:e.bio,notes:e.notes};
     Object.entries(fields).forEach(([k,v])=>{
       const el=document.getElementById('ef_'+k); if(el) el.value=v||'';
     });
