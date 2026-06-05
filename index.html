@@ -774,6 +774,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
   <span class="ab-label" id="adminBarLabel">Admin</span>
   <button class="ab-btn" onclick="switchTab('about');togglePageEdit(true)">✎ Edit About Us</button>
   <button class="ab-btn" onclick="clearAckPhotos()" style="background:#7a2020;color:#fff;border-color:#7a2020">🗑 Clear Credits Photos</button>
+  <button class="ab-btn" onclick="fixAckFooter()" style="background:#2a5a2a;color:#fff;border-color:#2a5a2a">🔧 Fix Credits Footer</button>
   <button class="ab-btn" onclick="switchTab('help');togglePageEdit(true)">✎ Edit How To Use</button>
   <button class="ab-btn" onclick="switchTab('ack');togglePageEdit(true)">✎ Edit Credits</button>
   <button class="ab-btn" id="suggBtn" onclick="switchTab('suggestions')" style="display:none">📋 Submissions <span id="suggCount" style="background:var(--gold);color:#fff;border-radius:10px;padding:1px 6px;font-size:.68rem;margin-left:3px">0</span></button>
@@ -3103,13 +3104,13 @@ async function savePageContent(){
   // Save editable content to Firebase under 'pages' collection
   const aboutHTML  = document.getElementById('aboutSection').innerHTML;
   const helpHTML   = document.getElementById('helpSection').innerHTML;
-  const ackHTML    = document.getElementById('ackSection').innerHTML;
+  // ackSection is NOT saved to Firestore — it lives in index.html only
   showSyncBar('syncing');
   try {
     const {doc, setDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     await setDoc(doc(db,'pages','about'), {html: aboutHTML, updated: new Date().toISOString()});
     await setDoc(doc(db,'pages','help'),  {html: helpHTML,  updated: new Date().toISOString()});
-    await setDoc(doc(db,'pages','ack'),   {html: ackHTML,   updated: new Date().toISOString()});
+    // ackSection not saved — lives in index.html only
     showSyncBar('ok');
     showToast('Page content saved successfully', 'success');
     togglePageEdit(false);
@@ -3226,7 +3227,7 @@ async function loadPageContent(){
     ]);
     if(aboutSnap.exists()) document.getElementById('aboutSection').innerHTML = aboutSnap.data().html;
     if(helpSnap.exists())  document.getElementById('helpSection').innerHTML  = helpSnap.data().html;
-    if(ackSnap.exists())   document.getElementById('ackSection').innerHTML   = ackSnap.data().html;
+    // ackSection is NOT loaded from Firestore — it is always served from index.html directly
   } catch(e){ /* use default HTML if not in Firebase yet */ }
 }
 
@@ -3727,6 +3728,21 @@ async function clearAckPhotos(){
   }
 }
 window.clearAckPhotos = clearAckPhotos;
+
+// Fix Credits footer — deletes the stale pages/ack Firestore document so index.html always wins
+async function fixAckFooter(){
+  if(currentRole !== 'admin'){ showToast('Admin only','info'); return; }
+  if(!confirm('This will delete the old Credits page stored in Firestore.\nThe Credits page will now always load from the website file directly.\n\nContinue?')) return;
+  try{
+    const {doc, deleteDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await deleteDoc(doc(db,'pages','ack'));
+    showToast('Done ✓ — Credits now loads from the website file permanently','success');
+  }catch(err){
+    showToast('Failed: ' + err.message,'error');
+    console.error(err);
+  }
+}
+window.fixAckFooter = fixAckFooter;
 
 // Call initAckPhotoSlots whenever the ack tab becomes visible
 const _origSwitchTab = window.switchTab;
