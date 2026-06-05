@@ -770,6 +770,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
 <div class="admin-bar hidden" id="adminBar">
   <span class="ab-label" id="adminBarLabel">Admin</span>
   <button class="ab-btn" onclick="switchTab('about');togglePageEdit(true)">✎ Edit About Us</button>
+  <button class="ab-btn" onclick="restorePhotosFromStorage()" style="background:#b8860b;color:#fff;border-color:#b8860b">📷 Restore Photos</button>
   <button class="ab-btn" onclick="switchTab('help');togglePageEdit(true)">✎ Edit How To Use</button>
   <button class="ab-btn" onclick="switchTab('ack');togglePageEdit(true)">✎ Edit Credits</button>
   <button class="ab-btn" id="suggBtn" onclick="switchTab('suggestions')" style="display:none">📋 Submissions <span id="suggCount" style="background:var(--gold);color:#fff;border-radius:10px;padding:1px 6px;font-size:.68rem;margin-left:3px">0</span></button>
@@ -1886,7 +1887,7 @@ async function init(){
   // Sync with Firebase in background
   try {
     const snap = await getDocs(collection(db, COLL));
-    if(snap.empty || snap.size < SEED_DATA.length){
+    if(snap.empty){
       showToast('Syncing database…', 'info');
       await seedDatabase();
       showToast('Family directory loaded — ' + MEMBERS.length + ' members', 'success');
@@ -3159,7 +3160,95 @@ async function savePageContent(){
 }
 window.savePageContent = savePageContent;
 
-// ── Load saved page content from Firebase on init ──
+// ── Restore photos from Firebase Storage back into Firestore member records ──
+async function restorePhotosFromStorage(){
+  if(!confirm('This will scan Firebase Storage and restore all member photos into Firestore.\n\nThis may take a minute. Continue?')) return;
+  showToast('Scanning Storage for photos…', 'info');
+  try {
+    const { listAll, ref: sref, getDownloadURL } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js');
+    const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+
+    // List all items in the photos/ folder
+    const folderRef = sref(storage, 'photos');
+    const res = await listAll(folderRef);
+
+    if(res.items.length === 0){
+      // Try root level
+      const rootRes = await listAll(sref(storage, ''));
+      res.items.push(...rootRes.items);
+      res.prefixes.push(...rootRes.prefixes);
+    }
+
+    // Also scan any sub-prefixes (subfolders per member id)
+    let allItems = [...res.items];
+    for(const prefix of res.prefixes){
+      try {
+        const sub = await listAll(prefix);
+        allItems.push(...sub.items);
+      } catch(e){}
+    }
+
+    if(allItems.length === 0){
+      showToast('No photos found in Storage', 'error');
+      return;
+    }
+
+    showToast(`Found ${allItems.length} photo(s). Restoring…`, 'info');
+
+    // Group photos by member id (extracted from file path)
+    const memberPhotos = {};
+    for(const item of allItems){
+      // Path format is typically: photos/{memberId}/{filename} or photos/{memberId}
+      const parts = item.fullPath.split('/');
+      // Find the member id — look for a numeric segment
+      let memberId = null;
+      for(const part of parts){
+        if(/^\d{5}$/.test(part)){ memberId = part; break; }
+      }
+      if(!memberId){
+        // Try extracting from filename e.g. "10197_photo.jpg"
+        const fname = parts[parts.length - 1];
+        const match = fname.match(/^(\d{5})/);
+        if(match) memberId = match[1];
+      }
+      if(!memberId) continue;
+
+      if(!memberPhotos[memberId]) memberPhotos[memberId] = [];
+      try {
+        const url = await getDownloadURL(item);
+        memberPhotos[memberId].push(url);
+      } catch(e){ console.warn('Could not get URL for', item.fullPath, e); }
+    }
+
+    const memberIds = Object.keys(memberPhotos);
+    if(memberIds.length === 0){
+      showToast('Could not match photos to member IDs. Check Storage folder structure.', 'error');
+      return;
+    }
+
+    // Update Firestore and local MEMBERS array
+    let restored = 0;
+    for(const id of memberIds){
+      const urls = memberPhotos[id];
+      const primaryUrl = urls[0];
+      try {
+        await updateDoc(doc(db, COLL, id), { photo: primaryUrl, photos: urls });
+        const idx = MEMBERS.findIndex(m => String(m.id) === id);
+        if(idx >= 0){ MEMBERS[idx].photo = primaryUrl; MEMBERS[idx].photos = urls; }
+        restored++;
+      } catch(e){ console.warn('Could not update member', id, e); }
+    }
+
+    buildCards();
+    showToast(`✓ Restored photos for ${restored} member(s)`, 'success');
+  } catch(err){
+    console.error('Photo restore error:', err);
+    showToast('Error: ' + err.message, 'error');
+  }
+}
+window.restorePhotosFromStorage = restorePhotosFromStorage;
+
+
 async function loadPageContent(){
   try {
     const {doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
