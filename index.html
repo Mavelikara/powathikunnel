@@ -770,7 +770,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
 <div class="admin-bar hidden" id="adminBar">
   <span class="ab-label" id="adminBarLabel">Admin</span>
   <button class="ab-btn" onclick="switchTab('about');togglePageEdit(true)">✎ Edit About Us</button>
-  <button class="ab-btn" onclick="restorePhotosFromStorage()" style="background:#b8860b;color:#fff;border-color:#b8860b">📷 Restore Photos</button>
+  <button class="ab-btn" onclick="clearAckPhotos()" style="background:#7a2020;color:#fff;border-color:#7a2020">🗑 Clear Credits Photos</button>
   <button class="ab-btn" onclick="switchTab('help');togglePageEdit(true)">✎ Edit How To Use</button>
   <button class="ab-btn" onclick="switchTab('ack');togglePageEdit(true)">✎ Edit Credits</button>
   <button class="ab-btn" id="suggBtn" onclick="switchTab('suggestions')" style="display:none">📋 Submissions <span id="suggCount" style="background:var(--gold);color:#fff;border-radius:10px;padding:1px 6px;font-size:.68rem;margin-left:3px">0</span></button>
@@ -1093,10 +1093,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_first_historian" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -1139,10 +1136,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_committee_roy" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -1168,10 +1162,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_committee_sam" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -1196,10 +1187,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_committee_kpjohn" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -1224,10 +1212,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_committee_ittyerah" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -1252,10 +1237,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_committee_ninan" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -1280,10 +1262,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_committee_kmgeorge" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -1308,10 +1287,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_committee_deepak" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -1336,10 +1312,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
             <div style="font-size:1.3rem">📷</div>
             <div style="font-size:.58rem;color:#fff;font-weight:600">Upload</div>
           </div>
-          <div class="ack-remove-btn" style="display:none;position:absolute;top:4px;right:4px;
-            background:rgba(200,40,40,.85);color:#fff;border-radius:50%;width:20px;height:20px;
-            align-items:center;justify-content:center;font-size:.7rem;cursor:pointer;z-index:10"
-            title="Remove photo">✕</div>
+
           <input type="file" class="ack-file-input" accept="image/*" style="display:none"/>
           <div class="ack-admin-ctrl" data-for="ack_committee_viji" style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(20,10,0,.7);border-radius:0 0 6px 6px;padding:3px 2px;gap:3px;justify-content:center;align-items:center">
             <button class="ack-upload-btn" style="font-size:.55rem;padding:2px 5px;border-radius:4px;border:1px solid #f5d080;background:none;color:#f5d080;cursor:pointer;white-space:nowrap">📷 Upload</button>
@@ -3698,12 +3671,13 @@ async function initAckPhotoSlots(){
     const ph        = slot.querySelector('.ack-slot-placeholder');
     const fileInput = slot.querySelector('.ack-file-input');
     const adminCtrl = slot.querySelector('.ack-admin-ctrl');
-    const uploadBtn = adminCtrl ? adminCtrl.querySelector('.ack-upload-btn') : null;
+    const uploadBtn = adminCtrl ? adminCtrl.querySelector('.ack-upload-btn')  : null;
     const removeBtn = adminCtrl ? adminCtrl.querySelector('.ack-remove-btn2') : null;
 
-    // Show photo if saved
-    if(savedPhotos[slotId]){
-      imgEl.src = savedPhotos[slotId];
+    // Show photo if URL exists and is valid
+    const url = savedPhotos[slotId];
+    if(url){
+      imgEl.src = url;
       imgEl.style.display = 'block';
       if(ph) ph.style.display = 'none';
     } else {
@@ -3716,12 +3690,12 @@ async function initAckPhotoSlots(){
     if(adminCtrl) adminCtrl.style.display = isAdmin ? 'flex' : 'none';
     if(!isAdmin) return;
 
-    // Upload button triggers file picker
-    if(uploadBtn && fileInput){
-      uploadBtn.onclick = () => fileInput.click();
-    }
+    // Prevent double-binding
+    if(slot.dataset.ackBound) return;
+    slot.dataset.ackBound = '1';
 
-    // File selected → upload to Storage + save URL to Firestore
+    if(uploadBtn && fileInput) uploadBtn.onclick = () => fileInput.click();
+
     if(fileInput){
       fileInput.addEventListener('change', async () => {
         const file = fileInput.files[0];
@@ -3732,7 +3706,7 @@ async function initAckPhotoSlots(){
           const path = `ack_photos/${slotId}_${Date.now()}_${file.name}`;
           const storRef = ref(storage, path);
           const snap2 = await uploadBytes(storRef, file);
-          const url = await getDownloadURL(snap2.ref);
+          const newUrl = await getDownloadURL(snap2.ref);
 
           const {doc, setDoc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
           const docRef = doc(db,'app_config','ack_photos');
@@ -3741,10 +3715,9 @@ async function initAckPhotoSlots(){
           if(data[slotId] && data[slotId].includes('firebasestorage')){
             try{ await deleteObject(ref(storage, data[slotId])); }catch(e){}
           }
-          data[slotId] = url;
+          data[slotId] = newUrl;
           await setDoc(docRef, data);
-
-          imgEl.src = url;
+          imgEl.src = newUrl;
           imgEl.style.display = 'block';
           if(ph) ph.style.display = 'none';
           showToast('Photo saved ✓','success');
@@ -3755,7 +3728,6 @@ async function initAckPhotoSlots(){
       });
     }
 
-    // Remove button
     if(removeBtn){
       removeBtn.onclick = async () => {
         if(!confirm('Remove this photo?')) return;
@@ -3784,6 +3756,27 @@ async function initAckPhotoSlots(){
   const hint = document.getElementById('ackAdminHint');
   if(hint) hint.style.display = isAdmin ? 'flex' : 'none';
 }
+
+// Clear ALL credits photos from Firestore (admin only)
+async function clearAckPhotos(){
+  if(!confirm('This will clear ALL Credits page photos from Firestore.\nYou will need to re-upload them. Continue?')) return;
+  try{
+    const {doc, setDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await setDoc(doc(db,'app_config','ack_photos'), {});
+    // Reset all slots to placeholder
+    document.querySelectorAll('.ack-photo-slot').forEach(slot => {
+      const imgEl = slot.querySelector('.ack-slot-img');
+      const ph    = slot.querySelector('.ack-slot-placeholder');
+      if(imgEl){ imgEl.style.display='none'; imgEl.src=''; }
+      if(ph)   { ph.style.display='flex'; }
+    });
+    showToast('All Credits photos cleared','success');
+  }catch(err){
+    showToast('Failed to clear photos','error');
+    console.error(err);
+  }
+}
+window.clearAckPhotos = clearAckPhotos;
 
 // Call initAckPhotoSlots whenever the ack tab becomes visible
 const _origSwitchTab = window.switchTab;
