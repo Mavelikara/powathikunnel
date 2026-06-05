@@ -3592,17 +3592,13 @@ function toggleChapter(id){
 }
 window.toggleChapter=toggleChapter;
 
-// ── Acknowledgements Photo Upload (Admin Only) ──────────────────────────────
+// ── Acknowledgements Photo Slots ─────────────────────────────────────────────
 
-/**
- * Initialise all .ack-photo-slot elements:
- *  - Load any saved photo from Firestore
- *  - If admin: wire up hover overlay, click-to-upload, and remove button
- */
 async function initAckPhotoSlots(){
   const slots = document.querySelectorAll('.ack-photo-slot');
   if(!slots.length) return;
 
+  // Fetch saved photo URLs from Firestore
   let savedPhotos = {};
   try{
     const {doc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -3621,7 +3617,7 @@ async function initAckPhotoSlots(){
     const uploadBtn = adminCtrl ? adminCtrl.querySelector('.ack-upload-btn')  : null;
     const removeBtn = adminCtrl ? adminCtrl.querySelector('.ack-remove-btn2') : null;
 
-    // Show photo if URL exists and is valid
+    // Show photo if URL is saved, else show placeholder
     const url = savedPhotos[slotId];
     if(url){
       imgEl.src = url;
@@ -3637,12 +3633,16 @@ async function initAckPhotoSlots(){
     if(adminCtrl) adminCtrl.style.display = isAdmin ? 'flex' : 'none';
     if(!isAdmin) return;
 
-    // Prevent double-binding
+    // Prevent binding twice on re-init
     if(slot.dataset.ackBound) return;
     slot.dataset.ackBound = '1';
 
-    if(uploadBtn && fileInput) uploadBtn.onclick = () => fileInput.click();
+    // Upload button opens file picker
+    if(uploadBtn && fileInput){
+      uploadBtn.onclick = (e) => { e.stopPropagation(); fileInput.click(); };
+    }
 
+    // File chosen — upload to Storage, save URL to Firestore
     if(fileInput){
       fileInput.addEventListener('change', async () => {
         const file = fileInput.files[0];
@@ -3654,7 +3654,6 @@ async function initAckPhotoSlots(){
           const storRef = ref(storage, path);
           const snap2 = await uploadBytes(storRef, file);
           const newUrl = await getDownloadURL(snap2.ref);
-
           const {doc, setDoc, getDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
           const docRef = doc(db,'app_config','ack_photos');
           const existing = await getDoc(docRef);
@@ -3669,14 +3668,16 @@ async function initAckPhotoSlots(){
           if(ph) ph.style.display = 'none';
           showToast('Photo saved ✓','success');
         }catch(err){
-          showToast('Upload failed','error');
+          showToast('Upload failed — ' + err.message,'error');
           console.error(err);
         }
       });
     }
 
+    // Remove button — delete from Storage + Firestore
     if(removeBtn){
-      removeBtn.onclick = async () => {
+      removeBtn.onclick = async (e) => {
+        e.stopPropagation();
         if(!confirm('Remove this photo?')) return;
         try{
           const {doc, getDoc, setDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
@@ -3703,6 +3704,7 @@ async function initAckPhotoSlots(){
   const hint = document.getElementById('ackAdminHint');
   if(hint) hint.style.display = isAdmin ? 'flex' : 'none';
 }
+window.initAckPhotoSlots = initAckPhotoSlots;
 
 // Clear ALL credits photos from Firestore (admin only)
 async function clearAckPhotos(){
@@ -3710,16 +3712,15 @@ async function clearAckPhotos(){
   try{
     const {doc, setDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     await setDoc(doc(db,'app_config','ack_photos'), {});
-    // Reset all slots to placeholder
     document.querySelectorAll('.ack-photo-slot').forEach(slot => {
       const imgEl = slot.querySelector('.ack-slot-img');
       const ph    = slot.querySelector('.ack-slot-placeholder');
       if(imgEl){ imgEl.style.display='none'; imgEl.src=''; }
       if(ph)   { ph.style.display='flex'; }
     });
-    showToast('All Credits photos cleared','success');
+    showToast('All Credits photos cleared — you can now re-upload','success');
   }catch(err){
-    showToast('Failed to clear photos','error');
+    showToast('Failed: ' + err.message,'error');
     console.error(err);
   }
 }
