@@ -1877,6 +1877,7 @@ async function init(){
         }
       }
       buildCards();
+      updateDynamicCounts();
       showToast('Family directory loaded — ' + MEMBERS.length + ' members', 'success');
     }
     startRealtimeSync();
@@ -1991,6 +1992,7 @@ function switchTab(t){
   togglePageEdit(false);
   if(t==='tree'&&!treeBuilt){ treeBuilt=true; dtGoRoot(); }
   if(t==='suggestions'&&(currentRole==='admin'||currentRole==='editor')) loadSuggestions();
+  if(t==='about'||t==='ack') updateDynamicCounts();
 }
 window.switchTab = switchTab;
 
@@ -3695,23 +3697,31 @@ window.showPhotoGuidelines=showPhotoGuidelines;
 
 // Field options with labels
 const SC_FIELDS = [
-  {v:'name',        l:'Name'},
-  {v:'other_name',  l:'Pet / Other Name'},
-  {v:'dob',         l:'Date of Birth'},
-  {v:'dod',         l:'Date of Death / Alive'},
-  {v:'gender',      l:'Gender'},
-  {v:'gen',         l:'Generation'},
-  {v:'father',      l:'Father'},
-  {v:'mother',      l:'Mother'},
-  {v:'location',    l:'Location'},
-  {v:'spouse1',     l:'Spouse 1 Name'},
+  {v:'name',         l:'Name'},
+  {v:'other_name',   l:'Pet / Other Name'},
+  {v:'dob',          l:'Year of Birth'},
+  {v:'dod',          l:'Year of Death'},
+  {v:'gender',       l:'Gender'},
+  {v:'gen',          l:'Generation'},
+  {v:'father',       l:'Father'},
+  {v:'mother',       l:'Mother'},
+  {v:'location',     l:'Location'},
+  {v:'spouse1',      l:'Spouse 1 Name'},
+  {v:'spouse1_kids', l:'Spouse 1 — Number of Children'},
+  {v:'spouse1_marry',l:'Year of Marriage'},
+  {v:'spouse1_dob',  l:'Spouse Year of Birth'},
+  {v:'spouse1_dod',  l:'Spouse Year of Death'},
   {v:'spouse1_detail',l:'Spouse 1 Details'},
-  {v:'spouse2',     l:'Spouse 2 Name'},
+  {v:'spouse2',      l:'Spouse 2 Name'},
+  {v:'spouse2_kids', l:'Spouse 2 — Number of Children'},
+  {v:'spouse2_marry',l:'Spouse 2 — Year of Marriage'},
+  {v:'spouse2_dob',  l:'Spouse 2 — Year of Birth'},
+  {v:'spouse2_dod',  l:'Spouse 2 — Year of Death'},
   {v:'spouse2_detail',l:'Spouse 2 Details'},
-  {v:'bio',         l:'Biography'},
-  {v:'notes',       l:'Notes'},
-  {v:'photo',       l:'Photo (describe)'},
-  {v:'other',       l:'Other (describe in notes)'},
+  {v:'bio',          l:'Biography'},
+  {v:'notes',        l:'Notes'},
+  {v:'photo',        l:'Photo (describe)'},
+  {v:'other',        l:'Other (describe in notes)'},
 ];
 
 function scFieldOptions(selected=''){
