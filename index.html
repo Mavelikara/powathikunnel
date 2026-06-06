@@ -800,7 +800,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
 <div class="hi">
   <div>
     <h1>Powathikunnel <span>Family</span></h1>
-    <div class="header-sub">Mavelikara Branch · Two Family Trees · 773 Members</div>
+    <div class="header-sub" id="headerSub">Mavelikara Branch · Two Family Trees · 773 Members</div>
   </div>
   <div class="tab-bar">
     <button class="tab-btn active" id="tabAbout" onclick="switchTab('about')">📖 About Us</button>
@@ -877,7 +877,7 @@ textarea.sf-input{resize:vertical;min-height:90px}
   <div class="static-page">
     <div class="sp-hero">
       <h2>About the <span>Powathikunnel</span> Family</h2>
-      <p>A heritage spanning nearly two millennia — from the first Christian converts of Kerala to 773 documented members across 12 generations, settled across India and the world.</p>
+      <p>A heritage spanning nearly two millennia — from the first Christian converts of Kerala to <span id="aboutMemberCount">773 documented members across 12 generations</span>, settled across India and the world.</p>
     </div>
 
     <div class="sp-section">
@@ -1298,10 +1298,10 @@ textarea.sf-input{resize:vertical;min-height:90px}
           This family tree is the continuation of a journey that began long before the digital age. The foundation was laid by my grandfather, whose dedication to recording our family's history preserved valuable stories, relationships, and memories for future generations. His work was later expanded and enriched by my uncle <strong>Thomas George (Roy)</strong> and a team of family members who collaborated to produce the family history book from which much of this information has been drawn.
         </p>
         <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.95;color:var(--text);margin:0 0 16px">
-          The directory currently covers <strong>775 members across 12 generations</strong> from two family trees — the Mallappally Varghese tree and the Ulahannan Ittyavirah tree. Data has been sourced from the Powathikunnel Kudumbayogam family history books <em>(Mavelikara Powathikunnel Family — 2007)</em> and family records.
+          The directory currently covers <strong id="creditsMemberCount">775 members across 12 generations</strong> from two family trees — the Mallappally Varghese tree and the Ulahannan Ittyavirah tree. Data has been sourced from the Powathikunnel Kudumbayogam family history books <em>(Mavelikara Powathikunnel Family — 2007)</em> and family records.
         </p>
         <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.95;color:var(--text);margin:0 0 16px">
-          What makes this family tree different from many traditional genealogies is the principle on which it is now re-built. Historically, Christian family records in Kerala often followed a patriarchal model, tracing primarily the male lineage and giving less prominence to daughters and their descendants. This digitized tree takes a different approach. It is based on kinship through shared ancestry and bloodline rather than gender. Every descendant, whether through a son or a daughter, is considered an equally important part of our family story.
+          What makes this family tree different from many traditional genealogies is the principle on which it is now re-built. Historically, Christian family records in Kerala often followed a patriarchal model, tracing primarily the male lineage and giving less prominence to daughters and their descendants. This digitized tree takes a different approach. It is based on kinship through shared ancestry and bloodline rather than gender. <strong><u>Every descendant, whether through a son or a daughter, is considered an equally important part of our family story.</u></strong>
         </p>
         <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.95;color:var(--text);margin:0 0 20px">
           This is not merely a record of names and dates; it is a celebration of our shared heritage and the connections that unite us. My hope is that by preserving and expanding this work, we honour those who came before us while creating a lasting legacy for those who will come after us.
@@ -1866,6 +1866,16 @@ async function init(){
       showToast('Family directory loaded — ' + MEMBERS.length + ' members', 'success');
     } else {
       MEMBERS = snap.docs.map(d => { const x={...d.data(), id: d.data().id}; x.photos=Array.isArray(x.photos)?x.photos:(x.photos?[x.photos]:[]); return x; });
+      // Auto-delete blank records (no name) — admin cleanup
+      if(currentRole==='admin'){
+        const blanks = snap.docs.filter(d => !d.data().name || String(d.data().name).trim()==='');
+        if(blanks.length){
+          const {doc:fdoc, deleteDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+          for(const b of blanks){ await deleteDoc(fdoc(db, COLL, b.id)); }
+          MEMBERS = MEMBERS.filter(m => m.name && String(m.name).trim() !== '');
+          console.log(`Cleaned up ${blanks.length} blank record(s) from Firestore`);
+        }
+      }
       buildCards();
       showToast('Family directory loaded — ' + MEMBERS.length + ' members', 'success');
     }
@@ -2014,6 +2024,7 @@ function buildCards(){
     return true;
   });
   updateStats(filtered);
+  updateDynamicCounts();
   if(!filtered.length){grid.innerHTML='<div class="no-results">No members found.</div>';return;}
   grid.innerHTML=filtered.map(m=>cardHTML(m)).join('');
   // Handle ?member= deep link — open profile once after first full load
@@ -2027,6 +2038,26 @@ function buildCards(){
     }
   }
 }
+
+// ── Dynamic member/generation counts ──
+function updateDynamicCounts(){
+  // Filter out blank records (no name)
+  const valid = MEMBERS.filter(m => m.name && m.name.trim() !== '');
+  const count = valid.length;
+  const maxGen = Math.max(...valid.map(m => parseInt(m.gen)||0).filter(g=>g>0));
+  const genText = maxGen > 0 ? `${count} documented members across ${maxGen} generations` : `${count} documented members`;
+  const creditsText = maxGen > 0 ? `${count} members across ${maxGen} generations` : `${count} members`;
+
+  const headerSub = document.getElementById('headerSub');
+  if(headerSub) headerSub.textContent = `Mavelikara Branch · Two Family Trees · ${count} Members`;
+
+  const aboutSpan = document.getElementById('aboutMemberCount');
+  if(aboutSpan) aboutSpan.textContent = genText;
+
+  const creditsStrong = document.getElementById('creditsMemberCount');
+  if(creditsStrong) creditsStrong.textContent = creditsText;
+}
+window.updateDynamicCounts = updateDynamicCounts;
 
 function cardHTML(m){
   const g=gc(m.gender);
@@ -3442,7 +3473,8 @@ async function loadSuggestions(){
           ${(!s.status||s.status==='pending')?`<div class="si-actions">
             <button class="si-btn approve" onclick="actionSugg('${s.docId}','done')">✓ Mark Done</button>
             <button class="si-btn dismiss" onclick="actionSugg('${s.docId}','dismissed')">✗ Dismiss</button>
-          </div>`:`<div style="font-size:.72rem;color:var(--muted)">${s.status==='done'?'✓ Done':'✗ Dismissed'}</div>`}
+            ${currentRole==='admin'?`<button class="si-btn" onclick="deleteSugg('${s.docId}')" style="border-color:#c03030;color:#c03030;margin-left:auto" title="Permanently delete this entry">🗑 Delete</button>`:''}
+          </div>`:`<div style="display:flex;align-items:center;gap:10px;font-size:.72rem;color:var(--muted)">${s.status==='done'?'✓ Done':'✗ Dismissed'}${currentRole==='admin'?`<button class="si-btn" onclick="deleteSugg('${s.docId}')" style="border-color:#c03030;color:#c03030;padding:2px 8px;font-size:.68rem" title="Permanently delete">🗑 Delete</button>`:''}</div>`}
         </div>`;
       }).join('');
     }
@@ -3527,6 +3559,19 @@ async function actionSugg(docId, status){
   } catch(e){ showToast('Failed to update','error'); }
 }
 window.actionSugg = actionSugg;
+
+async function deleteSugg(docId){
+  if(currentRole!=='admin'){showToast('Only the Administrator can delete entries','info');return;}
+  if(!confirm('Permanently delete this submission? This cannot be undone.')) return;
+  try {
+    const {doc, deleteDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    await deleteDoc(doc(db,'suggestions',docId));
+    const el = document.getElementById('sugg_'+docId);
+    if(el) el.remove();
+    showToast('Entry deleted','success');
+  } catch(e){ showToast('Failed to delete','error'); }
+}
+window.deleteSugg = deleteSugg;
 
 
 // ── Wire all modal buttons via addEventListener (avoids module scope issue) ──
