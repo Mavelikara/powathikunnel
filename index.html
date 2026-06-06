@@ -86,9 +86,12 @@ select:focus{border-color:var(--gold)}
   line-height:1.3;color:var(--text);flex:1;min-width:0}
 .card-petname{font-weight:400;font-style:italic;font-size:.95rem}
 .card-years{font-size:.68rem;color:var(--muted);white-space:nowrap;flex-shrink:0;letter-spacing:.2px;padding-top:1px}
-.card-spouses{font-size:.72rem;color:#5a4f44;margin-bottom:5px;line-height:1.6}
-.card-spouse-line{display:flex;align-items:baseline;gap:3px}
-.sp-tilde{color:var(--muted);font-size:.8rem}
+.card-spouse-block{margin-top:4px}
+.card-spouse-row{display:flex;align-items:baseline;justify-content:space-between;font-size:.72rem;line-height:1.7;gap:6px}
+.card-spouse-name{color:#5a4f44;display:flex;align-items:baseline;gap:3px;min-width:0;flex:1}
+.sp-tilde{color:var(--muted);font-size:.8rem;flex-shrink:0}
+.card-spouse-kids{color:var(--muted);white-space:nowrap;flex-shrink:0;font-size:.68rem}
+.card-spouse-kids strong{color:var(--text);font-weight:600}
 .card-divider{border:none;border-top:1px solid var(--border);margin:6px 0}
 .card-parents{display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted)}
 .card-parent-item{display:flex;flex-direction:column;gap:1px}
@@ -96,9 +99,12 @@ select:focus{border-color:var(--gold)}
 .cp-label{font-size:.6rem;text-decoration:underline;text-underline-offset:2px;
   text-decoration-color:#c8bfb0;color:var(--muted)}
 .cp-name{color:var(--text);font-size:.72rem;font-weight:500}
-.card-children{text-align:center;font-size:.68rem;color:var(--muted);
-  margin-top:6px;padding-top:5px;border-top:1px solid var(--border)}
-.card-children strong{color:var(--text);font-weight:600}
+.card-share-btn{position:absolute;bottom:6px;right:6px;z-index:5;
+  background:#d4f7a0;border:none;cursor:pointer;padding:3px 10px 3px 8px;
+  color:#3a6010;font-size:.68rem;font-weight:600;line-height:1;border-radius:20px;
+  display:inline-flex;align-items:center;gap:4px;transition:background .15s,transform .1s;white-space:nowrap}
+.card-share-btn:hover{background:#aaef6a;transform:scale(1.04)}
+.card-share-btn.inline{position:static;bottom:auto;right:auto;z-index:auto}
 .no-results{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--muted);
   font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic}
 .tag{font-size:.65rem;padding:2px 6px;border-radius:20px;font-weight:500}
@@ -1487,7 +1493,10 @@ textarea.sf-input{resize:vertical;min-height:90px}
         <div class="ch-dots" id="chDots"></div>
       </div>
 
-      <div style="display:flex;gap:8px;margin-top:12px;margin-bottom:4px"><button class="btn btn-out" style="flex:1;font-size:.78rem" id="modalEditBtn" onclick="">✎ Edit this profile</button></div>
+      <div style="display:flex;gap:8px;margin-top:12px;margin-bottom:4px">
+        <button class="btn btn-out" style="flex:1;font-size:.78rem" id="modalEditBtn" onclick="">✎ Edit / Suggest a Change</button>
+        <button class="btn btn-out" style="font-size:.78rem;padding:7px 14px" id="modalShareBtn" onclick="" title="Share this profile">📤 Share</button>
+      </div>
       <div class="nav-btns">
         <button class="nb" id="navParentBtn" onclick="navToParent()">⬆ Parent</button>
         <button class="nb" onclick="closeModal()">Close</button>
@@ -1741,14 +1750,17 @@ textarea.sf-input{resize:vertical;min-height:90px}
       <div class="ef"><label class="el">Father</label><input class="ei" id="ef_father"/></div>
       <div class="ef"><label class="el">Mother</label><input class="ei" id="ef_mother"/></div>
       <div class="ef full"><label class="el">Spouse 1</label><input class="ei" id="ef_spouse1"/></div>
+      <div class="ef"><label class="el">Spouse 1 — Children</label><input class="ei" id="ef_spouse1_kids" maxlength="3" placeholder="Number of children"/></div>
       <div class="ef"><label class="el">Spouse 1 — Married (YYYY)</label><input class="ei" id="ef_spouse1_marry" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef"><label class="el">Spouse 1 — Born (YYYY)</label><input class="ei" id="ef_spouse1_dob" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef"><label class="el">Spouse 1 — Died (YYYY)</label><input class="ei" id="ef_spouse1_dod" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef full"><label class="el">Spouse 2</label><input class="ei" id="ef_spouse2"/></div>
+      <div class="ef"><label class="el">Spouse 2 — Children</label><input class="ei" id="ef_spouse2_kids" maxlength="3" placeholder="Number of children"/></div>
       <div class="ef"><label class="el">Spouse 2 — Married (YYYY)</label><input class="ei" id="ef_spouse2_marry" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef"><label class="el">Spouse 2 — Born (YYYY)</label><input class="ei" id="ef_spouse2_dob" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef"><label class="el">Spouse 2 — Died (YYYY)</label><input class="ei" id="ef_spouse2_dod" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef full"><label class="el">Spouse 3</label><input class="ei" id="ef_spouse3"/></div>
+      <div class="ef"><label class="el">Spouse 3 — Children</label><input class="ei" id="ef_spouse3_kids" maxlength="3" placeholder="Number of children"/></div>
       <div class="ef"><label class="el">Spouse 3 — Married (YYYY)</label><input class="ei" id="ef_spouse3_marry" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef"><label class="el">Spouse 3 — Born (YYYY)</label><input class="ei" id="ef_spouse3_dob" maxlength="4" placeholder="YYYY"/></div>
       <div class="ef"><label class="el">Spouse 3 — Died (YYYY)</label><input class="ei" id="ef_spouse3_dod" maxlength="4" placeholder="YYYY"/></div>
@@ -1771,13 +1783,13 @@ textarea.sf-input{resize:vertical;min-height:90px}
         </div>
     </div>
     <div class="edit-actions">
-      <button class="btn btn-gold" style="flex:1" id="saveEditBtn">💾 Save Changes</button>
-      <button class="btn btn-out" id="cancelEditBtn">Cancel</button>
       <button class="btn" id="deleteEditBtn"
         style="background:#c03030;color:#fff;display:none;padding:8px 14px;border-radius:8px;
         font-family:'Jost',sans-serif;font-size:.85rem;cursor:pointer;border:none">
         🗑 Delete Member
       </button>
+      <button class="btn btn-out" id="cancelEditBtn">Cancel</button>
+      <button class="btn btn-gold" style="flex:1" id="saveEditBtn">💾 Save Changes</button>
     </div>
     <p id="deleteEditNote" style="display:none;font-size:.72rem;color:#c03030;
       text-align:center;margin-top:6px;font-style:italic">
@@ -2004,46 +2016,104 @@ function buildCards(){
   updateStats(filtered);
   if(!filtered.length){grid.innerHTML='<div class="no-results">No members found.</div>';return;}
   grid.innerHTML=filtered.map(m=>cardHTML(m)).join('');
+  // Handle ?member= deep link — open profile once after first full load
+  if(!window._memberLinkHandled && MEMBERS.length > 0){
+    const params = new URLSearchParams(window.location.search);
+    const mid = params.get('member');
+    if(mid){
+      window._memberLinkHandled = true;
+      const m = MEMBERS.find(x=>String(x.id)===String(mid));
+      if(m) setTimeout(()=>openModal(m.id), 300);
+    }
+  }
 }
 
 function cardHTML(m){
   const g=gc(m.gender);
   const photo=m.photos&&m.photos.length?m.photos[0]:m.photo||'';
-  const photoCount=m.photos&&m.photos.length?m.photos.length:m.photo?1:0;
   const petPart=m.other_name?` <span class="card-petname">(${m.other_name})</span>`:'';
   const dobY=m.dob?String(m.dob).match(/\d{4}/)?.[0]:'';
   const dodY=m.dod&&m.dod!=='x'?String(m.dod).match(/\d{4}/)?.[0]:'';
-  const years=(dobY||dodY)?`${dobY||''}${dobY&&dodY?' - ':''}${dodY||''}`:'';
-  const s1=m.spouse1&&m.spouse1.toLowerCase()!=='unmarried'?m.spouse1.trim():'';
-  const s2=m.spouse2?m.spouse2.trim():'';
-  const s3=m.spouse3?m.spouse3.trim():'';
+  const years=(dobY||dodY)?`${dobY||''}${dobY&&dodY?' – ':''}${dodY||''}`:'';
+
+  // All children of this member
+  const allChildren=MEMBERS.filter(x=>String(x.parent)===String(m.id));
+
+  // Helper: strip old *N workaround from spouse names
+  function cleanSpouseName(n){ return n ? n.replace(/\s*\*\d+/g,'').trim() : ''; }
+
+  // Spouses — use stored spouse_kids if set, else fall back to derived count
+  const s1=m.spouse1&&m.spouse1.toLowerCase()!=='unmarried'?cleanSpouseName(m.spouse1):'';
+  const s2=m.spouse2?cleanSpouseName(m.spouse2):'';
+  const s3=m.spouse3?cleanSpouseName(m.spouse3):'';
+
+  function spouseKids(storedKids, spouseName, isLast, prevSpouseNames){
+    // If explicitly stored, use it
+    if(storedKids!==undefined && storedKids!=='' && storedKids!==null)
+      return parseInt(storedKids)||0;
+    // Otherwise derive from children's mother/father field
+    const field = m.gender==='F' ? 'father' : 'mother';
+    const matched = allChildren.filter(c=>
+      spouseName && (c[field]||'').trim().toLowerCase()===spouseName.toLowerCase()
+    );
+    if(isLast && matched.length===0){
+      const claimed=new Set();
+      prevSpouseNames.forEach(ps=>{
+        allChildren.forEach(c=>{
+          if((c[field]||'').trim().toLowerCase()===ps.toLowerCase()) claimed.add(String(c.id));
+        });
+      });
+      return allChildren.filter(c=>!claimed.has(String(c.id))).length;
+    }
+    return matched.length;
+  }
+
   let spousesHTML='';
   if(s1||s2||s3){
-    spousesHTML='<div class="card-spouses">';
-    if(s1)spousesHTML+=`<div class="card-spouse-line"><span class="sp-tilde">~</span><span>${s1}</span></div>`;
-    if(s2)spousesHTML+=`<div class="card-spouse-line"><span class="sp-tilde">~</span><span>${s2}</span></div>`;
-    if(s3)spousesHTML+=`<div class="card-spouse-line"><span class="sp-tilde">~</span><span>${s3}</span></div>`;
+    const spouses=[
+      {name:s1, kids:m.spouse1_kids},
+      {name:s2, kids:m.spouse2_kids},
+      {name:s3, kids:m.spouse3_kids},
+    ].filter(sp=>sp.name);
+    spousesHTML='<div class="card-spouse-block">';
+    spouses.forEach((sp,i)=>{
+      const prev=spouses.slice(0,i).map(x=>x.name);
+      const kc=spouseKids(sp.kids, sp.name, i===spouses.length-1, prev);
+      spousesHTML+=`<div class="card-spouse-row">
+        <div class="card-spouse-name"><span class="sp-tilde">~</span><span>${sp.name}</span></div>
+        <div class="card-spouse-kids">Children &nbsp;<strong>${kc}</strong></div>
+      </div>`;
+    });
     spousesHTML+='</div>';
+  } else {
+    spousesHTML=`<div class="card-spouse-block">
+      <div class="card-spouse-row">
+        <div class="card-spouse-name" style="color:var(--muted);font-style:italic;font-size:.68rem">No spouse recorded</div>
+        <div class="card-spouse-kids">Children &nbsp;<strong>${allChildren.length}</strong></div>
+      </div>
+    </div>`;
   }
+
+  // Parents row — always at bottom above share
   const fatherName=m.father||''; const motherName=m.mother||m.mother2||'';
-  let parentsHTML='';
-  if(fatherName||motherName){
-    parentsHTML=`<hr class="card-divider"/>
+  const parentsHTML=`<hr class="card-divider"/>
     <div class="card-parents">
       <div class="card-parent-item"><span class="cp-label">Father</span><span class="cp-name">${fatherName||'—'}</span></div>
       <div class="card-parent-item right"><span class="cp-label">Mother</span><span class="cp-name">${motherName||'—'}</span></div>
     </div>`;
-  }
-  const children=MEMBERS.filter(x=>String(x.parent)===String(m.id));
-  const childrenHTML=children.length?`<div class="card-children">Children &nbsp;<strong>${children.length}</strong></div>`:'';
-  // circular avatar for directory card
+
+  // Share button — pinned bottom-right, space reserved
+  const shareBtn=`<button class="card-share-btn" onclick="event.stopPropagation();shareProfile(${m.id})" title="Share this profile">&#x21AA; Share</button>`;
+
   const avatarHTML=`<div class="card-avatar ${g}-ph"
-    onclick="event.stopPropagation();openGallery(${m.id})"
-    title="View photos">
+    onclick="event.stopPropagation();openModal(${m.id})"
+    title="View profile">
     ${photo?`<img src="${photo}"/>`:(m.gender==='M'?'&#9794;':'&#9792;')}
   </div>`;
-  return`<div class="card ${g}" onclick="openModal(${m.id})" style="position:relative">
+
+  return`<div class="card ${g}" onclick="openModal(${m.id})" style="position:relative;padding-bottom:32px">
     <button class="card-edit-btn" onclick="event.stopPropagation();openEditModal(${m.id})" title="Edit">&#x270E;</button>
+    ${shareBtn}
     <div class="card-body">
       <div class="card-avatar-row">
         ${avatarHTML}
@@ -2055,7 +2125,7 @@ function cardHTML(m){
           </div>
         </div>
       </div>
-      ${spousesHTML}${parentsHTML}${childrenHTML}
+      ${spousesHTML}${parentsHTML}
     </div>
   </div>`;
 }
@@ -2090,7 +2160,7 @@ function openEditModal(id){
   }
   const overlay=document.getElementById('editOverlay');
   const fields=['name','other_name','gen','gender','dob','dod','location',
-                'father','mother','spouse1','spouse1_marry','spouse1_dob','spouse1_dod','spouse2','spouse2_marry','spouse2_dob','spouse2_dod','spouse3','spouse3_marry','spouse3_dob','spouse3_dod','bio','notes'];
+                'father','mother','spouse1','spouse1_kids','spouse1_marry','spouse1_dob','spouse1_dod','spouse2','spouse2_kids','spouse2_marry','spouse2_dob','spouse2_dod','spouse3','spouse3_kids','spouse3_marry','spouse3_dob','spouse3_dod','bio','notes'];
   document.getElementById('editModalTitle').textContent=`Edit: ${m.name}`;
   document.getElementById('editModalSub').textContent=`ID ${m.id} · Gen ${m.gen||'?'}`;
   document.getElementById('editMemberId').value=m.id;
@@ -2137,7 +2207,7 @@ async function saveEdit(){
   const id=parseInt(document.getElementById('editMemberId').value);
   const m=MEMBERS.find(x=>x.id===id); if(!m)return;
   const fields=['name','other_name','gen','gender','dob','dod','location',
-                'father','mother','spouse1','spouse1_marry','spouse1_dob','spouse1_dod','spouse2','spouse2_marry','spouse2_dob','spouse2_dod','spouse3','spouse3_marry','spouse3_dob','spouse3_dod','bio','notes'];
+                'father','mother','spouse1','spouse1_kids','spouse1_marry','spouse1_dob','spouse1_dod','spouse2','spouse2_kids','spouse2_marry','spouse2_dob','spouse2_dod','spouse3','spouse3_kids','spouse3_marry','spouse3_dob','spouse3_dod','bio','notes'];
   fields.forEach(f=>{
     const el=document.getElementById('ef_'+f);
     if(el) m[f]=el.value.trim();
@@ -2233,19 +2303,22 @@ function openModal(id){
   }
   document.getElementById('mInfoGrid').innerHTML=rows||
     '<div class="ir"><div class="iv" style="color:var(--muted);font-style:italic;">No additional info recorded.</div></div>';
-  const sp1=m.spouse1&&m.spouse1.toLowerCase()!=='unmarried'?m.spouse1.trim():'';
-  const sp2=m.spouse2?m.spouse2.trim():'';
-  const sp3=m.spouse3?m.spouse3.trim():'';
+  const sp1=m.spouse1&&m.spouse1.toLowerCase()!=='unmarried'?m.spouse1.replace(/\s*\*\d+/g,'').trim():'';
+  const sp2=m.spouse2?m.spouse2.replace(/\s*\*\d+/g,'').trim():'';
+  const sp3=m.spouse3?m.spouse3.replace(/\s*\*\d+/g,'').trim():'';
   const s1d=m.spouse1_detail?` <span style="color:var(--muted);font-size:.8rem">· ${m.spouse1_detail}</span>`:'';
   const s2d=m.spouse2_detail?` <span style="color:var(--muted);font-size:.8rem">· ${m.spouse2_detail}</span>`:'';
   const s3d=m.spouse3_detail?` <span style="color:var(--muted);font-size:.8rem">· ${m.spouse3_detail}</span>`:'';
   const s1marry=m.spouse1_marry?` <span style="color:var(--muted);font-size:.8rem">m.${m.spouse1_marry}</span>`:'';  const s1yrs=(m.spouse1_dob||m.spouse1_dod)?` <span style="color:var(--muted);font-size:.8rem">(${m.spouse1_dob||''}${m.spouse1_dob&&m.spouse1_dod?' – ':''}${m.spouse1_dod||''})</span>`:'';
   const s2marry=m.spouse2_marry?` <span style="color:var(--muted);font-size:.8rem">m.${m.spouse2_marry}</span>`:'';  const s2yrs=(m.spouse2_dob||m.spouse2_dod)?` <span style="color:var(--muted);font-size:.8rem">(${m.spouse2_dob||''}${m.spouse2_dob&&m.spouse2_dod?' – ':''}${m.spouse2_dod||''})</span>`:'';
   const s3marry=m.spouse3_marry?` <span style="color:var(--muted);font-size:.8rem">m.${m.spouse3_marry}</span>`:'';  const s3yrs=(m.spouse3_dob||m.spouse3_dod)?` <span style="color:var(--muted);font-size:.8rem">(${m.spouse3_dob||''}${m.spouse3_dob&&m.spouse3_dod?' – ':''}${m.spouse3_dod||''})</span>`:'';
+  const s1kids=(m.spouse1_kids!==undefined&&m.spouse1_kids!=='')?` <span style="background:var(--mbg);color:var(--mb);font-size:.72rem;padding:1px 7px;border-radius:10px;font-weight:600;margin-left:6px">${m.spouse1_kids} children</span>`:'';
+  const s2kids=(m.spouse2_kids!==undefined&&m.spouse2_kids!=='')?` <span style="background:var(--mbg);color:var(--mb);font-size:.72rem;padding:1px 7px;border-radius:10px;font-weight:600;margin-left:6px">${m.spouse2_kids} children</span>`:'';
+  const s3kids=(m.spouse3_kids!==undefined&&m.spouse3_kids!=='')?` <span style="background:var(--mbg);color:var(--mb);font-size:.72rem;padding:1px 7px;border-radius:10px;font-weight:600;margin-left:6px">${m.spouse3_kids} children</span>`:'';
   let sp='';
-  if(sp1)sp+=`<div class="sp s1"><div class="sl">Spouse 1</div>${sp1}${s1d}${s1marry}${s1yrs}</div>`;
-  if(sp2)sp+=`<div class="sp s2"><div class="sl">Spouse 2</div>${sp2}${s2d}${s2marry}${s2yrs}</div>`;
-  if(sp3)sp+=`<div class="sp s3"><div class="sl">Spouse 3</div>${sp3}${s3d}${s3marry}${s3yrs}</div>`;
+  if(sp1)sp+=`<div class="sp s1"><div class="sl">Spouse 1</div>${sp1}${s1kids}${s1d}${s1marry}${s1yrs}</div>`;
+  if(sp2)sp+=`<div class="sp s2"><div class="sl">Spouse 2</div>${sp2}${s2kids}${s2d}${s2marry}${s2yrs}</div>`;
+  if(sp3)sp+=`<div class="sp s3"><div class="sl">Spouse 3</div>${sp3}${s3kids}${s3d}${s3marry}${s3yrs}</div>`;
   if(!sp1&&m.spouse1&&m.spouse1.toLowerCase()==='unmarried')
     sp+=`<div class="sp s1"><div class="sl">Marital Status</div>Unmarried</div>`;
   document.getElementById('mSpouses').innerHTML=sp;
@@ -2255,6 +2328,9 @@ function openModal(id){
   buildCarousel(MEMBERS.filter(x=>String(x.parent)===String(m.id)));
   // Edit button in modal
   document.getElementById('modalEditBtn').onclick=()=>{closeModal();openEditModal(id);};
+  document.getElementById('modalEditBtn').textContent = (currentRole==='admin'||currentRole==='editor') ? '✎ Edit this profile' : '✎ Suggest a Change';
+  // Share button
+  document.getElementById('modalShareBtn').onclick=()=>shareProfile(id);
   document.getElementById('viewModal').classList.remove('hidden');
   document.body.style.overflow='hidden';
 }
@@ -2812,7 +2888,7 @@ function allDescendants(rootId){
 function descCardHTML(m,focusId,ancestorIds){
   const g=gc(m.gender);
   const photo=m.photos&&m.photos.length?m.photos[0]:m.photo||'';
-  const ph=`<div class="dc-avatar ${g}-ph" onclick="event.stopPropagation();openGallery(${m.id})">
+  const ph=`<div class="dc-avatar ${g}-ph">
     ${photo?`<img src="${photo}"/>`:(m.gender==='M'?'&#9794;':'&#9792;')}
   </div>`;
   const dobY=m.dob?String(m.dob).match(/\d{4}/)?.[0]:'';
@@ -2834,7 +2910,7 @@ function focusCardHTML(m){
   const g=gc(m.gender);
   const photo=m.photos&&m.photos.length?m.photos[0]:m.photo||'';
   const photoCount=m.photos&&m.photos.length?m.photos.length:m.photo?1:0;
-  const ph=`<div class="fc-avatar-wrap" onclick="openGallery(${m.id})">
+  const ph=`<div class="fc-avatar-wrap" onclick="openModal(${m.id})" title="View full profile">
     <div class="fc-avatar ${g}-ph">
       ${photo?`<img src="${photo}"/>`:(m.gender==='M'?'&#9794;':'&#9792;')}
     </div>
@@ -2855,6 +2931,9 @@ function focusCardHTML(m){
   return`<div class="focus-card ${g}">
     <div class="fc-header">
       <div class="fc-meta-bar ${g}"><span>Gen ${m.gen||'?'}</span><span>ID ${m.id}</span></div>
+      <div style="display:flex;justify-content:flex-end;padding:5px 10px 0">
+        <button class="card-share-btn inline" onclick="event.stopPropagation();shareProfile(${m.id})" title="Share this profile">&#x21AA; Share</button>
+      </div>
       ${ph}
     </div>
     <div class="fc-body">
@@ -3329,22 +3408,43 @@ async function loadSuggestions(){
     if(!suggestions.length){
       suggList.innerHTML='<div class="dt-placeholder">No suggestions yet.</div>';
     } else {
-      suggList.innerHTML = suggestions.map(s=>`
-        <div class="sugg-item ${s.status||'pending'}" id="sugg_${s.docId}">
+      suggList.innerHTML = suggestions.map(s=>{
+        // Build body: structured rows if available, else plain message
+        let body='';
+        if(s.changes && s.changes.length){
+          body=`<table style="width:100%;border-collapse:collapse;font-size:.78rem;margin-bottom:6px">
+            <thead><tr style="background:var(--bg)">
+              <th style="padding:4px 8px;text-align:left;color:var(--muted);font-weight:600">Field</th>
+              <th style="padding:4px 8px;text-align:left;color:var(--muted);font-weight:600">Currently</th>
+              <th style="padding:4px 8px;text-align:left;color:var(--muted);font-weight:600">Suggested</th>
+            </tr></thead><tbody>
+            ${s.changes.map(r=>`<tr style="border-top:1px solid var(--border)">
+              <td style="padding:4px 8px;font-weight:500">${r.field||''}</td>
+              <td style="padding:4px 8px;color:var(--muted)">${r.current||''}</td>
+              <td style="padding:4px 8px;color:#2a6a3a;font-weight:500">${r.suggested||''}</td>
+            </tr>`).join('')}
+          </tbody></table>`;
+          if(s.notes) body+=`<div style="font-size:.77rem;color:var(--muted);font-style:italic">Notes: ${s.notes}</div>`;
+        } else {
+          body=`<div class="si-body">${s.details||s.message||''}</div>`;
+        }
+        return `<div class="sugg-item ${s.status||'pending'}" id="sugg_${s.docId}">
           <div class="si-header">
             <div>
               <span class="si-name">${s.yourName||'Anonymous'}</span>
               <span class="si-type">${s.type||'general'}</span>
               ${s.memberName?`<span style="font-size:.75rem;color:var(--muted);margin-left:6px">re: ${s.memberName}</span>`:''}
+              ${s.memberId?`<button onclick="openModal(${s.memberId})" style="background:transparent;border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:.68rem;cursor:pointer;color:var(--muted);margin-left:6px">View Profile</button>`:''}
             </div>
             <div class="si-meta">${s.submitted?new Date(s.submitted).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''} ${s.contact?'· '+s.contact:''}</div>
           </div>
-          <div class="si-body">${s.details||''}</div>
+          ${body}
           ${(!s.status||s.status==='pending')?`<div class="si-actions">
             <button class="si-btn approve" onclick="actionSugg('${s.docId}','done')">✓ Mark Done</button>
             <button class="si-btn dismiss" onclick="actionSugg('${s.docId}','dismissed')">✗ Dismiss</button>
           </div>`:`<div style="font-size:.72rem;color:var(--muted)">${s.status==='done'?'✓ Done':'✗ Dismissed'}</div>`}
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
   } catch(e){ console.error('loadSuggestions error:', e); }
 }
@@ -3547,13 +3647,78 @@ function showPhotoGuidelines(){
 window.showPhotoGuidelines=showPhotoGuidelines;
 
 // ── Suggest a Change (Viewer) ──
+
+// Field options with labels
+const SC_FIELDS = [
+  {v:'name',        l:'Name'},
+  {v:'other_name',  l:'Pet / Other Name'},
+  {v:'dob',         l:'Date of Birth'},
+  {v:'dod',         l:'Date of Death / Alive'},
+  {v:'gender',      l:'Gender'},
+  {v:'gen',         l:'Generation'},
+  {v:'father',      l:'Father'},
+  {v:'mother',      l:'Mother'},
+  {v:'location',    l:'Location'},
+  {v:'spouse1',     l:'Spouse 1 Name'},
+  {v:'spouse1_detail',l:'Spouse 1 Details'},
+  {v:'spouse2',     l:'Spouse 2 Name'},
+  {v:'spouse2_detail',l:'Spouse 2 Details'},
+  {v:'bio',         l:'Biography'},
+  {v:'notes',       l:'Notes'},
+  {v:'photo',       l:'Photo (describe)'},
+  {v:'other',       l:'Other (describe in notes)'},
+];
+
+function scFieldOptions(selected=''){
+  return SC_FIELDS.map(f=>`<option value="${f.v}"${selected===f.v?' selected':''}>${f.l}</option>`).join('');
+}
+
+function addSuggestRow(field='', currentVal='', suggestedVal=''){
+  const container = document.getElementById('sc_change_rows');
+  const rowId = 'scrow_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  const div = document.createElement('div');
+  div.id = rowId;
+  div.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);align-items:center';
+  div.innerHTML=`
+    <select style="font-family:'Jost',sans-serif;font-size:.8rem;padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text)" onchange="scUpdateCurrent(this,'${rowId}')">
+      <option value="">— choose field —</option>
+      ${scFieldOptions(field)}
+    </select>
+    <input class="fi" style="font-size:.8rem;padding:5px 8px" placeholder="(currently…)" value="${currentVal.replace(/"/g,'&quot;')}" readonly title="Current value — auto-filled when you pick a field"/>
+    <input class="fi" style="font-size:.8rem;padding:5px 8px" placeholder="Correct value…" value="${suggestedVal.replace(/"/g,'&quot;')}"/>
+    <button onclick="document.getElementById('${rowId}').remove()" style="background:transparent;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:0 4px" title="Remove row">✕</button>`;
+  container.appendChild(div);
+  // If field pre-set, populate current value
+  if(field) scUpdateCurrentByRowId(rowId, field);
+}
+window.addSuggestRow = addSuggestRow;
+
+function scUpdateCurrent(selectEl, rowId){
+  scUpdateCurrentByRowId(rowId, selectEl.value);
+}
+window.scUpdateCurrent = scUpdateCurrent;
+
+function scUpdateCurrentByRowId(rowId, fieldKey){
+  const row = document.getElementById(rowId);
+  if(!row) return;
+  const memberId = parseInt(document.getElementById('sc_member_id').value);
+  const m = MEMBERS.find(x=>x.id===memberId);
+  if(!m) return;
+  const currentInput = row.querySelectorAll('input')[0];
+  const val = m[fieldKey];
+  currentInput.value = (val && String(val).trim()) ? String(val) : '(blank)';
+}
+
 function openSuggestChange(id){
   const m=MEMBERS.find(x=>x.id===id); if(!m)return;
   document.getElementById('sc_member_id').value=id;
   document.getElementById('sc_member_name').innerHTML=`<strong>${m.name}</strong> &nbsp;·&nbsp; ID ${m.id} &nbsp;·&nbsp; Gen ${m.gen||'?'}`;
   document.getElementById('sc_your_name').value='';
   document.getElementById('sc_your_contact').value='';
-  document.getElementById('sc_message').value='';
+  document.getElementById('sc_notes').value='';
+  // Clear and seed one blank row
+  document.getElementById('sc_change_rows').innerHTML='';
+  addSuggestRow();
   document.getElementById('suggestChangeModal').classList.remove('hidden');
 }
 window.openSuggestChange=openSuggestChange;
@@ -3562,10 +3727,27 @@ async function submitSuggestChange(){
   const id=parseInt(document.getElementById('sc_member_id').value);
   const yourName=document.getElementById('sc_your_name').value.trim();
   const contact=document.getElementById('sc_your_contact').value.trim();
-  const message=document.getElementById('sc_message').value.trim();
+  const notes=document.getElementById('sc_notes').value.trim();
   const m=MEMBERS.find(x=>x.id===id);
   if(!yourName){showToast('Please enter your name','info');return;}
-  if(!message){showToast('Please describe the change you are suggesting','info');return;}
+
+  // Collect rows
+  const rows=[];
+  document.querySelectorAll('#sc_change_rows > div').forEach(row=>{
+    const sel=row.querySelector('select');
+    const inputs=row.querySelectorAll('input');
+    const field=sel?sel.value:'';
+    const current=inputs[0]?inputs[0].value:'';
+    const suggested=inputs[1]?inputs[1].value.trim():'';
+    if(field && suggested) rows.push({field,current,suggested});
+  });
+
+  if(rows.length===0 && !notes){showToast('Please add at least one suggested change','info');return;}
+
+  // Format a readable message for the email/admin panel
+  const message = rows.map(r=>`• ${r.field}: "${r.current}" → "${r.suggested}"`).join('\n')
+    + (notes ? `\n\nNotes: ${notes}` : '');
+
   try{
     const {collection:col,addDoc}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     await addDoc(col(db,'submissions'),{
@@ -3574,12 +3756,14 @@ async function submitSuggestChange(){
       contact,
       memberName:m?m.name:'',
       memberId:id,
+      changes:rows,
+      notes,
       message,
       submitted:new Date().toISOString(),
       status:'pending'
     });
     document.getElementById('suggestChangeModal').classList.add('hidden');
-    showToast('Thank you — your suggestion has been sent to the Administrator','success');
+    showToast('Thank you — your suggestions have been sent to the Administrator','success');
     // Email notification
     try{
       await emailjs.send('service_y7oeucs','template_70axout',{
@@ -3594,6 +3778,41 @@ async function submitSuggestChange(){
   }
 }
 window.submitSuggestChange=submitSuggestChange;
+
+// ── Share Profile ──
+function shareProfile(id){
+  const m=MEMBERS.find(x=>x.id===id); if(!m) return;
+  const url=`https://www.powathikunnel.com?member=${id}`;
+  const text=`Hi! We've created a Powathikunnel Family Directory and found your profile. Please check if the details are correct:\n${url}`;
+  // Try Web Share API first (mobile)
+  if(navigator.share){
+    navigator.share({title:`${m.name} — Powathikunnel Family`,text,url}).catch(()=>{});
+    return;
+  }
+  // Fallback: show a mini popup with copy + WhatsApp links
+  const existing=document.getElementById('sharePopup');
+  if(existing) existing.remove();
+  const popup=document.createElement('div');
+  popup.id='sharePopup';
+  popup.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    background:var(--surface);border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.25);
+    padding:24px;z-index:9999;width:360px;max-width:90vw;font-family:'Jost',sans-serif`;
+  popup.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:1rem;font-weight:600;color:var(--text)">📤 Share Profile</div>
+      <span onclick="document.getElementById('sharePopup').remove()" style="cursor:pointer;color:var(--muted);font-size:1.2rem">✕</span>
+    </div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:10px">Send this link so they can view and verify their profile:</div>
+    <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.78rem;word-break:break-all;color:var(--text);margin-bottom:14px">${url}</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="navigator.clipboard.writeText('${url}').then(()=>showToast('Link copied!','success'))" style="flex:1;padding:9px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.83rem;color:var(--text)">📋 Copy Link</button>
+      <a href="https://wa.me/?text=${encodeURIComponent(text)}" target="_blank" style="flex:1;padding:9px;background:#25D366;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.83rem;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center">💬 WhatsApp</a>
+    </div>`;
+  document.body.appendChild(popup);
+  // Click outside to close
+  setTimeout(()=>document.addEventListener('click',function h(e){if(!popup.contains(e.target)){popup.remove();document.removeEventListener('click',h);}},true),100);
+}
+window.shareProfile=shareProfile;
 
 // ── Toggle chapter expand/collapse ──
 function toggleChapter(id){
@@ -3773,32 +3992,49 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 <!-- SUGGEST A CHANGE MODAL (Viewer only) -->
 <div class="modal-overlay hidden" id="suggestChangeModal" onclick="if(event.target===this)this.classList.add('hidden')">
-  <div class="modal" style="max-width:520px">
+  <div class="modal" style="max-width:600px">
     <button class="close-btn" onclick="document.getElementById('suggestChangeModal').classList.add('hidden')">✕</button>
     <div style="background:linear-gradient(135deg,#1a120a,#2e1f0e);padding:20px 24px 16px;border-radius:16px 16px 0 0">
       <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:#f5ead8;letter-spacing:1px">✏ Suggest a Change</div>
-      <div style="font-size:.75rem;color:#b09070;margin-top:4px">Your suggestion will be reviewed by the Administrator before any changes are made.</div>
+      <div style="font-size:.75rem;color:#b09070;margin-top:4px">Add one or more rows below — each row is one correction. Your suggestions will be reviewed by the Administrator.</div>
     </div>
     <div class="modal-body">
       <input type="hidden" id="sc_member_id"/>
-      <div style="background:var(--card-bg);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.82rem;color:var(--text)" id="sc_member_name"></div>
-      <div class="form-grid">
-        <div class="fg full">
+      <div style="background:var(--mbg);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.82rem;color:var(--text);font-weight:500" id="sc_member_name"></div>
+
+      <!-- Submitter info -->
+      <div class="form-grid" style="margin-bottom:14px">
+        <div class="fg">
           <label class="fl">Your Name *</label>
           <input class="fi" id="sc_your_name" placeholder="Your full name"/>
         </div>
-        <div class="fg full">
+        <div class="fg">
           <label class="fl">Your Contact (email / phone)</label>
           <input class="fi" id="sc_your_contact" placeholder="So we can follow up if needed"/>
         </div>
-        <div class="fg full">
-          <label class="fl">What would you like to change? *</label>
-          <textarea class="fi" id="sc_message" rows="4" placeholder="Please describe the correction or update clearly. Include the field name and the correct information. e.g. Date of Birth should be 1965, not 1955." style="resize:vertical"></textarea>
+      </div>
+
+      <!-- Change rows table -->
+      <div style="font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Changes to suggest</div>
+      <div style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;background:var(--bg);padding:8px 12px;font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;gap:8px;border-bottom:1px solid var(--border)">
+          <span>Field</span><span>Current Value</span><span>Suggested Value</span><span></span>
+        </div>
+        <div id="sc_change_rows">
+          <!-- rows inserted here by JS -->
         </div>
       </div>
+      <button onclick="addSuggestRow()" style="background:transparent;border:1.5px dashed var(--border);color:var(--muted);border-radius:8px;padding:7px 16px;font-family:'Jost',sans-serif;font-size:.82rem;cursor:pointer;width:100%;margin-bottom:14px;transition:all .15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">＋ Add another change</button>
+
+      <!-- Free-text notes -->
+      <div class="fg full" style="margin-bottom:14px">
+        <label class="fl">Additional Notes (optional)</label>
+        <textarea class="fi" id="sc_notes" rows="2" placeholder="Anything that doesn't fit the table above — e.g. 'the photo shown is not this person'" style="resize:vertical"></textarea>
+      </div>
+
       <button onclick="submitSuggestChange()"
-        style="width:100%;margin-top:14px;padding:10px;background:var(--gold);color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer">
-        Submit Suggestion
+        style="width:100%;padding:10px;background:var(--gold);color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer">
+        📨 Submit Suggestions
       </button>
     </div>
   </div>
