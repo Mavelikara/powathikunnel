@@ -1128,12 +1128,13 @@ function startRealtimeSync(){onSnapshot(collection(db,COLL),e=>{if(e.docChanges(
 </script>
 
 <script type="module">
+
+
 /* ============================================================
    GeoNames Location Autocomplete
    Uses the free GeoNames API (username: powathikunnel)
    Attached to: #fn_location (Add form) and #ef_location (Edit modal)
    ============================================================ */
-(function(){
   const GEO_USER = 'scriptio'; // GeoNames username — replace with your own for production
   let _geoTimer = null;
   let _geoActive = null; // currently open dropdown container
@@ -1269,7 +1270,7 @@ function startRealtimeSync(){onSnapshot(collection(db,COLL),e=>{if(e.docChanges(
   document.addEventListener('mousedown', e=>{
     if(_geoActive && !_geoActive.contains(e.target)) closeAll();
   });
-})();
+
 
 function openAddRelationSheet(id){showToast('Add relation — coming soon','info');}
 </script>
