@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Family Record Submission — Powathikunnel Family Directory</title>
+<style>
+:root {
+  --navy:#1F3864; --gold:#C9A84C; --light:#F4F7FB; --white:#FFFFFF;
+  --border:#D0D9E8; --text:#1A252F; --muted:#6B7C93;
+  --green:#1D7A4E; --red:#A32D2D;
+  --sid:#1A5276; --sbirth:#117A65; --sdeath:#4A235A;
+  --ssp1:#784212; --ssp2:#6C1236; --srel:#1F618D; --slife:#1D6348;
+  --quick-bg:#D4691E; --full-bg:#2E7D32;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Calibri,sans-serif;background:var(--light);color:var(--text);font-size:14px;}
+
+.site-header{background:var(--navy);color:var(--white);padding:14px 24px;}
+.logo{font-size:20px;font-weight:700;letter-spacing:1px;color:var(--gold);}
+.subtitle{font-size:12px;opacity:.75;margin-top:2px;}
+
+.page{max-width:860px;margin:0 auto;padding:28px 16px 60px;}
+.page-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.page-desc{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:24px;}
+.info-box{background:#EBF5FB;border-left:4px solid var(--navy);border-radius:0 6px 6px 0;
+  padding:10px 14px;font-size:12px;color:#1A5276;line-height:1.6;margin-bottom:20px;}
+
+/* ── OPENING QUESTION ── */
+.opening-card{background:var(--white);border:2px solid var(--navy);border-radius:12px;
+  padding:24px;margin-bottom:20px;}
+.opening-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:16px;}
+.opening-options{display:flex;gap:12px;flex-wrap:wrap;}
+.opening-btn{flex:1;min-width:180px;padding:16px 20px;border:2px solid var(--border);
+  border-radius:10px;background:var(--white);cursor:pointer;text-align:left;
+  transition:all .2s;display:flex;align-items:center;gap:12px;}
+.opening-btn:hover{border-color:var(--navy);background:#F0F4FF;}
+.opening-btn.selected-myself{border-color:#1A5276;background:#EBF5FB;}
+.opening-btn.selected-other{border-color:#784212;background:#FEF9E7;}
+.opening-btn .ob-icon{font-size:28px;flex-shrink:0;}
+.opening-btn .ob-label{font-size:14px;font-weight:700;color:var(--text);}
+.opening-btn .ob-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ── STEP CARDS (relationship, line) ── */
+.step-card{background:var(--white);border:1px solid var(--border);border-radius:10px;
+  padding:20px;margin-bottom:16px;display:none;}
+.step-card.visible{display:block;}
+.step-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;
+  text-transform:uppercase;letter-spacing:.4px;}
+
+/* relationship pills */
+.rel-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.rel-btn{padding:8px 16px;border:1.5px solid var(--border);border-radius:99px;
+  background:var(--white);font-size:13px;cursor:pointer;color:var(--text);
+  transition:all .15s;font-family:inherit;}
+.rel-btn:hover{border-color:var(--navy);background:#F0F4FF;}
+.rel-btn.selected{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.rel-group-label{width:100%;font-size:11px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.4px;margin-top:8px;margin-bottom:2px;}
+.rel-group-label:first-child{margin-top:0;}
+
+/* line pills */
+.line-grid{display:flex;flex-wrap:wrap;gap:10px;}
+.line-btn{padding:10px 20px;border:2px solid var(--border);border-radius:8px;
+  background:var(--white);font-size:13px;font-weight:600;cursor:pointer;
+  color:var(--text);transition:all .15s;font-family:inherit;}
+.line-btn:hover{border-color:var(--navy);background:#F0F4FF;}
+.line-btn.selected{background:var(--navy);color:var(--white);border-color:var(--navy);}
+
+/* ── MODE TOGGLE ── */
+.mode-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:8px;}
+.mode-toggle{display:flex;gap:10px;margin-bottom:10px;}
+.mode-btn{display:flex;align-items:center;gap:8px;padding:11px 22px;font-size:14px;
+  font-weight:700;border:none;border-radius:8px;cursor:pointer;
+  background:#EAECEF;color:#555E6B;transition:all .2s;}
+.mode-btn .mode-sub{font-size:11px;font-weight:400;display:block;margin-top:1px;opacity:.8;}
+.mode-btn.active-quick{background:var(--quick-bg);color:#fff;
+  box-shadow:0 3px 10px rgba(212,105,30,.35);transform:translateY(-1px);}
+.mode-btn.active-full{background:var(--full-bg);color:#fff;
+  box-shadow:0 3px 10px rgba(46,125,50,.35);transform:translateY(-1px);}
+.mode-desc{font-size:12px;margin-bottom:20px;line-height:1.5;padding:8px 12px;
+  border-radius:6px;border-left:3px solid;}
+.mode-desc.quick{background:#FEF3EA;color:#7A3A08;border-color:var(--quick-bg);}
+.mode-desc.full{background:#EBF5EB;color:#1B4D1E;border-color:var(--full-bg);}
+
+/* ── SECTION CARDS ── */
+.section-card{background:var(--white);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:16px;overflow:hidden;}
+.section-head{display:flex;align-items:center;gap:10px;padding:11px 18px;
+  cursor:pointer;user-select:none;}
+.sec-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:14px;color:var(--white);flex-shrink:0;}
+.sec-title{font-weight:600;font-size:13px;color:var(--white);flex:1;}
+.sec-toggle{color:var(--white);font-size:16px;transition:transform .2s;}
+.sec-toggle.closed{transform:rotate(-90deg);}
+.section-body{padding:18px;border-top:1px solid var(--border);
+  display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;}
+.section-body.single{grid-template-columns:1fr;}
+@media(max-width:600px){.section-body{grid-template-columns:1fr;}}
+
+.sh-sub{background:var(--navy);}
+.sh-id{background:var(--sid);}
+.sh-birth{background:var(--sbirth);}
+.sh-death{background:var(--sdeath);}
+.sh-sp1{background:var(--ssp1);}
+.sh-sp2{background:var(--ssp2);}
+.sh-rel{background:var(--srel);}
+.sh-life{background:var(--slife);}
+
+/* ── FIELDS ── */
+.field{display:flex;flex-direction:column;gap:4px;}
+.field.full{grid-column:span 2;}
+@media(max-width:600px){.field.full{grid-column:span 1;}}
+label{font-size:12px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.4px;}
+label .req{color:#C0392B;margin-left:2px;}
+label .opt{color:#AAB;font-weight:400;font-size:11px;
+  text-transform:none;letter-spacing:0;margin-left:4px;}
+input[type=text],input[type=email],input[type=tel],
+input[type=number],select,textarea{
+  width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;
+  font-size:13px;font-family:inherit;color:var(--text);
+  background:#FAFCFF;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--navy);background:var(--white);}
+textarea{resize:vertical;min-height:80px;}
+.hint{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+
+/* ── SUBMITTER SECTION ── */
+.submitter-card{background:var(--white);border:2px solid var(--gold);
+  border-radius:10px;padding:20px;margin-bottom:16px;display:none;}
+.submitter-card.visible{display:block;}
+.submitter-title{font-size:13px;font-weight:700;color:#7A5C00;
+  margin-bottom:14px;text-transform:uppercase;letter-spacing:.4px;}
+
+/* ── SUBMIT ── */
+.submit-area{background:var(--white);border:1px solid var(--border);
+  border-radius:10px;padding:20px 24px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.btn-submit{background:var(--navy);color:var(--white);border:none;
+  padding:11px 28px;border-radius:7px;font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .2s;}
+.btn-submit:hover{background:#162C52;}
+.btn-submit:disabled{background:#AAB;cursor:not-allowed;}
+.submit-note{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ── CONFIRMATION ── */
+#confirmation{display:none;background:#EAF6EF;border:1.5px solid var(--green);
+  border-radius:10px;padding:28px;text-align:center;margin-bottom:24px;}
+.conf-icon{font-size:40px;margin-bottom:10px;}
+.conf-title{font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px;}
+.conf-desc{font-size:13px;color:#1D7A4E;line-height:1.6;margin-bottom:18px;}
+.btn-another{background:var(--green);color:var(--white);border:none;
+  padding:10px 24px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;}
+
+/* ── VALIDATION ── */
+.field-error{border-color:var(--red)!important;}
+.error-msg{font-size:11px;color:var(--red);margin-top:2px;}
+.step-error{font-size:12px;color:var(--red);margin-top:8px;display:none;}
+
+footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
+  border-top:1px solid var(--border);margin-top:40px;}
+
+/* ── SCHOOL ROWS ── */
+.school-row{ margin-bottom:8px; }
+.school-row-inner{display:flex;align-items:center;gap:8px;}
+.school-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;}
+.school-fields{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:600px){.school-fields{grid-template-columns:1fr;}}
+.school-name-input,.school-loc-input{width:100%;padding:8px 10px;border:1px solid var(--border);
+  border-radius:6px;font-size:13px;font-family:inherit;color:var(--text);background:#FAFCFF;}
+.school-name-input:focus,.school-loc-input:focus{outline:none;border-color:var(--navy);background:#fff;}
+.school-remove-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);
+  background:#fff;color:var(--muted);cursor:pointer;font-size:14px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:inherit;}
+.school-remove-btn:hover{border-color:var(--red);color:var(--red);background:#FDEDEC;}
+.school-add-btn{margin-top:6px;padding:7px 14px;border:1.5px dashed var(--border);
+  border-radius:7px;background:#fff;font-size:12px;font-weight:600;color:var(--navy);
+  cursor:pointer;transition:all .15s;font-family:inherit;}
+.school-add-btn:hover{border-color:var(--navy);background:#EBF5FB;}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="logo">Powathikunnel</div>
+  <div class="subtitle">Family Directory — Record Submission</div>
+</div>
+
+<div class="page">
+  <div class="page-title">Family Record Submission</div>
+  <div class="page-desc">
+    Add a family member to the Powathikunnel Family Directory.
+    Fill in as much as you know — Jacob Oommen will review everything before it is added to the tree.
+  </div>
+
+  <div class="info-box">
+    ℹ &nbsp;<strong>Middle Name</strong> = father's first name (e.g. Suja <strong>Eapen</strong> George).
+    Please include this wherever possible — many people share the same first name and the middle name
+    helps Jacob identify each person correctly in the tree.
+  </div>
+
+  <!-- CONFIRMATION -->
+  <div id="confirmation">
+    <div class="conf-icon">✅</div>
+    <div class="conf-title" id="conf-title">Record submitted!</div>
+    <div class="conf-desc" id="conf-desc"></div>
+    <button class="btn-another" onclick="resetForm()">+ Add Another Person</button>
+  </div>
+
+  <form id="mainForm" novalidate>
+
+    <!-- ══ STEP 1: OPENING QUESTION ══════════════════════════════════════════ -->
+    <div class="opening-card">
+      <div class="opening-title">Who are you adding to the family tree?</div>
+      <div class="opening-options">
+        <button type="button" class="opening-btn" id="btn-myself" onclick="setWho('myself')">
+          <div class="ob-icon">🙋</div>
+          <div>
+            <div class="ob-label">Myself</div>
+            <div class="ob-sub">I am adding my own record</div>
+          </div>
+        </button>
+        <button type="button" class="opening-btn" id="btn-other" onclick="setWho('other')">
+          <div class="ob-icon">👥</div>
+          <div>
+            <div class="ob-label">Someone else</div>
+            <div class="ob-sub">I am adding another family member</div>
+          </div>
+        </button>
+      </div>
+      <div class="step-error" id="who-error">Please select who you are adding.</div>
+    </div>
+
+    <!-- ══ STEP 2: RELATIONSHIP (someone else only) ═══════════════════════════ -->
+    <div class="step-card" id="step-relationship">
+      <div class="step-title">Your relationship to this person</div>
+      <div class="rel-grid">
+        <div class="rel-group-label">Direct family</div>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Father</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Mother</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Son</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Daughter</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Brother</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Sister</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Spouse</button>
+        <div class="rel-group-label">Extended family</div>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">First Cousin</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Second Cousin</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Uncle</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Aunt</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Nephew</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Niece</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Grandparent</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Grandchild</button>
+        <div class="rel-group-label">Other</div>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Distant Relative</button>
+        <button type="button" class="rel-btn" onclick="setRelationship(this)">Other</button>
+      </div>
+      <div class="step-error" id="rel-error">Please select your relationship to this person.</div>
+    </div>
+
+    <!-- ══ STEP 3: FAMILY LINE ════════════════════════════════════════════════ -->
+    <div class="step-card" id="step-line">
+      <div class="step-title">Which family line does this person belong to?</div>
+      <div class="line-grid">
+        <button type="button" class="line-btn" onclick="setLine(this)">Mallappally Varghese</button>
+        <button type="button" class="line-btn" onclick="setLine(this)">Ulahannan Ittyavirah</button>
+        <button type="button" class="line-btn" onclick="setLine(this)">Not Sure</button>
+      </div>
+      <div class="step-error" id="line-error">Please select a family line.</div>
+    </div>
+
+    <!-- ══ MODE TOGGLE ════════════════════════════════════════════════════════ -->
+    <div id="form-sections" style="display:none;">
+
+      <div class="mode-label">How much information do you have?</div>
+      <div class="mode-toggle">
+        <button type="button" class="mode-btn active-quick" id="btn-quick" onclick="setMode('quick')">
+          <span>⚡</span>
+          <span>Quick Entry<span class="mode-sub">Essential fields only</span></span>
+        </button>
+        <button type="button" class="mode-btn" id="btn-full" onclick="setMode('full')">
+          <span>📋</span>
+          <span>Full Entry<span class="mode-sub">All fields — complete records</span></span>
+        </button>
+      </div>
+      <div class="mode-desc quick" id="mode-desc">
+        <strong>Quick Entry selected</strong> — only essential fields are shown.
+        Switch to <strong>Full Entry</strong> if you have more details to add.
+      </div>
+
+      <!-- 1: IDENTITY -->
+      <div class="section-card">
+        <div class="section-head sh-id" onclick="toggleSec(this)">
+          <div class="sec-icon">🪪</div><div class="sec-title">① Identity</div><div class="sec-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field"><label>First Name <span class="req">*</span></label><input type="text" id="first_name" placeholder="Given / baptismal name"/></div>
+          <div class="field"><label>Middle Name <span class="opt">(father's first name)</span></label><input type="text" id="middle_name" placeholder="e.g. Eapen, Oommen"/></div>
+          <div class="field"><label>House Name <span class="req">*</span></label><input type="text" id="house_name" placeholder="Patrilineal house name"/></div>
+          <div class="field"><label>Pet Name <span class="opt">(nickname)</span></label><input type="text" id="pet_name" placeholder="e.g. Babu, Mol, Kuttan"/></div>
+          <div class="field"><label>Gender</label>
+            <select id="gender"><option value="">— Select —</option><option>Male</option><option>Female</option></select>
+          </div>
+          <div class="field"><label>Birth Order <span class="opt">(among siblings)</span></label>
+            <select id="birth_order"><option value="">— Select —</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option>
+              <option>5</option><option>6</option><option>7</option><option>8</option>
+              <option>9</option><option>10</option><option>11</option><option>12</option>
+              <option>13</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: BIRTH -->
+      <div class="section-card">
+        <div class="section-head sh-birth" onclick="toggleSec(this)">
+          <div class="sec-icon">🌿</div><div class="sec-title">② Birth &amp; Family Origin</div><div class="sec-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field"><label>Father's Name</label><input type="text" id="father" placeholder="Full name"/></div>
+          <div class="field"><label>Mother's Name</label><input type="text" id="mother" placeholder="First Name and Maiden Name only"/></div>
+          <div class="field"><label>Date of Birth</label><input type="text" id="dob" placeholder="DD-MMM-YYYY e.g. 12-Jun-1965"/></div>
+          <div class="field qh"><label>Place of Birth</label><input type="text" id="place_of_birth" placeholder="Town / City, Country"/></div>
+          <div class="field qh"><label>Baptised Church</label><input type="text" id="baptised_church" placeholder="Church name and location"/></div>
+        </div>
+      </div>
+
+      <!-- 3: DEATH -->
+      <div class="section-card">
+        <div class="section-head sh-death" onclick="toggleSec(this)">
+          <div class="sec-icon">✝</div><div class="sec-title">③ Life Status &amp; Death</div><div class="sec-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field"><label>Life Status <span class="req">*</span></label>
+            <select id="life_status"><option value="">— Select —</option><option>Alive</option><option>Deceased</option><option>Unknown</option></select>
+          </div>
+          <div class="field qh"><label>Date of Death</label><input type="text" id="dod" placeholder="DD-MMM-YYYY"/></div>
+          <div class="field qh"><label>Place of Death</label><input type="text" id="place_of_death" placeholder="Town / City, Country"/></div>
+          <div class="field qh"><label>Burial Place</label><input type="text" id="burial_place" placeholder="Cemetery / Church and location"/></div>
+        </div>
+      </div>
+
+      <!-- 4: SPOUSE 1 -->
+      <div class="section-card">
+        <div class="section-head sh-sp1" onclick="toggleSec(this)">
+          <div class="sec-icon">💍</div><div class="sec-title">④ Spouse</div><div class="sec-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field"><label>Spouse Name</label><input type="text" id="sp1_name" placeholder="Full name"/></div>
+          <div class="field qh"><label>Spouse Pet Name</label><input type="text" id="sp1_pet" placeholder="Nickname"/></div>
+          <div class="field qh"><label>Spouse House Name</label><input type="text" id="sp1_house"/></div>
+          <div class="field qh"><label>Spouse Home Town</label><input type="text" id="sp1_hometown" placeholder="Town / City, Country"/></div>
+          <div class="field qh"><label>Spouse Profession</label><input type="text" id="sp1_profession"/></div>
+          <div class="field qh"><label>Year of Marriage</label><input type="text" id="sp1_year_marriage" placeholder="YYYY"/></div>
+          <div class="field qh"><label>Place of Marriage</label><input type="text" id="sp1_place_marriage"/></div>
+          <div class="field qh"><label>Spouse DOB</label><input type="text" id="sp1_dob" placeholder="DD-MMM-YYYY"/></div>
+          <div class="field qh"><label>Spouse DOD</label><input type="text" id="sp1_dod" placeholder="DD-MMM-YYYY"/></div>
+          <div class="field qh"><label>Spouse Place of Death</label><input type="text" id="sp1_place_death"/></div>
+          <div class="field qh"><label>Spouse Place of Burial</label><input type="text" id="sp1_burial"/></div>
+          <div class="field full"><label>Children <span class="opt">(eldest first, separated by commas)</span></label>
+            <input type="text" id="sp1_children" placeholder="e.g. John, Mary, Thomas"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5: SPOUSE 2 -->
+      <div class="section-card">
+        <div class="section-head sh-sp2" onclick="toggleSp2()">
+          <div class="sec-icon">💍</div>
+          <div class="sec-title">⑤ Spouse 2 <span style="font-weight:400;opacity:.7;font-size:11px;">— tap to expand if applicable</span></div>
+          <div class="sec-toggle closed" id="sp2tog">▾</div>
+        </div>
+        <div class="section-body" id="sp2body" style="display:none;">
+          <div class="field"><label>Spouse (2) Name</label><input type="text" id="sp2_name"/></div>
+          <div class="field"><label>Spouse (2) Pet Name</label><input type="text" id="sp2_pet" placeholder="Nickname"/></div>
+          <div class="field"><label>Spouse (2) House Name</label><input type="text" id="sp2_house"/></div>
+          <div class="field"><label>Spouse (2) Home Town</label><input type="text" id="sp2_hometown" placeholder="Town / City, Country"/></div>
+          <div class="field"><label>Spouse (2) Profession</label><input type="text" id="sp2_profession"/></div>
+          <div class="field"><label>Spouse (2) Year of Marriage</label><input type="text" id="sp2_year_marriage" placeholder="YYYY"/></div>
+          <div class="field"><label>Spouse (2) Place of Marriage</label><input type="text" id="sp2_place_marriage"/></div>
+          <div class="field"><label>Spouse (2) DOB</label><input type="text" id="sp2_dob" placeholder="DD-MMM-YYYY"/></div>
+          <div class="field"><label>Spouse (2) DOD</label><input type="text" id="sp2_dod" placeholder="DD-MMM-YYYY"/></div>
+          <div class="field"><label>Spouse (2) Place of Death</label><input type="text" id="sp2_place_death"/></div>
+          <div class="field"><label>Spouse (2) Place of Burial</label><input type="text" id="sp2_burial"/></div>
+          <div class="field full"><label>Children <span class="opt">(eldest first)</span></label>
+            <input type="text" id="sp2_children" placeholder="e.g. John, Mary"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6: RELATIONS (full only) -->
+      <div class="section-card qhcard">
+        <div class="section-head sh-rel" onclick="toggleSec(this)">
+          <div class="sec-icon">👨‍👩‍👧‍👦</div><div class="sec-title">⑥ Relations</div><div class="sec-toggle">▾</div>
+        </div>
+        <div class="section-body single">
+          <div class="field">
+            <label>Siblings <span class="opt">(birth order — include this person in correct position)</span></label>
+            <input type="text" id="siblings" placeholder="e.g. Anna, Jacob, George — eldest first"/>
+            <div class="hint">Separate names with commas, eldest first</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7: LIFE & BACKGROUND (full only) -->
+      <div class="section-card qhcard">
+        <div class="section-head sh-life" onclick="toggleSec(this)">
+          <div class="sec-icon">🎓</div><div class="sec-title">⑦ Life &amp; Background</div><div class="sec-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field"><label>Highest Education</label><input type="text" id="education" placeholder="e.g. B.Sc, M.B.B.S, B.Tech"/></div>
+          <div class="field">
+            <label>Profession</label>
+            <input type="text" id="profession" placeholder="e.g. Doctor, Engineer, Teacher"/>
+            <div class="hint">For multiple professions separate with a comma e.g. Airlines, Banking, Teacher</div>
+          </div>
+          <div class="field full">
+            <label>School / College Attended</label>
+            <div id="schools-list">
+              <div class="school-row" data-index="1">
+                <div class="school-row-inner">
+                  <div class="school-num">1</div>
+                  <div class="school-fields">
+                    <input type="text" class="school-name-input" placeholder="School / College name  e.g. St. Patricks Anglo Indian School" oninput="syncSchools()"/>
+                    <input type="text" class="school-loc-input"  placeholder="Location  e.g. Adyar, Chennai" oninput="syncSchools()"/>
+                  </div>
+                  <button type="button" class="school-remove-btn" onclick="removeSchool(this)" title="Remove">✕</button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="school-add-btn" onclick="addSchool()">+ Add Another School / College</button>
+            <input type="hidden" id="school_name"/>
+            <input type="hidden" id="school_location"/>
+            <div class="hint">Each school on its own row — name and location kept together. Add as many as needed.</div>
+          </div>
+          <div class="field"><label>Last Known Location</label><input type="text" id="last_location" placeholder="City / Country"/></div>
+          <div class="field full"><label>Major Relocations <span class="opt">(chronological)</span></label>
+            <input type="text" id="relocations" placeholder="e.g. Kerala (1980), Dubai (1995), Australia (2005)"/>
+            <div class="hint">Separate entries with commas, earliest first</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIO — shown in both Quick and Full Entry -->
+      <div class="section-card">
+        <div class="section-head sh-life" onclick="toggleSec(this)">
+          <div class="sec-icon">📝</div><div class="sec-title">Bio — Anything else worth knowing?</div><div class="sec-toggle">▾</div>
+        </div>
+        <div class="section-body single">
+          <div class="field">
+            <label>Bio <span class="opt">(any additional information)</span></label>
+            <textarea id="bio" placeholder="Any notable life details, achievements, or background worth recording…"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end #form-sections -->
+
+    <!-- ══ PROFILE PHOTO ══════════════════════════════════════════════════════ -->
+    <div class="section-card" id="photo-section" style="display:none;">
+      <div class="section-head sh-life" onclick="toggleSec(this)">
+        <div class="sec-icon">📷</div><div class="sec-title">Profile Photo <span style="font-weight:400;opacity:.75;font-size:11px;">(optional)</span></div><div class="sec-toggle">▾</div>
+      </div>
+      <div class="section-body single">
+        <div class="field">
+          <label>Upload a Photo <span class="opt">(JPG or PNG, under 1MB)</span></label>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <label for="photoInput" style="display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:var(--light);border:1.5px dashed var(--border);border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);width:fit-content;font-family:inherit;">
+              📷 Choose Photo
+            </label>
+            <input type="file" id="photoInput" accept=".jpg,.jpeg,.png" style="display:none;" onchange="handlePhoto(event)"/>
+            <div id="photoPreviewWrap" style="display:none;align-items:center;gap:12px;">
+              <img id="photoPreview" src="" alt="Preview" style="width:80px;height:80px;border-radius:8px;object-fit:cover;border:2px solid var(--border);"/>
+              <div>
+                <div id="photoName" style="font-size:12px;color:var(--text);margin-bottom:4px;"></div>
+                <button type="button" onclick="removePhoto()" style="font-size:12px;color:var(--red);cursor:pointer;background:none;border:none;text-decoration:underline;font-family:inherit;">✕ Remove</button>
+              </div>
+            </div>
+            <div id="photoError" style="font-size:11px;color:var(--red);"></div>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:4px;text-transform:none;font-weight:400;letter-spacing:0;">
+              <input type="checkbox" id="photoLater" style="width:auto;"/>
+              I have a photo but will send it later
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SUBMITTER DETAILS ══════════════════════════════════════════════════ -->
+
+    <!-- Myself: email only -->
+    <div class="submitter-card" id="submitter-myself">
+      <div class="submitter-title">📧 Your Contact Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;">
+        <div class="field full">
+          <label>Your Email Address <span class="req">*</span></label>
+          <input type="email" id="myself_email" placeholder="So Jacob can contact you if needed"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Someone else: name, email, phone -->
+    <div class="submitter-card" id="submitter-other">
+      <div class="submitter-title">📧 Your Details (the person submitting this form)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;">
+        <div class="field">
+          <label>Your Full Name <span class="req">*</span></label>
+          <input type="text" id="sub_name" placeholder="e.g. Raju Eapen"/>
+        </div>
+        <div class="field">
+          <label>Your Email <span class="req">*</span></label>
+          <input type="email" id="sub_email" placeholder="So Jacob can contact you"/>
+        </div>
+        <div class="field">
+          <label>Your Phone <span class="opt">(optional)</span></label>
+          <input type="tel" id="sub_phone" placeholder="Include country code e.g. +91…"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area" id="submit-area" style="display:none;">
+      <button type="button" class="btn-submit" id="submitBtn" onclick="doSubmit()">✔ Submit Record</button>
+      <div class="submit-note">
+        Your record will be sent directly to Jacob Oommen.<br>
+        He will review and add it to the family tree.
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<footer>Powathikunnel Family Directory — Record Submission Form</footer>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2DaNr0P3n49glCeifAK1Gn5XTmzPbqo70DxyS5hiyehhSpYvo8Tgnxp4dFD9Y_7vt/exec';
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let who          = '';   // 'myself' | 'other'
+let relationship = '';
+let familyLine   = '';
+let mode         = 'quick';
+let lastSub      = {};
+let photoFile    = null;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const v   = id => (document.getElementById(id)?.value || '').trim();
+const el  = id => document.getElementById(id);
+const show = id => { el(id).style.display = 'block'; };
+const hide = id => { el(id).style.display = 'none';  };
+
+// ── Photo upload ──────────────────────────────────────────────────────────────
+function handlePhoto(e) {
+  const file = e.target.files[0];
+  const err  = el('photoError');
+  err.textContent = '';
+  if (!file) return;
+  if (!['image/jpeg','image/png'].includes(file.type)) {
+    err.textContent = 'Please select a JPG or PNG file only.';
+    e.target.value = '';
+    return;
+  }
+  if (file.size > 1024 * 1024) {
+    err.textContent = 'File is too large. Please use a photo under 1MB.';
+    e.target.value = '';
+    return;
+  }
+  photoFile = file;
+  el('photoName').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    el('photoPreview').src = ev.target.result;
+    el('photoPreviewWrap').style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+  el('photoLater').checked = false;
+}
+
+function removePhoto() {
+  photoFile = null;
+  el('photoInput').value = '';
+  el('photoPreviewWrap').style.display = 'none';
+  el('photoPreview').src = '';
+  el('photoName').textContent = '';
+  el('photoError').textContent = '';
+}
+
+// ── STEP 1: Who ───────────────────────────────────────────────────────────────
+function setWho(w) {
+  who = w;
+  el('btn-myself').className = 'opening-btn' + (w === 'myself' ? ' selected-myself' : '');
+  el('btn-other').className  = 'opening-btn' + (w === 'other'  ? ' selected-other'  : '');
+  el('who-error').style.display = 'none';
+
+  // Show/hide relationship step
+  el('step-relationship').className = 'step-card' + (w === 'other' ? ' visible' : '');
+
+  // Show line step always (after relationship if other, directly if myself)
+  if (w === 'myself') {
+    el('step-relationship').className = 'step-card';
+    relationship = 'Myself';
+  }
+  el('step-line').className = 'step-card visible';
+
+  // Show/hide submitter sections
+  el('submitter-myself').className = 'submitter-card' + (w === 'myself' ? ' visible' : '');
+  el('submitter-other').className  = 'submitter-card' + (w === 'other'  ? ' visible' : '');
+
+  // Show form sections and submit if line already chosen
+  revealFormIfReady();
+}
+
+// ── STEP 2: Relationship ──────────────────────────────────────────────────────
+function setRelationship(btn) {
+  document.querySelectorAll('.rel-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  relationship = btn.textContent.trim();
+  el('rel-error').style.display = 'none';
+  revealFormIfReady();
+}
+
+// ── STEP 3: Family Line ───────────────────────────────────────────────────────
+function setLine(btn) {
+  document.querySelectorAll('.line-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  familyLine = btn.textContent.trim();
+  el('line-error').style.display = 'none';
+  revealFormIfReady();
+}
+
+// ── Reveal form once all steps are answered ───────────────────────────────────
+function revealFormIfReady() {
+  const relOk  = who === 'myself' || relationship !== '';
+  const lineOk = familyLine !== '';
+  const ready  = who !== '' && relOk && lineOk;
+
+  el('form-sections').style.display = ready ? 'block' : 'none';
+  el('photo-section').style.display = ready ? 'block' : 'none';
+  el('submit-area').style.display   = ready ? 'flex'  : 'none';
+
+  if (ready && el('form-sections').style.display === 'block') {
+    setMode(mode);
+    // Smooth scroll to form
+    setTimeout(() => {
+      el('form-sections').scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 100);
+  }
+}
+
+// ── Mode toggle ───────────────────────────────────────────────────────────────
+function setMode(m) {
+  mode = m;
+  const isQuick = m === 'quick';
+  el('btn-quick').className = 'mode-btn' + (isQuick  ? ' active-quick' : '');
+  el('btn-full').className  = 'mode-btn' + (!isQuick ? ' active-full'  : '');
+  const desc = el('mode-desc');
+  if (isQuick) {
+    desc.className = 'mode-desc quick';
+    desc.innerHTML = '<strong>Quick Entry selected</strong> — only essential fields are shown. Switch to <strong>Full Entry</strong> if you have more details to add.';
+  } else {
+    desc.className = 'mode-desc full';
+    desc.innerHTML = '<strong>Full Entry selected</strong> — all fields are shown. Switch to <strong>Quick Entry</strong> for a faster first pass.';
+  }
+  document.querySelectorAll('.qh').forEach(e => e.style.display = isQuick ? 'none' : 'flex');
+  document.querySelectorAll('.qhcard').forEach(e => e.style.display = isQuick ? 'none' : 'block');
+  el('sp2body').style.display = 'none';
+  el('sp2tog').classList.add('closed');
+}
+
+// ── Section toggles ───────────────────────────────────────────────────────────
+function toggleSec(hd) {
+  const body = hd.nextElementSibling;
+  const tog  = hd.querySelector('.sec-toggle');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : '';
+  tog.classList.toggle('closed', open);
+}
+function toggleSp2() {
+  const b = el('sp2body'), t = el('sp2tog');
+  const open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'grid';
+  t.classList.toggle('closed', open);
+}
+
+// ── Validation ────────────────────────────────────────────────────────────────
+function validate() {
+  document.querySelectorAll('.field-error').forEach(e => e.classList.remove('field-error'));
+  document.querySelectorAll('.error-msg').forEach(e => e.remove());
+  let ok = true;
+
+  // Step checks
+  if (!who) { el('who-error').style.display = 'block'; ok = false; }
+  if (who === 'other' && !relationship) { el('rel-error').style.display = 'block'; ok = false; }
+  if (!familyLine) { el('line-error').style.display = 'block'; ok = false; }
+
+  // Record fields
+  const recReq = [
+    { id:'first_name',  l:'First Name'  },
+    { id:'house_name',  l:'House Name'  },
+    { id:'life_status', l:'Life Status' }
+  ];
+  recReq.forEach(({ id, l }) => {
+    const e = el(id);
+    if (!e || !e.value.trim()) {
+      e?.classList.add('field-error');
+      const m = document.createElement('div');
+      m.className = 'error-msg'; m.textContent = `${l} is required`;
+      e?.parentNode.appendChild(m);
+      ok = false;
+    }
+  });
+
+  // Submitter fields
+  if (who === 'myself') {
+    const e = el('myself_email');
+    if (!e.value.trim()) {
+      e.classList.add('field-error');
+      const m = document.createElement('div');
+      m.className = 'error-msg'; m.textContent = 'Your email is required';
+      e.parentNode.appendChild(m); ok = false;
+    }
+  } else if (who === 'other') {
+    [{ id:'sub_name', l:'Your Full Name' }, { id:'sub_email', l:'Your Email' }]
+      .forEach(({ id, l }) => {
+        const e = el(id);
+        if (!e || !e.value.trim()) {
+          e?.classList.add('field-error');
+          const m = document.createElement('div');
+          m.className = 'error-msg'; m.textContent = `${l} is required`;
+          e?.parentNode.appendChild(m); ok = false;
+        }
+      });
+  }
+
+  return ok;
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+async function doSubmit() {
+  if (!validate()) { window.scrollTo({ top:0, behavior:'smooth' }); return; }
+
+  const btn = el('submitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  const fn             = v('first_name');
+  const submitterName  = who === 'myself' ? fn  : v('sub_name');
+  const submitterEmail = who === 'myself' ? v('myself_email') : v('sub_email');
+  const submitterPhone = who === 'myself' ? '' : v('sub_phone');
+
+  lastSub = { name: submitterName, email: submitterEmail, phone: submitterPhone };
+
+  const payload = {
+    submitted_at:         new Date().toLocaleString('en-GB'),
+    who:                  who,
+    submitter_relationship: relationship,
+    family_line:          familyLine,
+    submitter_name:       submitterName,
+    submitter_email:      submitterEmail,
+    submitter_phone:      submitterPhone,
+    first_name:           fn,
+    middle_name:          v('middle_name'),
+    house_name:           v('house_name'),
+    pet_name:             v('pet_name'),
+    gender:               v('gender'),
+    birth_order:          v('birth_order'),
+    father:               v('father'),
+    mother:               v('mother'),
+    dob:                  v('dob'),
+    place_of_birth:       v('place_of_birth'),
+    baptised_church:      v('baptised_church'),
+    life_status:          v('life_status'),
+    dod:                  v('dod'),
+    place_of_death:       v('place_of_death'),
+    burial_place:         v('burial_place'),
+    sp1_name:             v('sp1_name'),
+    sp1_pet:              v('sp1_pet'),
+    sp1_house:            v('sp1_house'),
+    sp1_hometown:         v('sp1_hometown'),
+    sp1_profession:       v('sp1_profession'),
+    sp1_year_marriage:    v('sp1_year_marriage'),
+    sp1_place_marriage:   v('sp1_place_marriage'),
+    sp1_dob:              v('sp1_dob'),
+    sp1_dod:              v('sp1_dod'),
+    sp1_place_death:      v('sp1_place_death'),
+    sp1_burial:           v('sp1_burial'),
+    sp1_children:         v('sp1_children'),
+    sp2_name:             v('sp2_name'),
+    sp2_pet:              v('sp2_pet'),
+    sp2_house:            v('sp2_house'),
+    sp2_hometown:         v('sp2_hometown'),
+    sp2_profession:       v('sp2_profession'),
+    sp2_year_marriage:    v('sp2_year_marriage'),
+    sp2_place_marriage:   v('sp2_place_marriage'),
+    sp2_dob:              v('sp2_dob'),
+    sp2_dod:              v('sp2_dod'),
+    sp2_place_death:      v('sp2_place_death'),
+    sp2_burial:           v('sp2_burial'),
+    sp2_children:         v('sp2_children'),
+    siblings:             v('siblings'),
+    education:            v('education'),
+    profession:           v('profession'),
+    school_name:          v('school_name'),
+    school_location:      v('school_location'),
+    last_location:        v('last_location'),
+    relocations:          v('relocations'),
+    bio:                  v('bio'),
+    photo_filename:       photoFile ? photoFile.name : '',
+    photo_later:          el('photoLater').checked
+  };
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const line = familyLine !== 'Not Sure' ? ` (${familyLine} line)` : '';
+    el('conf-title').textContent = `Record for ${fn} submitted!`;
+    el('conf-desc').textContent  =
+      `Thank you, ${submitterName}. This record has been sent to Jacob for review${line}. ` +
+      `You can add another family member using the button below.`;
+    show('confirmation');
+    hide('mainForm');
+    window.scrollTo({ top:0, behavior:'smooth' });
+
+  } catch(err) {
+    console.error(err);
+    alert('Something went wrong. Please try again or contact Jacob directly.');
+    btn.disabled = false; btn.textContent = '✔ Submit Record';
+  }
+}
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+function resetForm() {
+  who = ''; relationship = ''; familyLine = '';
+
+  el('btn-myself').className = 'opening-btn';
+  el('btn-other').className  = 'opening-btn';
+  document.querySelectorAll('.rel-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.line-btn').forEach(b => b.classList.remove('selected'));
+
+  el('step-relationship').className = 'step-card';
+  el('step-line').className         = 'step-card';
+  hide('form-sections');
+  hide('photo-section');
+  hide('submit-area');
+  el('submitter-myself').className  = 'submitter-card';
+  el('submitter-other').className   = 'submitter-card';
+
+  el('mainForm').reset();
+  show('mainForm');
+  hide('confirmation');
+  removePhoto();
+
+  // Restore submitter details for convenience
+  if (lastSub.name)  { try { el('sub_name').value  = lastSub.name;  } catch(e){} }
+  if (lastSub.email) { try { el('sub_email').value = lastSub.email; } catch(e){} }
+  if (lastSub.phone) { try { el('sub_phone').value = lastSub.phone; } catch(e){} }
+
+  el('sp2body').style.display = 'none';
+  el('sp2tog').classList.add('closed');
+
+  const btn = el('submitBtn');
+  btn.disabled = false; btn.textContent = '✔ Submit Record';
+
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// ── School rows ───────────────────────────────────────────────────────────────
+let schoolCount = 1;
+
+function addSchool() {
+  schoolCount++;
+  const list = el('schools-list');
+  const row  = document.createElement('div');
+  row.className   = 'school-row';
+  row.dataset.index = schoolCount;
+  row.innerHTML = `
+    <div class="school-row-inner">
+      <div class="school-num">${schoolCount}</div>
+      <div class="school-fields">
+        <input type="text" class="school-name-input" placeholder="School / College name" oninput="syncSchools()"/>
+        <input type="text" class="school-loc-input"  placeholder="Location  e.g. Chennai" oninput="syncSchools()"/>
+      </div>
+      <button type="button" class="school-remove-btn" onclick="removeSchool(this)" title="Remove">✕</button>
+    </div>`;
+  list.appendChild(row);
+  renumberSchools();
+  row.querySelector('.school-name-input').focus();
+  syncSchools();
+}
+
+function removeSchool(btn) {
+  const row = btn.closest('.school-row');
+  if (document.querySelectorAll('.school-row').length === 1) {
+    // Clear rather than remove if only one row remains
+    row.querySelectorAll('input').forEach(i => i.value = '');
+    syncSchools();
+    return;
+  }
+  row.remove();
+  renumberSchools();
+  syncSchools();
+}
+
+function renumberSchools() {
+  document.querySelectorAll('.school-row').forEach((row, i) => {
+    const num = row.querySelector('.school-num');
+    if (num) num.textContent = i + 1;
+  });
+}
+
+function syncSchools() {
+  const names = [], locs = [];
+  document.querySelectorAll('.school-row').forEach(row => {
+    const n = row.querySelector('.school-name-input')?.value.trim() || '';
+    const l = row.querySelector('.school-loc-input')?.value.trim()  || '';
+    if (n || l) { names.push(n); locs.push(l); }
+  });
+  el('school_name').value     = names.join(' | ');
+  el('school_location').value = locs.join(' | ');
+}
+
+function resetSchools() {
+  const list = el('schools-list');
+  // Remove all rows except keep one empty row
+  list.innerHTML = `
+    <div class="school-row" data-index="1">
+      <div class="school-row-inner">
+        <div class="school-num">1</div>
+        <div class="school-fields">
+          <input type="text" class="school-name-input" placeholder="School / College name  e.g. St. Patricks Anglo Indian School" oninput="syncSchools()"/>
+          <input type="text" class="school-loc-input"  placeholder="Location  e.g. Adyar, Chennai" oninput="syncSchools()"/>
+        </div>
+        <button type="button" class="school-remove-btn" onclick="removeSchool(this)" title="Remove">✕</button>
+      </div>
+    </div>`;
+  schoolCount = 1;
+  syncSchools();
+}
+
+</script>
+</body>
+</html>
