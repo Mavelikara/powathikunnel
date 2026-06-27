@@ -51,25 +51,25 @@
 }
 
 @media(max-width:768px){
-  header{padding:10px 14px 0}
+  header{padding:10px 14px 8px}
   .hi{flex-direction:column;align-items:flex-start;gap:4px;flex-wrap:nowrap}
   .header-sub{font-size:.65rem;letter-spacing:.8px}
   h1{font-size:1.2rem}
   .tab-bar{
-    margin-left:0;width:100%;
-    overflow-x:auto;overflow-y:hidden;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    flex-wrap:nowrap;
-    padding:8px 0 10px;
-    gap:6px;
+    margin-left:0;
+    width:100%;
+    flex-wrap:wrap;
+    padding:6px 0 4px;
+    gap:5px;
   }
-  .tab-bar::-webkit-scrollbar{display:none}
   .tab-btn{
-    flex-shrink:0;
-    padding:6px 12px;
-    font-size:.72rem;
+    flex:1 1 calc(33.333% - 5px);
+    min-width:80px;
+    padding:7px 6px;
+    font-size:.7rem;
     white-space:nowrap;
+    text-align:center;
+    justify-content:center;
   }
 }
 </style>
