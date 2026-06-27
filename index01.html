@@ -49,6 +49,29 @@
   .vc-right{padding-left:0;width:100%}
   .vc-anc-label{font-size:.7rem}
 }
+
+@media(max-width:768px){
+  header{padding:10px 14px 0}
+  .hi{flex-direction:column;align-items:flex-start;gap:4px;flex-wrap:nowrap}
+  .header-sub{font-size:.65rem;letter-spacing:.8px}
+  h1{font-size:1.2rem}
+  .tab-bar{
+    margin-left:0;width:100%;
+    overflow-x:auto;overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    flex-wrap:nowrap;
+    padding:8px 0 10px;
+    gap:6px;
+  }
+  .tab-bar::-webkit-scrollbar{display:none}
+  .tab-btn{
+    flex-shrink:0;
+    padding:6px 12px;
+    font-size:.72rem;
+    white-space:nowrap;
+  }
+}
 </style>
 </head>
 <body>
