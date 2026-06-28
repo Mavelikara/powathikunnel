@@ -1028,11 +1028,41 @@ function updateDateField(id, yearOnly){
 }
 
 // Initialise all date pickers after DOM ready
-document.addEventListener('DOMContentLoaded', function(){
-  // Full date pickers
+function initAllDatePickers(){
   ['dob','dod','sp1_dob','sp1_dod','sp2_dob','sp2_dod'].forEach(id => makeDatePicker(id, false));
-  // Year-only pickers
   ['sp1_year_marriage','sp2_year_marriage'].forEach(id => makeDatePicker(id, true));
+}
+// Run on load (for any visible fields)
+document.addEventListener('DOMContentLoaded', initAllDatePickers);
+// Re-run whenever a section is shown (form is multi-step)
+const _origShowSection = window.showSection;
+function patchShowSection(){
+  // Patch any function that shows/hides form sections
+  const allShowFns = ['showSection','nextStep','prevStep','showStep','goToSection'];
+  allShowFns.forEach(function(fnName){
+    if(window[fnName] && !window[fnName]._dp_patched){
+      const orig = window[fnName];
+      window[fnName] = function(){
+        const result = orig.apply(this, arguments);
+        setTimeout(initAllDatePickers, 50);
+        return result;
+      };
+      window[fnName]._dp_patched = true;
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(patchShowSection, 100);
+  // Also observe DOM changes to catch dynamically shown sections
+  const observer = new MutationObserver(function(mutations){
+    let changed = false;
+    mutations.forEach(function(m){
+      if(m.type==='attributes' && m.attributeName==='style') changed = true;
+      if(m.type==='attributes' && m.attributeName==='class') changed = true;
+    });
+    if(changed) setTimeout(initAllDatePickers, 30);
+  });
+  observer.observe(document.body, {attributes: true, subtree: true, attributeFilter: ['style','class']});
 });
 </script>
 </body>
