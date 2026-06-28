@@ -181,6 +181,21 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
   border-radius:7px;background:#fff;font-size:12px;font-weight:600;color:var(--navy);
   cursor:pointer;transition:all .15s;font-family:inherit;}
 .school-add-btn:hover{border-color:var(--navy);background:#EBF5FB;}
+
+.date-picker-wrap{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.date-picker-wrap select{
+  flex:1;min-width:70px;
+  background:#fff;border:1px solid #cbd5e0;border-radius:8px;
+  padding:10px 8px;font-size:0.85rem;color:#2d3748;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;
+  padding-right:28px;cursor:pointer;
+}
+.date-picker-wrap select:focus{outline:none;border-color:#4a7c9e;box-shadow:0 0 0 3px rgba(74,124,158,.15)}
+.date-picker-wrap select option{color:#2d3748}
+.date-picker-wrap .dp-sep{color:#a0aec0;font-size:.8rem;flex-shrink:0}
+.year-only-wrap select{width:100%;max-width:140px}
 </style>
 </head>
 <body>
@@ -325,7 +340,7 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
         <div class="section-body">
           <div class="field"><label>Father's Name</label><input type="text" id="father" placeholder="Full name"/></div>
           <div class="field"><label>Mother's Name</label><input type="text" id="mother" placeholder="First Name and Maiden Name only"/></div>
-          <div class="field"><label>Date of Birth</label><input type="text" id="dob" placeholder="DD-MMM-YYYY e.g. 12-Jun-1965"/></div>
+          <div class="field"><label>Date of Birth</label><input type="text" id="dob"/></div>
           <div class="field qh"><label>Place of Birth</label><input type="text" id="place_of_birth" placeholder="Town / City, Country"/></div>
           <div class="field qh"><label>Baptised Church</label><input type="text" id="baptised_church" placeholder="Church name and location"/></div>
         </div>
@@ -340,7 +355,7 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
           <div class="field"><label>Life Status <span class="req">*</span></label>
             <select id="life_status"><option value="">— Select —</option><option>Alive</option><option>Deceased</option><option>Unknown</option></select>
           </div>
-          <div class="field qh"><label>Date of Death</label><input type="text" id="dod" placeholder="DD-MMM-YYYY"/></div>
+          <div class="field qh"><label>Date of Death</label><input type="text" id="dod"/></div>
           <div class="field qh"><label>Place of Death</label><input type="text" id="place_of_death" placeholder="Town / City, Country"/></div>
           <div class="field qh"><label>Burial Place</label><input type="text" id="burial_place" placeholder="Cemetery / Church and location"/></div>
         </div>
@@ -357,10 +372,10 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
           <div class="field qh"><label>Spouse House Name</label><input type="text" id="sp1_house"/></div>
           <div class="field qh"><label>Spouse Home Town</label><input type="text" id="sp1_hometown" placeholder="Town / City, Country"/></div>
           <div class="field qh"><label>Spouse Profession</label><input type="text" id="sp1_profession"/></div>
-          <div class="field qh"><label>Year of Marriage</label><input type="text" id="sp1_year_marriage" placeholder="YYYY"/></div>
+          <div class="field qh"><label>Year of Marriage</label><input type="text" id="sp1_year_marriage"/></div>
           <div class="field qh"><label>Place of Marriage</label><input type="text" id="sp1_place_marriage"/></div>
-          <div class="field qh"><label>Spouse DOB</label><input type="text" id="sp1_dob" placeholder="DD-MMM-YYYY"/></div>
-          <div class="field qh"><label>Spouse DOD</label><input type="text" id="sp1_dod" placeholder="DD-MMM-YYYY"/></div>
+          <div class="field qh"><label>Spouse DOB</label><input type="text" id="sp1_dob"/></div>
+          <div class="field qh"><label>Spouse DOD</label><input type="text" id="sp1_dod"/></div>
           <div class="field qh"><label>Spouse Place of Death</label><input type="text" id="sp1_place_death"/></div>
           <div class="field qh"><label>Spouse Place of Burial</label><input type="text" id="sp1_burial"/></div>
           <div class="field full"><label>Children <span class="opt">(eldest first, separated by commas)</span></label>
@@ -382,10 +397,10 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
           <div class="field"><label>Spouse (2) House Name</label><input type="text" id="sp2_house"/></div>
           <div class="field"><label>Spouse (2) Home Town</label><input type="text" id="sp2_hometown" placeholder="Town / City, Country"/></div>
           <div class="field"><label>Spouse (2) Profession</label><input type="text" id="sp2_profession"/></div>
-          <div class="field"><label>Spouse (2) Year of Marriage</label><input type="text" id="sp2_year_marriage" placeholder="YYYY"/></div>
+          <div class="field"><label>Spouse (2) Year of Marriage</label><input type="text" id="sp2_year_marriage"/></div>
           <div class="field"><label>Spouse (2) Place of Marriage</label><input type="text" id="sp2_place_marriage"/></div>
-          <div class="field"><label>Spouse (2) DOB</label><input type="text" id="sp2_dob" placeholder="DD-MMM-YYYY"/></div>
-          <div class="field"><label>Spouse (2) DOD</label><input type="text" id="sp2_dod" placeholder="DD-MMM-YYYY"/></div>
+          <div class="field"><label>Spouse (2) DOB</label><input type="text" id="sp2_dob"/></div>
+          <div class="field"><label>Spouse (2) DOD</label><input type="text" id="sp2_dod"/></div>
           <div class="field"><label>Spouse (2) Place of Death</label><input type="text" id="sp2_place_death"/></div>
           <div class="field"><label>Spouse (2) Place of Burial</label><input type="text" id="sp2_burial"/></div>
           <div class="field full"><label>Children <span class="opt">(eldest first)</span></label>
@@ -946,6 +961,79 @@ function resetSchools() {
   syncSchools();
 }
 
+
+function makeDatePicker(id, yearOnly){
+  const input = document.getElementById(id);
+  if(!input) return;
+  const wrap = document.createElement('div');
+  wrap.className = yearOnly ? 'date-picker-wrap year-only-wrap' : 'date-picker-wrap';
+  wrap.id = id + '_picker';
+
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for(let y = currentYear; y >= 1800; y--) years.push(y);
+
+  if(!yearOnly){
+    // Day select
+    const dayEl = document.createElement('select');
+    dayEl.id = id + '_day';
+    dayEl.innerHTML = '<option value="">Day</option>' +
+      Array.from({length:31},(_,i)=>`<option value="${String(i+1).padStart(2,'0')}">${i+1}</option>`).join('');
+
+    // Month select
+    const months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+    const monEl = document.createElement('select');
+    monEl.id = id + '_month';
+    monEl.innerHTML = '<option value="">Month</option>' +
+      months.map((m,i)=>`<option value="${String(i+1).padStart(2,'0')}">${m}</option>`).join('');
+
+    wrap.appendChild(dayEl);
+    wrap.appendChild(Object.assign(document.createElement('span'),{className:'dp-sep',textContent:'/'}));
+    wrap.appendChild(monEl);
+    wrap.appendChild(Object.assign(document.createElement('span'),{className:'dp-sep',textContent:'/'}));
+
+    [dayEl, monEl].forEach(el => el.addEventListener('change', () => updateDateField(id, yearOnly)));
+  }
+
+  // Year select
+  const yrEl = document.createElement('select');
+  yrEl.id = id + '_year';
+  yrEl.innerHTML = '<option value="">Year</option>' +
+    years.map(y=>`<option value="${y}">${y}</option>`).join('');
+  yrEl.addEventListener('change', () => updateDateField(id, yearOnly));
+  wrap.appendChild(yrEl);
+
+  // Replace input with picker + hidden input
+  input.type = 'hidden';
+  input.parentNode.insertBefore(wrap, input.nextSibling);
+}
+
+function updateDateField(id, yearOnly){
+  const input = document.getElementById(id);
+  if(!input) return;
+  if(yearOnly){
+    const yr = document.getElementById(id+'_year')?.value || '';
+    input.value = yr;
+  } else {
+    const day = document.getElementById(id+'_day')?.value || '';
+    const mon = document.getElementById(id+'_month')?.value || '';
+    const yr  = document.getElementById(id+'_year')?.value || '';
+    // Store as DD/MM/YYYY, partial if some fields empty
+    if(yr && mon && day) input.value = `${day}/${mon}/${yr}`;
+    else if(yr && mon)   input.value = `${mon}/${yr}`;
+    else if(yr)          input.value = yr;
+    else                 input.value = '';
+  }
+}
+
+// Initialise all date pickers after DOM ready
+document.addEventListener('DOMContentLoaded', function(){
+  // Full date pickers
+  ['dob','dod','sp1_dob','sp1_dod','sp2_dob','sp2_dod'].forEach(id => makeDatePicker(id, false));
+  // Year-only pickers
+  ['sp1_year_marriage','sp2_year_marriage'].forEach(id => makeDatePicker(id, true));
+});
 </script>
 </body>
 </html>
