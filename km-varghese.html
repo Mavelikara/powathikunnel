@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>K. M. Varghese — Artist & Author</title>
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --ink:        #1c1a17;
+      --ink-light:  #4a4540;
+      --rule:       #c8b99a;
+      --gold:       #8b6f3e;
+      --gold-light: #f5ede0;
+      --cream:      #faf7f2;
+      --white:      #ffffff;
+      --section-gap: 3.5rem;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Cambria', 'Georgia', serif;
+      font-size: 15px;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.75;
+    }
+
+    /* ── Header / Hero ── */
+    .hero {
+      background: var(--ink);
+      color: var(--white);
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rule);
+      margin-bottom: 1rem;
+    }
+    .hero-eyebrow a {
+      color: var(--rule);
+      text-decoration: none;
+    }
+    .hero-eyebrow a:hover { text-decoration: underline; }
+    .hero-photo {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      object-fit: cover;
+      margin: 0 auto 1.25rem;
+      display: block;
+      background: #3a3530;
+    }
+    .hero-photo-placeholder {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      background: #3a3530;
+      margin: 0 auto 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--rule);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.3rem;
+    }
+    .hero-dates {
+      font-size: 0.85rem;
+      color: var(--rule);
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+    }
+    .hero-bio {
+      max-width: 580px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      color: #c8c2b8;
+      line-height: 1.7;
+    }
+
+    /* ── Stat bar ── */
+    .stat-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      background: var(--gold);
+      flex-wrap: wrap;
+    }
+    .stat {
+      padding: 0.9rem 2rem;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.2);
+      min-width: 120px;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+    }
+    .stat-label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      margin-top: 0.2rem;
+    }
+
+    /* ── Main layout ── */
+    .page-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ── Section heading ── */
+    .section {
+      margin-bottom: var(--section-gap);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid var(--gold);
+    }
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+    }
+    .section-count {
+      margin-left: auto;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* ── Paintings list ── */
+    .paintings-list {
+      list-style: none;
+      counter-reset: painting-counter;
+    }
+    .paintings-list li {
+      counter-increment: painting-counter;
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid #e8e0d4;
+      font-size: 0.93rem;
+      color: var(--ink-light);
+      line-height: 1.55;
+    }
+    .paintings-list li:last-child { border-bottom: none; }
+    .paintings-list li::before {
+      content: counter(painting-counter);
+      min-width: 2rem;
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--gold);
+      font-weight: 700;
+      padding-top: 0.1rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Books grid ── */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .book-card {
+      background: var(--white);
+      border: 1px solid #e0d8cc;
+      border-radius: 6px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .book-card-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    .book-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    .book-note {
+      font-size: 0.75rem;
+      color: var(--gold);
+      font-style: italic;
+    }
+    .book-pdf-placeholder {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #bbb;
+      border: 1px dashed #ccc;
+      border-radius: 3px;
+      padding: 0.2rem 0.5rem;
+      margin-top: auto;
+      cursor: default;
+    }
+
+    /* ── Articles list ── */
+    .articles-list {
+      list-style: none;
+      counter-reset: article-counter;
+    }
+    .articles-list li {
+      counter-increment: article-counter;
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e8e0d4;
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      line-height: 1.5;
+    }
+    .articles-list li:last-child { border-bottom: none; }
+    .articles-list li::before {
+      content: counter(article-counter);
+      min-width: 2rem;
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--gold);
+      font-weight: 700;
+      padding-top: 0.1rem;
+      flex-shrink: 0;
+    }
+    .article-pub {
+      font-size: 0.75rem;
+      color: var(--gold);
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    /* ── Photo placeholder sections ── */
+    .photo-placeholder {
+      background: #f0ebe2;
+      border: 2px dashed var(--rule);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      color: #999;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .photo-placeholder span { display: block; font-size: 1.8rem; margin-bottom: 0.5rem; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.5rem; }
+      .stat { padding: 0.7rem 1.2rem; min-width: 90px; }
+      .books-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <a href="index.html">← Powathikunnel Family Directory</a> &nbsp;/&nbsp; Notable Members
+    </div>
+    <div class="hero-photo-placeholder">Photo<br>Placeholder</div>
+    <h1>K. M. Varghese</h1>
+    <div class="hero-dates">c. 1880s – 1960s &nbsp;·&nbsp; Mavelikara, Kerala</div>
+    <p class="hero-bio">
+      Painter, author, and chronicler of Kerala's Syrian Christian heritage.
+      K. M. Varghese was a self-taught artist whose portraits graced churches,
+      colleges, and royal households across Travancore. He was equally prolific
+      as a writer, contributing works of history, fiction, and literary criticism
+      to the Malayalam press over five decades.
+    </p>
+  </div>
+
+  <!-- Stat bar -->
+  <div class="stat-bar">
+    <div class="stat">
+      <span class="stat-num">118</span>
+      <span class="stat-label">Paintings</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat">
+      <span class="stat-num">15</span>
+      <span class="stat-label">Books</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">48</span>
+      <span class="stat-label">Articles</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">50+</span>
+      <span class="stat-label">Years Active</span>
+    </div>
+  </div>
+
+  <!-- Page body -->
+  <div class="page-body">
+
+    <a class="back-link" href="index.html">← Back to Directory</a>
+
+    <!-- ══ SECTION 1: PAINTINGS ══ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">🎨</div>
+        <h2>Paintings by K. M. Varghese</h2>
+        <span class="section-count">118 works · 1909–1960</span>
+      </div>
+
+      <div class="photo-placeholder">
+        <span>🖼</span>
+        Photographs of paintings to be added here
+      </div>
+
+      <ol class="paintings-list">
+        <li>An early portrait of Mar Joseph Divannasios, Metropolitan of Pulikot, Malankara Parish.</li>
+        <li>A full-length portrait of the Melpadi Metropolitan.</li>
+        <li>Picture of Shauryar Pathiri, father of Kurishingal Lonanpillai, Chettikad, Alappuzha (1909).</li>
+        <li>Picture of Lonanpillai's mother.</li>
+        <li>Picture of Muthakoithampuran at Ananthapuram, Haripad (1910).</li>
+        <li>Picture of Vanjipuzha Tampuran Uzhuthira (1910).</li>
+        <li>Picture of Purakkal Cor Episkopa at Ranni (1910).</li>
+        <li>Two images of Kuruvila and his wife at Nedyuzh in Kallisser.</li>
+        <li>Picture of Purakkal Chakochan in Kallisser (1911).</li>
+        <li>Image of Unnittan's wife at Tamarapalli in Kallisser.</li>
+        <li>Picture of Katanar at Pulimoot in Kallisser (1911).</li>
+        <li>Two portraits of the parents of Changanassery Murani Govindappilla's daughter-in-law and school inspector C. R. Krishnapillai B.A. (1911).</li>
+        <li>Picture of Kochi resident Joseph Alungal Achan, Vicar of Alappuzha Chettikad Poongkao Church.</li>
+        <li>A picture of Pulikot Youssef Shemmashon.</li>
+        <li>A picture of Panicker Katanar at Mavelikkara Parambam.</li>
+        <li>Picture of Puthanpurakkal Varki Vadhyar's wife in Mavelikkara Nakkava.</li>
+        <li>Pictures of Kunju Panikkan's father and mother in Mutt Uri.</li>
+        <li>Picture of Muttam Kokateth Pappu Channar.</li>
+        <li>Picture of the father of Travancore Govt. Chief Secretary C. O. Madhavan (Kattanam).</li>
+        <li>Picture of little baby Channar in Mumt Alimoot (Vetti Kolla).</li>
+        <li>Two pictures of Keerikat Kottur Govindan Channar's father and mother.</li>
+        <li>Photo of Kottayam Cherian Registrar's father.</li>
+        <li>Picture of Samuel's mother at Alamelutheri.</li>
+        <li>Image of Namboothiri at Keerikat Alappuram.</li>
+        <li>Picture of Kottayam Mattithara Mathai Chandy Father's father-in-law.</li>
+        <li>Image at Chengannur Aratupuzha Kizhavan Moop.</li>
+        <li>Image of Kottayam Venkedamat Achan (to Niranama).</li>
+        <li>Picture of Achan in Niranath Pattamuk.</li>
+        <li>Image of Valiappan at Veeyapuram Kurichiyet.</li>
+        <li>Portrait of Mar Ostatheos Methran, representative of Antioch, Kottayam, to Old Simmanari.</li>
+        <li>Three pictures of Ponkunnam Thampalakkat Puthumane Yusepachan and his two brothers.</li>
+        <li>Image of the Maharajah of Kochi (reigning, vacated), Thrissur C.M.S. High School.</li>
+        <li>Picture of Achan, manager of Iringalakuda Kariannoor Kanyaka Math, Kochi.</li>
+        <li>Two pictures of Pala Edamatam Kuruvinakunnel Thommachan and his wife.</li>
+        <li>Two pictures of the parents and sons of Elanjikaal Taryat Kunhithomman in Kothamangalam.</li>
+        <li>A picture of the Vicar of Kothamangalam Catholic Church.</li>
+        <li>A picture of Sree Narayanaguru for Changanassery Anandashram — the picture Mahatma Gandhi saw during his visit to Travancore and spoke highly of.</li>
+        <li>An image of Sree Narayanaguru for the Ayirur Kangeetkara Shiva Temple.</li>
+        <li>Image of Kavalam Govindapanik's mother.</li>
+        <li>Picture of Chengannur Arikara Kochukaliekal Purushothaman.</li>
+        <li>Two pictures of Chakochan and his wife at Kallanparam in Ranni.</li>
+        <li>Image of Ranni Viola Chakochan's daughter.</li>
+        <li>Portrait of the great Mar Divannasios Metropolitan, known as the Sixth Marthomma, for the Putankav Great Church (copied from an old picture).</li>
+        <li>Image of Thomas Panicker on Mavelikkara East Parambam.</li>
+        <li>Picture painted for the girls' school near Mavelikkara Kottakkam, commissioned by Sri Moolam Thirunal Maharaja on the occasion of Shashtipurthi.</li>
+        <li>Picture of Papi's mother at Mannar Arikupur.</li>
+        <li>A third portrait of Malankara Metropolitan Pulikot Mar Divannasios.</li>
+        <li>A picture of Dr. Kuryalassery, Bishop of Changanassery.</li>
+        <li>A portrait of Monsignor Father Kandankariyachan.</li>
+        <li>A portrait of Mar Peelaxinos Metropolitan (later Second Catholicos) at Vakathanat.</li>
+        <li>Image of Kandanat Murimatt Mar Evanios.</li>
+        <li>Image of Mar Abdul Messiah Patriarch, Kundera Simmanari.</li>
+        <li>Four paintings of Malankara Metropolitan Mar Geevarghese Deewannasyos Vatasser (for Kundara, Old Simmanari, Thazhakkara English School, and Parumala Simmanari).</li>
+        <li>Image of Mar Gregorios Metropolitan at Kallassery, for Kundera Simmanari.</li>
+        <li>Another picture of the Melpadi Bishop, painted after his conversion to Catholicism, for Kundara.</li>
+        <li>Two pictures of Melpadi Katholika's parents.</li>
+        <li>Two pictures of Pachani Pappachan and his wife at Poovarani in Meenachil.</li>
+        <li>Two pictures of Sarasakavi Mulur S. Padmanabhapanikar (one for high school).</li>
+        <li>Two pictures of Papachan and Amma in Meenachil Kallivyal.</li>
+        <li>Three paintings of Pottankulam Zakariachan, Anujan Thommachan Jr., and Vincent Saipin in Kanjirapalli.</li>
+        <li>Picture of Kottayam C.M.S. College Principal C. K. Thommasin, for the college.</li>
+        <li>Photo of Travancore Anchal Superintendent Padmanabhaiyar, Thiruvananthapuram.</li>
+        <li>Three pictures of Travancore Sanitary Commissioner John Chandy, his wife, and his father, Kottayam.</li>
+        <li>Image of Chengannur Budhanur Churahitta Unnithan.</li>
+        <li>Image by W. J. Edmond Saip for London Mission English School, Kollam.</li>
+        <li>Image of Varkala Chavarkot Kochucherukan Vaidyan.</li>
+        <li>Picture of Dr. Daniel's mother, south of Puthikav Alin.</li>
+        <li>Image of Tirunalveli Bishop Dr. West's sister, Madam Weston.</li>
+        <li>Portrait of Malayalam School Inspector Kottarakkara Aviyot Mathew Win (1931).</li>
+        <li>Portrait of Puthur Sankaran contractor's father at Chengannur Perisser (1923).</li>
+        <li>Portrait of Mar Xavierios Methran's mother at Wallakuzhi, Thiruvalla (1923).</li>
+        <li>Two pictures of Thiruvalla Irupallipra Chattanupalli Mrs. K. I. Varghese Mapila and her husband, late Manorama editor Kandathil Varghese Mapila.</li>
+        <li>Image of Kushmantaswami at Umbarnat Ashram (1925).</li>
+        <li>Picture of Manikathanar at Kurathikat Cheravalli (1925).</li>
+        <li>Image of Changanassery Bishop Dr. Kalassery (Aramana).</li>
+        <li>Picture of Mepral Manamel Conservator M. C. Chandy's mother.</li>
+        <li>Picture of Kanyantra Doctor Alexander's paternal grandfather Thommikku.</li>
+        <li>Two images of Sreedharasanyasi and his father in Chengannur Peringala Kulamulla.</li>
+        <li>Photo of Travancore Anchal Superintendent Padmanabhaiyar (1941).</li>
+        <li>Picture of Travancore High Court Judge K. K. Punnan Luko and Travancore Durbar Physician Ms. Lucas's wife (1942).</li>
+        <li>Picture of Thiruvananthapuram Hajjur Stationary Superintendent I. S. Narayanapillai, Arappuravilakath, Punnapuram (1943).</li>
+        <li>Image of Kottayam Palampadam Thomas Vakeel, for Kottayam Bank Head Office.</li>
+        <li>Portrait of British Prime Minister Winston Churchill, painted under the title <em>The Crouching Lion</em>, presented to Madame Miss Olive in Madras, who took it to London.</li>
+        <li>Portrait of an American gentleman (Klabis), painted at his request and later taken to America.</li>
+        <li>Picture of Aluva Union College Principal A. M. Varki, for Kottayam M.D. Simmanari.</li>
+        <li>Two pictures of Major P. C. Koshi's (Kuttai Doctor) parents.</li>
+        <li>Two pictures of Planter E. Kochumman and his wife at Chepatu Everathu East.</li>
+        <li>A painting of Kottayam Kilirur Mecherimath Ananthanarayanaiyar for the Karthayaneevilasam Reading Room.</li>
+        <li>Image of Chengannur Kotureth Cheryachan.</li>
+        <li>Photo of Doctor Punnan Jacobin at Kottayam Thekekummoot.</li>
+        <li>Image of Catholicos Bava (Kallassery), auctioned for Rs. 300 by Kayamkulam parish — Rs. 150 contributed to the Catholic Fund, Rs. 150 received by the artist (1949).</li>
+        <li>Picture of Abraham Marthomma Metropolitan, President of Malankara Marthomma, for the school building of Thazhakkara Marthomma Church.</li>
+        <li>Two images — Parumala Mar Gregorios Metropolitan and Pulikot Mar Divannasios Metropolitan — for Kundera Simmanari.</li>
+        <li>An image of the late Papi at Thevarvel, Kojancherry.</li>
+        <li>Image of Kottayam Palampadam Thomas Vakiel's bailiff C. K. Koshi (baby), for Mundakayam Gracie Memorial Chapel.</li>
+        <li>Two pictures of P. C. Matthew I.C.S. (Madras Transport Commissioner) and his father, for Madras.</li>
+        <li>Two pictures of Dr. Daniel and his wife, south of Puthikavil Allin.</li>
+        <li>Foot-length portrait of the late Mar Pilexinos Metropolitan, for Machamkunn Catholicate English High School.</li>
+        <li>Picture of Skaria Malpan Achan for the small chapel at Kottayam Orthodox Vedic College.</li>
+        <li>Picture of Manorama Editor K. C. Mamman Mapila, for the Manorama office.</li>
+        <li>Picture of Mrs. E. K. Kochumman at Chepat Everat East.</li>
+        <li>Picture of Manorama Editor K. C. Mamman Mapila's wife.</li>
+        <li>Picture of Kottayam Palampadam P. T. Thomas Vakiel, for Pampadi School.</li>
+        <li>Image of Mar Eugene Timotheus Metropolitan, for Muvattupuzha Vadakara English High School.</li>
+        <li>Portrait of the mother of Madras Transport Commissioner P. C. Mathew I.C.S., for Madras.</li>
+        <li>Two bust pictures of Manorama Editor K. C. Mamman Mapila and his wife, painted together in one frame (1954).</li>
+        <li>Painting of Geevarghese Isaac at Pauvvattikunnelaya Vazh (Thekemannil), Mallappally (1955).</li>
+        <li>Image of the mother of K. P. Krishnamenavan I.A.S., of Kozhikode Panniangara Mullassery Tharavat, North Malabar.</li>
+        <li>Picture of Judge P. A. Oommen B.A. M.L.'s father, Thonakad Palamootilachan.</li>
+        <li>Picture of seven members of the Palampadam family in a single large frame — including late Palampadam Thomas Vakiel, his late wife, their late youngest son, elder son Dr. P. T. Thomas M.L.A., Anujan P. T. Eepan, and sisters Akamma and Kunjamma. Completed 19 November, released 8 January 1956 — an unprecedented family portrait of seven people in human size in a single frame.</li>
+        <li>Picture of Thiruvananthapuram Hajjur Stationery Asst. Controller K. Karunakaran, donated freely at the wish of his eldest son Matthew (1956).</li>
+        <li>Picture of Pathanamthitta Catholicate College Principal Mr. Nainan Abraham, commissioned by students and professors to mark the founding of the college.</li>
+        <li>Picture of the mother of Kundera Aluminum Company Publicity Officer R. Parthasarathy M.A. of Thanjavur, painted one yard in length, taken to Kundara Aluminum Factory.</li>
+        <li>Bust portrait of P. C. Matthew I.A.S., presented to his mother when he was posted at the Delhi Secretariat.</li>
+        <li>A large picture of Mar Gregorios Metropolitan at Chaturuth, containing the tomb of Parumala, painted for the trustees of Thumbamon English School (1959).</li>
+        <li>Two pictures of Manorama Editor K. C. Mamman Mapila, commissioned by Manorama Managing Editor K. M. Matthew B.A. for the Manorama Office (1959).</li>
+        <li>A picture of Mavelikkara Erezhavatak Vallat Raman Kangani, painted at the request of Kunjupanikan.</li>
+        <li>Picture of Manorama Editor K. C. Mamman Mapila's wife, commissioned by K. M. Cherian M.A. (1960).</li>
+      </ol>
+    </div>
+
+    <!-- ══ SECTION 2: BOOKS ══ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">📖</div>
+        <h2>Books by K. M. Varghese</h2>
+        <span class="section-count">15 titles</span>
+      </div>
+
+      <div class="photo-placeholder">
+        <span>📚</span>
+        Photographs or scans of book covers to be added here
+      </div>
+
+      <div class="books-grid">
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Kallur Philipos Aasan</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Pauvvattikunnel Kudumbacharitram</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Srichakram</div>
+          <div class="book-note">Novel — not yet published in book form</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Valiya Mar Divannasyos</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Tharananallur Namboothiripad</div>
+          <div class="book-note">1929</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Nelly Muttilammachi</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Thachil Mathuttharakan's Thangakompan</div>
+          <div class="book-note">1929</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Venat's Nadudun, or the Saint Savariar</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Mathews Mar Athanasios's Panchakalyani</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">The Passion of the Fifth Marthomma, or the Dutch Pantheerairam</div>
+          <div class="book-note">1987</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Historical Stories and the Novel Chittithalayal</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Rajya Raksha Purushtvam of the Syrian Christians</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Rashtriya Sevata of Kerala Women</div>
+          <div class="book-note">1936</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Chengolum Muraliyum</div>
+          <div class="book-note">Prose poetry collection</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+        <div class="book-card">
+          <div class="book-card-icon">📘</div>
+          <div class="book-title">Sucharita Mukuram</div>
+          <div class="book-note">Story collection · 1950 · Published by Adv. K. O. Mathew, Vallakali</div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ SECTION 3: ARTICLES ══ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">✍️</div>
+        <h2>Published Articles by K. M. Varghese</h2>
+        <span class="section-count">48 known articles</span>
+      </div>
+
+      <ol class="articles-list">
+        <li><span>Comedies &nbsp;<span class="article-pub">Kerala Abhimani, 1915</span></span></li>
+        <li><span>Beggars of Kerala &nbsp;<span class="article-pub">Keraliya Abhimani, 1915</span></span></li>
+        <li><span>Mahad Verses &nbsp;<span class="article-pub">Nasrani Deepika, Mannanam, 1913</span></span></li>
+        <li><span>Literary Criticism Movement &nbsp;<span class="article-pub">Prachnatharaka, February 1913</span></span></li>
+        <li><span>20 Malayalam Greats &nbsp;<span class="article-pub">Keraliya Abhimani, 1919</span></span></li>
+        <li><span>Concepts of Masters in Painting &nbsp;<span class="article-pub">Nasrani Deepika, 1913</span></span></li>
+        <li><span>Kerala Painting and its Development &nbsp;<span class="article-pub">Uttarataraka, Paravur, August 1919</span></span></li>
+        <li><span>Jaundice &nbsp;<span class="article-pub">Nasrani Deepika, 1916</span></span></li>
+        <li><span>Photography &nbsp;<span class="article-pub">Nasrani Deepika, 1913</span></span></li>
+        <li><span>Nayans and Nasrani &nbsp;<span class="article-pub">Samadarshi, Thiruvananthapuram</span></span></li>
+        <li><span>State of Roads in Kerala &nbsp;<span class="article-pub">Manorama, 1920</span></span></li>
+        <li><span>Titles of the Nasrani Community &nbsp;<span class="article-pub">Manorama, 1923</span></span></li>
+        <li><span>A Dharmanishtha (story of Marthandavarma Maharaja and a Christian Swaputri in Travancore) &nbsp;<span class="article-pub">Manorama, 1928</span></span></li>
+        <li><span>Caste Dialects in the Malayalam Language &nbsp;<span class="article-pub">Manorama, 1919</span></span></li>
+        <li><span>Inscription &nbsp;<span class="article-pub">Atmaposhini, Kunnamkulam, 1914</span></span></li>
+        <li><span>Chiri &nbsp;<span class="article-pub">Atmaposhini</span></span></li>
+        <li><span>Architecture and Hydrology &nbsp;<span class="article-pub">Atmaposhini, 1912</span></span></li>
+        <li><span>Mantras of the Malankara Nasrani &nbsp;<span class="article-pub">Bhashaposhini, 1920</span></span></li>
+        <li><span>Pullelikunju (review of the book Pullelikunju) &nbsp;<span class="article-pub">Bhashaposhini, 1924</span></span></li>
+        <li><span>Forgeries of Muttass Namboothiri &nbsp;<span class="article-pub">Bhashaposhini, 1924</span></span></li>
+        <li><span>Some Special Phases in the Catholic Prohibition &nbsp;<span class="article-pub">Kerala Kesari, Kottayam, 1928</span></span></li>
+        <li><span>Vaiyakaran Geevarghese Katanaar &nbsp;<span class="article-pub">Manorama</span></span></li>
+        <li><span>Early Examples of Modern Malayalam Prose &nbsp;<span class="article-pub">Manorama, 1927</span></span></li>
+        <li><span>Domestic Form of Aluva Mahayoga &nbsp;<span class="article-pub">Manorama</span></span></li>
+        <li><span>Bishop Play &nbsp;<span class="article-pub">Manorama</span></span></li>
+        <li><span>A Sadirkottu Vidhi — History of the Thachal Family &nbsp;<span class="article-pub">Manorama, 1932</span></span></li>
+        <li><span>A Dedication (short story) &nbsp;<span class="article-pub">Atmaposhini, 1917</span></span></li>
+        <li><span>Kavita Devi Where (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
+        <li><span>Tripputharat (short story) &nbsp;<span class="article-pub">Atmaposhini, 1919</span></span></li>
+        <li><span>Sumaswapnamritham (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1919</span></span></li>
+        <li><span>Aswathanyathamas (short story) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
+        <li><span>Shastyabdapurthi (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
+        <li><span>Vihyamangalam (prose poem) &nbsp;<span class="article-pub">Atmaposhini, Makaram 1921</span></span></li>
+        <li><span>Alappuzha Orthodox Church in Front of My Eyes (prose poem) &nbsp;<span class="article-pub">Manorama, 1949</span></span></li>
+        <li><span>Ito Pathiri Malayalam; and Buddha and Vishnu in the Christian Church &nbsp;<span class="article-pub">Pauraprabha, 1940 &amp; 1957</span></span></li>
+        <li><span>Misguided Viceroy Memorial Movement (political essay) &nbsp;<span class="article-pub">Bharata Patrika, Thiruvananthapuram, 1925</span></span></li>
+        <li><span>Malankara Suryani Sabha — Path to Peace (serialised in four issues) &nbsp;<span class="article-pub">Pauraprabha, Kottayam, 1941</span></span></li>
+        <li><span>Kerala Kalidasa or Prose Writer &nbsp;<span class="article-pub">1931</span></span></li>
+        <li><span>Malankara Nasrani and Prehistoric Memoirs (serialised in three issues) &nbsp;<span class="article-pub">Nasrani Deepika, 1921</span></span></li>
+        <li><span>Unninainar Patatharakan &nbsp;<span class="article-pub">Keraliya Abhimani, 1920</span></span></li>
+        <li><span>Member &nbsp;<span class="article-pub">Nasrani Deepika, Kottayam, 1948</span></span></li>
+        <li><span>Travancore Consecration &nbsp;<span class="article-pub">Manorama, 1124 Idavam</span></span></li>
+        <li><span>A Miraculous Incident in the Sky about Parumala Mar Gregorios Bishop &nbsp;<span class="article-pub">Manorama, 1939</span></span></li>
+        <li><span>Obituary of Shri O. M. Cherian &nbsp;<span class="article-pub">Pauraprabha</span></span></li>
+        <li><span>Udayamperur Sunnahs (extended essay) &nbsp;<span class="article-pub">Manorama, 1939</span></span></li>
+        <li><span>Temple Entry of Christians &nbsp;<span class="article-pub">Pauraprabha, 1928</span></span></li>
+        <li><span>Debate on 'Mapilasabda' with K. M. Mani, Accounts Officer of the Travancore Government (serialised) &nbsp;<span class="article-pub">Pauraprabha, 1945</span></span></li>
+        <li><span>Jivakaruniya or Mithyaprapanchamad</span></li>
+      </ol>
+    </div>
+
+  </div><!-- end page-body -->
+
+</body>
+</html>
