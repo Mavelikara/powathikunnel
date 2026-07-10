@@ -176,9 +176,9 @@
     }
     .paintings-list li {
       counter-increment: painting-counter;
-      display: block;
-      position: relative;
-      padding: 0.55rem 0 0.55rem 2.85rem;
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.55rem 0;
       border-bottom: 1px solid #e8e0d4;
       font-size: 0.93rem;
       color: var(--ink-light);
@@ -187,14 +187,13 @@
     .paintings-list li:last-child { border-bottom: none; }
     .paintings-list li::before {
       content: counter(painting-counter);
-      position: absolute;
-      left: 0;
-      top: 0.65rem;
-      width: 2rem;
+      min-width: 2rem;
       text-align: right;
       font-size: 0.75rem;
       color: var(--gold);
       font-weight: 700;
+      padding-top: 0.1rem;
+      flex-shrink: 0;
     }
 
     /* ── Books grid ── */
@@ -250,9 +249,9 @@
     }
     .articles-list li {
       counter-increment: article-counter;
-      display: block;
-      position: relative;
-      padding: 0.5rem 0 0.5rem 2.85rem;
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.5rem 0;
       border-bottom: 1px solid #e8e0d4;
       font-size: 0.9rem;
       color: var(--ink-light);
@@ -261,14 +260,13 @@
     .articles-list li:last-child { border-bottom: none; }
     .articles-list li::before {
       content: counter(article-counter);
-      position: absolute;
-      left: 0;
-      top: 0.6rem;
-      width: 2rem;
+      min-width: 2rem;
       text-align: right;
       font-size: 0.75rem;
       color: var(--gold);
       font-weight: 700;
+      padding-top: 0.1rem;
+      flex-shrink: 0;
     }
     .article-pub {
       font-size: 0.75rem;
@@ -312,20 +310,6 @@
       .stat { padding: 0.7rem 1.2rem; min-width: 90px; }
       .books-grid { grid-template-columns: 1fr; }
     }
-  
-    .book-cover{width:100%;height:200px;object-fit:contain;background:#f7f2e8;border:1px solid #e8e0d0;border-radius:5px;cursor:pointer;display:block}
-    /* ── Painting photo gallery ── */
-    .gallery-note{font-size:.95rem;color:#6b5d4a;margin:6px 0 14px;font-style:italic}
-    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:18px}
-    .g-item{background:#fff;border:1px solid #e0d5c0;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(80,60,20,.12);transition:transform .15s;cursor:pointer}
-    .g-item:hover{transform:translateY(-3px)}
-    .g-item img{width:100%;height:190px;object-fit:cover;display:block}
-    .g-cap{font-size:.72rem;color:#5a4a30;padding:7px 9px;line-height:1.45;border-top:1px solid #eee2cc;background:var(--gold-light)}
-    .gallery-sub{font-size:.86rem;color:#7a6648;margin:16px 0 10px;padding:9px 14px;background:var(--gold-light);border-left:3px solid var(--gold);border-radius:4px}
-    #lbOverlay{position:fixed;inset:0;background:rgba(10,8,4,.92);display:none;align-items:center;justify-content:center;z-index:999;flex-direction:column;padding:20px}
-    #lbOverlay img{max-width:92vw;max-height:82vh;border:4px solid #fff;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
-    #lbCap{color:#e8dcc0;font-size:.9rem;margin-top:14px;max-width:700px;text-align:center;line-height:1.5}
-    #lbClose{position:fixed;top:18px;right:26px;color:#fff;font-size:2rem;cursor:pointer;line-height:1}
   </style>
 </head>
 <body>
@@ -335,7 +319,8 @@
     <div class="hero-eyebrow">
       <a href="index.html">← Powathikunnel Family Directory</a> &nbsp;/&nbsp; Notable Members
     </div>
-    <div class="hero-photo-placeholder">Photo<br>Placeholder</div>
+    <img src="images/km-varghese.jpg" alt="Portrait of K. M. Varghese" class="hero-photo"
+         onerror="this.outerHTML='&lt;div class=&quot;hero-photo-placeholder&quot;&gt;Photo&lt;br&gt;Placeholder&lt;/div&gt;'">
     <h1>K. M. Varghese</h1>
     <div class="hero-dates">c. 1880s – 1960s &nbsp;·&nbsp; Mavelikara, Kerala</div>
     <p class="hero-bio">
@@ -381,15 +366,7 @@
         <span class="section-count">118 works · 1909–1960</span>
       </div>
 
-      <div id="paintGalleryWrap" style="display:none">
-        <div class="gallery-note">Photographs of the original paintings, as gathered by the family.</div>
-        <div class="gallery-grid" id="galIdentified"></div>
-        <div id="galUnidentifiedWrap" style="display:none">
-          <div class="gallery-sub"><strong>Awaiting identification</strong> — do you recognise any of these works from the catalogue below? Please write in through the <a href="index.html">family directory</a>.</div>
-          <div class="gallery-grid" id="galUnidentified"></div>
-        </div>
-      </div>
-      <div class="photo-placeholder" id="paintPlaceholder">
+      <div class="photo-placeholder">
         <span>🖼</span>
         Photographs of paintings to be added here
       </div>
@@ -477,7 +454,7 @@
         <li>Picture of Travancore High Court Judge K. K. Punnan Luko and Travancore Durbar Physician Ms. Lucas's wife (1942).</li>
         <li>Picture of Thiruvananthapuram Hajjur Stationary Superintendent I. S. Narayanapillai, Arappuravilakath, Punnapuram (1943).</li>
         <li>Image of Kottayam Palampadam Thomas Vakeel, for Kottayam Bank Head Office.</li>
-        <li>Portrait of British Prime Minister Winston Churchill, painted under the title <em>The Crouching Lion</em>, presented to Madame Miss Olive in Madras, who took it to London.</li>
+        <li>Portrait of British Prime Minister Winston Churchill, painted under the title "The Crouching Lion" presented to Madame Miss Olive in Madras, who took it to London.</li>
         <li>Portrait of an American gentleman (Klabis), painted at his request and later taken to America.</li>
         <li>Picture of Aluva Union College Principal A. M. Varki, for Kottayam M.D. Simmanari.</li>
         <li>Two pictures of Major P. C. Koshi's (Kuttai Doctor) parents.</li>
@@ -521,10 +498,10 @@
       <div class="section-header">
         <div class="section-icon">📖</div>
         <h2>Books by K. M. Varghese</h2>
-        <span class="section-count">16 titles</span>
+        <span class="section-count">15 titles</span>
       </div>
 
-      <div class="photo-placeholder" id="bookPlaceholder">
+      <div class="photo-placeholder">
         <span>📚</span>
         Photographs or scans of book covers to be added here
       </div>
@@ -573,7 +550,7 @@
           <div class="book-card-icon">📘</div>
           <div class="book-title">Thachil Mathuttharakan's Thangakompan</div>
           <div class="book-note">1929</div>
-          <div class="book-pdf-placeholder">⬇ <a href="/books/translations/thangakompan-english.html">📖 Read the English translation</a></div>
+          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
         </div>
 
         <div class="book-card">
@@ -591,6 +568,7 @@
         <div class="book-card">
           <div class="book-card-icon">📘</div>
           <div class="book-title">The Passion of the Fifth Marthomma, or the Dutch Pantheerairam</div>
+          <div class="book-note">1987</div>
           <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
         </div>
 
@@ -624,12 +602,6 @@
           <div class="book-card-icon">📘</div>
           <div class="book-title">Sucharita Mukuram</div>
           <div class="book-note">Story collection · 1950 · Published by Adv. K. O. Mathew, Vallakali</div>
-          <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
-        </div>
-
-        <div class="book-card">
-          <div class="book-card-icon">📘</div>
-          <div class="book-title">Ente Jeevithayathra</div>
           <div class="book-pdf-placeholder">⬇ PDF coming soon</div>
         </div>
 
@@ -698,97 +670,5 @@
 
   </div><!-- end page-body -->
 
-<div id="lbOverlay"><span id="lbClose">&times;</span><img id="lbImg" src="" alt=""><div id="lbCap"></div></div>
-<script>
-(function(){
-  var exts = ['jpg','jpeg','JPG','JPEG','png'];
-  function tryImg(base, onok){
-    var i = 0;
-    (function attempt(){
-      if (i >= exts.length) return;
-      var img = new Image();
-      var src = 'paintings/' + base + '.' + exts[i];
-      img.onload = function(){ onok(src); };
-      img.onerror = function(){ i++; attempt(); };
-      img.src = src;
-    })();
-  }
-  function reveal(){ 
-    document.getElementById('paintGalleryWrap').style.display = 'block';
-    document.getElementById('paintPlaceholder').style.display = 'none';
-  }
-  function addTile(gridId, src, cap, order){
-    var grid = document.getElementById(gridId);
-    var d = document.createElement('div'); d.className = 'g-item'; d.style.order = order;
-    var im = document.createElement('img'); im.src = src; im.loading = 'lazy'; im.alt = cap || 'Photograph of a painting by K. M. Varghese';
-    d.onclick = function(){ openLB(src, cap); };
-    d.appendChild(im);
-    if (cap){ var c = document.createElement('div'); c.className = 'g-cap'; c.textContent = cap; d.appendChild(c); }
-    grid.appendChild(d);
-    reveal();
-    if (gridId === 'galUnidentified') document.getElementById('galUnidentifiedWrap').style.display = 'block';
-  }
-  var caps = [].slice.call(document.querySelectorAll('.paintings-list li')).map(function(li){ return li.textContent.trim(); });
-  // Identified works: painting-<catalogue number>.<ext>
-  for (var n = 1; n <= 118; n++){
-    (function(n){
-      tryImg('painting-' + n, function(src){
-        var full = caps[n-1] || '';
-        var cap = '\u2116 ' + n + (full ? ' \u2014 ' + (full.length > 95 ? full.slice(0,95) + '\u2026' : full) : '');
-        addTile('galIdentified', src, cap, n);
-      });
-    })(n);
-  }
-  // Unidentified photos: 001.jpg, 002.jpeg ... up to 040
-  for (var m = 1; m <= 40; m++){
-    (function(m){
-      var b = ('00' + m).slice(-3);
-      tryImg(b, function(src){ addTile('galUnidentified', src, '', m); });
-    })(m);
-  }
-  // Lightbox
-  var ov = document.getElementById('lbOverlay');
-  window.openLB = function(src, cap){
-    document.getElementById('lbImg').src = src;
-    document.getElementById('lbCap').textContent = cap || '';
-    ov.style.display = 'flex';
-  };
-  function closeLB(){ ov.style.display = 'none'; }
-  ov.onclick = closeLB;
-  document.getElementById('lbClose').onclick = closeLB;
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeLB(); });
-})();
-</script>
-<script>
-(function(){
-  var exts = ['jpg','jpeg','JPG','JPEG','png'];
-  function tryImg(base, onok){
-    var i = 0;
-    (function attempt(){
-      if (i >= exts.length) return;
-      var img = new Image();
-      var src = 'books/' + base + '.' + exts[i];
-      img.onload = function(){ onok(src); };
-      img.onerror = function(){ i++; attempt(); };
-      img.src = src;
-    })();
-  }
-  var cards = [].slice.call(document.querySelectorAll('.books-grid .book-card'));
-  cards.forEach(function(card, idx){
-    tryImg('book-' + (idx + 1), function(src){
-      var titleEl = card.querySelector('.book-title');
-      var title = titleEl ? titleEl.textContent.trim() : '';
-      var im = document.createElement('img');
-      im.className = 'book-cover'; im.src = src; im.loading = 'lazy';
-      im.alt = 'Cover of ' + title;
-      im.onclick = function(){ if (window.openLB) openLB(src, title); };
-      var icon = card.querySelector('.book-card-icon');
-      if (icon) card.replaceChild(im, icon); else card.insertBefore(im, card.firstChild);
-      var ph = document.getElementById('bookPlaceholder');
-      if (ph) ph.style.display = 'none';
-    });
-  });
-})();
-</script>
 </body>
 </html>
