@@ -336,8 +336,23 @@
       <a href="index.html">← Powathikunnel Family Directory</a> &nbsp;/&nbsp; Notable Members
     </div>
     <div class="hero-photo-placeholder" id="heroPhotoBox">Photo<br>Placeholder</div>
-    <img src="images/km-varghese.jpg" alt="Portrait of K. M. Varghese" class="hero-photo" style="display:none"
-         onload="var b=document.getElementById('heroPhotoBox'); if(b){b.parentNode.replaceChild(this,b);} this.style.display='block';">
+    <script>
+    (function(){
+      var exts = ['png','jpg','jpeg','PNG','JPG','JPEG'], i = 0;
+      (function attempt(){
+        if (i >= exts.length) return; // no file yet: placeholder stays
+        var im = new Image();
+        im.onload = function(){
+          im.className = 'hero-photo';
+          im.alt = 'Portrait of K. M. Varghese';
+          var b = document.getElementById('heroPhotoBox');
+          if (b) b.parentNode.replaceChild(im, b);
+        };
+        im.onerror = function(){ i++; attempt(); };
+        im.src = 'images/km-varghese.' + exts[i];
+      })();
+    })();
+    </script>
     <h1>K. M. Varghese</h1>
     <div class="hero-dates">c. 1880s – 1960s &nbsp;·&nbsp; Mavelikara, Kerala</div>
     <p class="hero-bio">
