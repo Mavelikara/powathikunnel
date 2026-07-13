@@ -54,10 +54,8 @@ input[type=file]{width:100%;background:#0f1117;border:1px dashed #3a4a5c;border-
 
   <div class="card">
     <h2>① Firebase Config</h2>
+    <p style="font-size:.8rem;color:#68d391;margin-bottom:14px">✓ Built in — using the exact same configuration as www.powathikunnel.com. Nothing to paste.</p>
     <div class="grid2">
-      <div><label>API Key</label><input type="text" id="cfg-apiKey" placeholder="AIzaSy…" /></div>
-      <div><label>Project ID</label><input type="text" id="cfg-projectId" value="powathikunnel-40a66" /></div>
-      <div><label>Auth Domain</label><input type="text" id="cfg-authDomain" value="powathikunnel-40a66.firebaseapp.com" /></div>
       <div><label>Target Collection</label><input type="text" id="cfg-col" value="members_v2" /></div>
     </div>
   </div>
@@ -107,10 +105,35 @@ input[type=file]{width:100%;background:#0f1117;border:1px dashed #3a4a5c;border-
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, doc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-window._uploaderReady = true;
+let initializeApp, getFirestore, collection, doc, writeBatch, getAuth, signInWithEmailAndPassword;
+function showFail(msg) {
+  let b = document.getElementById('fb-fail-banner');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = 'fb-fail-banner';
+    b.style.cssText = 'background:#2d1a1a;border:1px solid #e53e3e;border-radius:8px;padding:12px 16px;font-size:0.82rem;color:#fc8181;margin-bottom:18px';
+    document.querySelector('.container').prepend(b);
+  }
+  b.textContent = '⚠️ ' + msg;
+}
+const fbReady = (async () => {
+  try {
+    const appM = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+    initializeApp = appM.initializeApp;
+    const fsM = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+    getFirestore = fsM.getFirestore; collection = fsM.collection; doc = fsM.doc; writeBatch = fsM.writeBatch;
+    const auM = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+    getAuth = auM.getAuth; signInWithEmailAndPassword = auM.signInWithEmailAndPassword;
+    window._uploaderReady = true;
+    const b = document.getElementById('fb-fail-banner'); if (b) b.remove();
+    log('ok', 'Firebase libraries loaded — ready');
+    return true;
+  } catch (e) {
+    showFail('Firebase libraries failed to load: ' + (e && e.message ? e.message : e) + ' — check your connection or ad-blocker, then refresh.');
+    log('err', 'Library load failed: ' + (e && e.message ? e.message : e));
+    return false;
+  }
+})();
 
 // ── Exact column → Firestore field mapping (Combined sheet)
 const COL_MAP = {
@@ -222,22 +245,18 @@ document.getElementById('file-in').addEventListener('change', function(e) {
   reader.readAsArrayBuffer(file);
 });
 
-function getDB() {
+const FIREBASE_CONFIG = {apiKey:"AIzaSyBDRQr7_gfGg1tV5iv86-c7ZIzoU1GW72A",authDomain:"powathikunnel-40a66.firebaseapp.com",databaseURL:"https://powathikunnel-40a66-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"powathikunnel-40a66",storageBucket:"powathikunnel-40a66.firebasestorage.app",messagingSenderId:"698176790898",appId:"1:698176790898:web:0ad065f108fd273152fdeb"};
+async function getDB() {
   if (db) return db;
-  const cfg = {
-    apiKey:       document.getElementById('cfg-apiKey').value.trim(),
-    projectId:    document.getElementById('cfg-projectId').value.trim(),
-    authDomain:   document.getElementById('cfg-authDomain').value.trim(),
-  };
-  if (!cfg.apiKey) { log('err','API Key is required'); return null; }
-  appInst = initializeApp(cfg, 'uploader-' + Date.now());
+  if (!(await fbReady)) { log('err', 'Cannot continue — Firebase libraries are not loaded'); return null; }
+  appInst = initializeApp(FIREBASE_CONFIG, 'uploader-' + Date.now());
   db = getFirestore(appInst);
   auth = getAuth(appInst);
   return db;
 }
 
 window.doSignIn = async function() {
-  const database = getDB();
+  const database = await getDB();
   if (!database) return;
   const email = document.getElementById('auth-email').value.trim();
   const pw = document.getElementById('auth-pw').value;
@@ -255,13 +274,13 @@ window.doSignIn = async function() {
     signedIn = false;
     st.textContent = '✗ Sign-in failed';
     st.style.color = '#fc8181';
-    log('err', 'Sign-in failed: ' + err.message);
+    log('err', 'Sign-in failed [' + (err.code||'unknown') + ']: ' + err.message);
     updateUpBtn();
   }
 };
 
 window.startUpload = async function() {
-  const database = getDB();
+  const database = await getDB();
   if (!database || !rows.length) return;
   if (!signedIn) { log('err', 'Please sign in first (step \u2461) \u2014 the database rejects anonymous writes'); return; }
   const colName = document.getElementById('cfg-col').value.trim() || 'members_v2';
@@ -311,13 +330,14 @@ function log(type, msg) {
 </script>
 <script>
 setTimeout(function(){
-  if (!window._uploaderReady) {
+  if (!window._uploaderReady && !document.getElementById('fb-fail-banner')) {
     var d = document.createElement('div');
-    d.style.cssText = 'background:#2d1a1a;border:1px solid #e53e3e;border-radius:8px;padding:12px 16px;font-size:0.82rem;color:#fc8181;max-width:900px;margin:0 auto 18px';
-    d.textContent = '⚠️ Could not load the Firebase libraries. Check your internet connection, disable any ad-blocker for this page, then refresh.';
+    d.id = 'fb-fail-banner';
+    d.style.cssText = 'background:#2d1a1a;border:1px solid #e53e3e;border-radius:8px;padding:12px 16px;font-size:0.82rem;color:#fc8181;margin-bottom:18px';
+    d.textContent = '⚠️ Still loading the Firebase libraries… if this message persists, check your connection or ad-blocker and refresh.';
     document.querySelector('.container').prepend(d);
   }
-}, 5000);
+}, 15000);
 </script>
 </body>
 </html>
