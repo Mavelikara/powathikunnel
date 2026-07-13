@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>members_v2 Uploader — Powathikunnel</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;padding:32px 16px}
+.container{max-width:900px;margin:0 auto}
+h1{font-size:1.45rem;font-weight:700;color:#f0c040;margin-bottom:4px}
+.subtitle{font-size:0.82rem;color:#718096;margin-bottom:26px}
+.badge{display:inline-block;background:#2d1a1a;color:#fc8181;border:1px solid #e53e3e55;border-radius:6px;padding:2px 10px;font-size:0.7rem;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;margin-left:10px;vertical-align:middle}
+.card{background:#1a1f2e;border:1px solid #2d3748;border-radius:12px;padding:22px 24px;margin-bottom:18px}
+.card h2{font-size:0.82rem;font-weight:700;color:#90cdf4;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px}
+label{display:block;font-size:0.78rem;color:#94a3b8;margin-bottom:5px}
+input[type=text],input[type=password]{width:100%;background:#0f1117;border:1px solid #2d3748;border-radius:7px;padding:9px 13px;color:#e2e8f0;font-size:0.85rem;margin-bottom:13px;outline:none;transition:border-color .2s}
+input[type=text]:focus,input[type=password]:focus{border-color:#f0c040}
+input[type=file]{width:100%;background:#0f1117;border:1px dashed #3a4a5c;border-radius:7px;padding:10px;color:#94a3b8;font-size:0.82rem;margin-bottom:13px;cursor:pointer;outline:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:580px){.grid2{grid-template-columns:1fr}}
+.warn-box{background:#2d1a0a;border:1px solid #c05000;border-radius:8px;padding:11px 16px;font-size:0.8rem;color:#fbd38d;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start}
+#preview-cols{background:#0f1117;border:1px solid #2d3748;border-radius:8px;padding:12px 14px;font-size:0.75rem;color:#94a3b8;max-height:130px;overflow-y:auto;font-family:'Courier New',monospace;display:none;margin-bottom:13px}
+#preview-cols .ch{color:#f0c040}
+.stat-row{display:flex;gap:22px;flex-wrap:wrap;padding-top:14px;border-top:1px solid #2d3748;display:none}
+.stat .n{font-size:1.45rem;font-weight:700;color:#f0c040}
+.stat .l{font-size:0.68rem;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:8px;border:none;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all .18s;letter-spacing:.3px}
+.btn-gold{background:#f0c040;color:#0f1117}
+.btn-gold:hover:not(:disabled){background:#e6b800;transform:translateY(-1px)}
+.btn-dim{background:#2d3748;color:#e2e8f0}
+.btn-dim:hover:not(:disabled){background:#3a4a5c}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+#prog-wrap{display:none;margin-top:18px}
+.pb-bg{background:#0f1117;border:1px solid #2d3748;border-radius:100px;height:9px;overflow:hidden}
+.pb-fill{height:100%;background:#f0c040;border-radius:100px;width:0;transition:width .25s}
+#prog-text{font-size:0.76rem;color:#64748b;margin-top:7px;display:flex;justify-content:space-between}
+#logbox{background:#0f1117;border:1px solid #2d3748;border-radius:8px;padding:11px 14px;font-size:0.74rem;font-family:'Courier New',monospace;max-height:200px;overflow-y:auto;display:none;margin-top:14px}
+.ll{padding:2px 0}
+.lok{color:#68d391}.lerr{color:#fc8181}.linfo{color:#90cdf4}.lwarn{color:#f6e05e}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>members_v2 Uploader <span class="badge">sandbox only</span></h1>
+  <p class="subtitle">Reads the <strong>Combined</strong> sheet from Master-Tree.xlsx and pushes every row into <strong style="color:#f0c040">members_v2</strong>. The live <strong>members</strong> collection is never touched.</p>
+
+  <div class="warn-box">
+    <span>⚠️</span>
+    <div>This writes only to <strong>members_v2</strong> in project <strong>powathikunnel-40a66</strong>. Double-check the collection name below before uploading.</div>
+  </div>
+
+  <div class="card">
+    <h2>① Firebase Config</h2>
+    <div class="grid2">
+      <div><label>API Key</label><input type="text" id="cfg-apiKey" placeholder="AIzaSy…" /></div>
+      <div><label>Project ID</label><input type="text" id="cfg-projectId" value="powathikunnel-40a66" /></div>
+      <div><label>Auth Domain</label><input type="text" id="cfg-authDomain" value="powathikunnel-40a66.firebaseapp.com" /></div>
+      <div><label>Target Collection</label><input type="text" id="cfg-col" value="members_v2" /></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>② Sign in as Administrator</h2>
+    <p style="font-size:.8rem;color:#64748b;margin-bottom:14px">The database is protected — only signed-in admin/editor accounts may write to it. Use the same email and password as on the main website.</p>
+    <div class="grid2">
+      <div><label>Email</label><input type="text" id="auth-email" placeholder="you@example.com" autocomplete="username" /></div>
+      <div><label>Password</label><input type="password" id="auth-pw" autocomplete="current-password" /></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-dim" id="btn-signin" onclick="doSignIn()">🔐 Sign In</button>
+      <span id="auth-status" style="font-size:.8rem;color:#64748b;align-self:center"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>③ Select Master-Tree.xlsx</h2>
+    <label>File — the <em>Combined</em> sheet will be used</label>
+    <input type="file" id="file-in" accept=".xlsx,.xls" />
+    <div id="preview-cols"></div>
+    <div class="stat-row" id="stat-row">
+      <div class="stat"><div class="n" id="s-rows">—</div><div class="l">Total rows</div></div>
+      <div class="stat"><div class="n" id="s-mp">—</div><div class="l">MP line</div></div>
+      <div class="stat"><div class="n" id="s-ui">—</div><div class="l">UI line</div></div>
+      <div class="stat"><div class="n" id="s-cols">—</div><div class="l">Columns</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>④ Upload</h2>
+    <p style="font-size:.8rem;color:#64748b;margin-bottom:14px">
+      Writes in batches of 499. Document ID = string version of the <strong>ID</strong> field (e.g. <em>"1"</em>, <em>"287"</em>).
+      Uses <code style="color:#f0c040">merge:true</code> — safe to re-run.
+      The <strong>Notes</strong> column is excluded from upload (internal only).
+    </p>
+    <div class="btn-row">
+      <button class="btn btn-gold" id="btn-up" disabled onclick="startUpload()">⬆ Upload to members_v2</button>
+    </div>
+    <div id="prog-wrap">
+      <div class="pb-bg"><div class="pb-fill" id="pbar"></div></div>
+      <div id="prog-text"><span id="p-n">0 / 0</span><span id="p-pct">0%</span></div>
+    </div>
+    <div id="logbox"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, doc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+window._uploaderReady = true;
+
+// ── Exact column → Firestore field mapping (Combined sheet)
+const COL_MAP = {
+  'ID':                        'id',
+  'Line':                      'line',
+  'Gen':                       'gen',
+  'First Name':                'first_name',
+  'Parent ID':                 'parent_id',
+  'Life Status':               'life_status',   // values: 'alive' or 'deceased'
+  'Pet\nName':                 'pet_name',
+  'Gender':                    'gender',
+  'Date of Birth':             'date_of_birth',
+  'Father':                    'father',
+  'Mother':                    'mother',
+  'Place of Birth':            'place_of_birth',
+  'Baptised Church':           'baptised_church',
+  'House Name':                'house_name',
+  'Date of Death':             'date_of_death',
+  'Place of Death':            'place_of_death',
+  'Children':                  'children',
+  'Siblings':                  'siblings',
+  'Highest Education':         'highest_education',
+  'School / College Name':     'school_college_name',
+  'School / College Location': 'school_college_location',
+  'Profession':                'profession',
+  'BIO':                       'bio',
+  'Major Relocations':         'major_relocations',
+  'Last Known Location':       'last_known_location',
+  'Profile Photo':             'profile_photo',
+  'Spouse\nName':              'spouse1_name',
+  'Spouse\n Pet Name':         'spouse1_pet_name',
+  'Spouse\n House Name':       'spouse1_house_name',
+  'Spouse Home Town':          'spouse1_home_town',
+  'Year of Marriage':          'year_of_marriage',
+  'Place of Marriage':         'place_of_marriage',
+  'Spouse DOB':                'spouse1_dob',
+  'Spouse Profession':         'spouse1_profession',
+  'Spouse DOD':                'spouse1_dod',
+  'Spouse Place of Death':     'spouse1_place_of_death',
+  'Spouse\nPlace of Burial':   'spouse1_burial_place',
+  'Spouse (2)\nName':          'spouse2_name',
+  'Spouse (2)\n Pet Name':     'spouse2_pet_name',
+  'Spouse (2)\n House Name':   'spouse2_house_name',
+  'Spouse (2) Home Town':      'spouse2_home_town',
+  'Year of Marriage.1':        'spouse2_year_of_marriage',
+  'Place of Marriage.1':       'spouse2_place_of_marriage',
+  'Spouse (2) DOB':            'spouse2_dob',
+  'Spouse (2)\n Profession':   'spouse2_profession',
+  'Spouse (2) DOD':            'spouse2_dod',
+  'Spouse (2) Place of Death': 'spouse2_place_of_death',
+  'Spouse (2)\nPlace of Burial':'spouse2_burial_place',
+  // 'Notes' intentionally excluded
+};
+
+let db = null, rows = [], appInst = null, auth = null, signedIn = false;
+function updateUpBtn(){ document.getElementById('btn-up').disabled = !(rows.length && signedIn); }
+
+document.getElementById('file-in').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const wb = XLSX.read(ev.target.result, { type:'array', cellDates:true });
+    // Use Combined sheet
+    const sheetName = wb.SheetNames.find(s => s === 'Combined') || wb.SheetNames[0];
+    const ws = wb.Sheets[sheetName];
+    const raw = XLSX.utils.sheet_to_json(ws, { defval: null, raw: false });
+
+    rows = raw.map(r => {
+      const out = {};
+      for (const [excelCol, fsKey] of Object.entries(COL_MAP)) {
+        let val = r[excelCol];
+        // Normalise empty/nan
+        if (val === '' || val === 'NaN' || val === undefined) val = null;
+        // life_status: TRUE string or boolean true → true (deceased)
+        if (fsKey === 'life_status' && val !== null) {
+          val = String(val).trim().toLowerCase(); // 'alive' or 'deceased'
+        }
+        // id, parent_id, gen, children, siblings: integer or string
+        if (fsKey === 'id' && val !== null) val = String(val).trim();
+        if (['parent_id','gen','children','siblings'].includes(fsKey) && val !== null) {
+          const n = parseInt(val); val = isNaN(n) ? val : n;
+        }
+        // profile_photo: boolean
+        if (fsKey === 'profile_photo') val = (val === true || String(val).trim().toUpperCase() === 'TRUE');
+        if (val !== null) out[fsKey] = val;
+      }
+      return out;
+    }).filter(r => r.id);
+
+    const mp = rows.filter(r => r.line === 'MP').length;
+    const ui = rows.filter(r => r.line === 'UI').length;
+    document.getElementById('s-rows').textContent = rows.length;
+    document.getElementById('s-mp').textContent = mp;
+    document.getElementById('s-ui').textContent = ui;
+    document.getElementById('s-cols').textContent = Object.keys(COL_MAP).length;
+    document.getElementById('stat-row').style.display = 'flex';
+
+    const pb = document.getElementById('preview-cols');
+    pb.style.display = 'block';
+    const keys = Object.values(COL_MAP);
+    pb.innerHTML = `<strong style="color:#90cdf4">Firestore fields that will be written (${keys.length}):</strong><br>` +
+      keys.map(k => `<span class="ch">${k}</span>`).join(' · ');
+
+    updateUpBtn();
+    log('info', `Sheet "${sheetName}" loaded — ${rows.length} valid rows ready`);
+    if (!signedIn) log('warn', 'Now sign in (step ②) to enable the upload button');
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+function getDB() {
+  if (db) return db;
+  const cfg = {
+    apiKey:       document.getElementById('cfg-apiKey').value.trim(),
+    projectId:    document.getElementById('cfg-projectId').value.trim(),
+    authDomain:   document.getElementById('cfg-authDomain').value.trim(),
+  };
+  if (!cfg.apiKey) { log('err','API Key is required'); return null; }
+  appInst = initializeApp(cfg, 'uploader-' + Date.now());
+  db = getFirestore(appInst);
+  auth = getAuth(appInst);
+  return db;
+}
+
+window.doSignIn = async function() {
+  const database = getDB();
+  if (!database) return;
+  const email = document.getElementById('auth-email').value.trim();
+  const pw = document.getElementById('auth-pw').value;
+  if (!email || !pw) { log('err','Enter your email and password'); return; }
+  const st = document.getElementById('auth-status');
+  st.textContent = 'Signing in…';
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pw);
+    signedIn = true;
+    st.textContent = '✓ Signed in as ' + cred.user.email;
+    st.style.color = '#68d391';
+    log('ok', 'Signed in as ' + cred.user.email + ' — uploads will run with your admin credentials');
+    updateUpBtn();
+  } catch(err) {
+    signedIn = false;
+    st.textContent = '✗ Sign-in failed';
+    st.style.color = '#fc8181';
+    log('err', 'Sign-in failed: ' + err.message);
+    updateUpBtn();
+  }
+};
+
+window.startUpload = async function() {
+  const database = getDB();
+  if (!database || !rows.length) return;
+  if (!signedIn) { log('err', 'Please sign in first (step \u2461) \u2014 the database rejects anonymous writes'); return; }
+  const colName = document.getElementById('cfg-col').value.trim() || 'members_v2';
+  document.getElementById('btn-up').disabled = true;
+  document.getElementById('prog-wrap').style.display = 'block';
+
+  const total = rows.length;
+  let done = 0, errs = 0;
+  log('info', `Uploading ${total} records to "${colName}"…`);
+
+  for (let i = 0; i < total; i += 499) {
+    const chunk = rows.slice(i, i + 499);
+    const batch = writeBatch(database);
+    for (const row of chunk) {
+      batch.set(doc(collection(database, colName), row.id), row, { merge: true });
+    }
+    try {
+      await batch.commit();
+      done += chunk.length;
+      log('ok', `Batch ${i+1}–${Math.min(i+499,total)} committed (${chunk.length} docs)`);
+    } catch(err) {
+      errs += chunk.length;
+      log('err', `Batch ${i+1}–${i+499} failed: ${err.message}`);
+    }
+    setProgress(done + errs, total);
+  }
+  log(errs ? 'warn' : 'ok', `Done. ✓ ${done} written  ✗ ${errs} errors.`);
+  document.getElementById('btn-up').disabled = false;
+};
+
+function setProgress(n, total) {
+  const pct = Math.round(n/total*100);
+  document.getElementById('pbar').style.width = pct + '%';
+  document.getElementById('p-n').textContent = `${n} / ${total}`;
+  document.getElementById('p-pct').textContent = pct + '%';
+}
+
+function log(type, msg) {
+  const box = document.getElementById('logbox');
+  box.style.display = 'block';
+  const d = document.createElement('div');
+  d.className = `ll l${type}`;
+  d.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+</script>
+<script>
+setTimeout(function(){
+  if (!window._uploaderReady) {
+    var d = document.createElement('div');
+    d.style.cssText = 'background:#2d1a1a;border:1px solid #e53e3e;border-radius:8px;padding:12px 16px;font-size:0.82rem;color:#fc8181;max-width:900px;margin:0 auto 18px';
+    d.textContent = '⚠️ Could not load the Firebase libraries. Check your internet connection, disable any ad-blocker for this page, then refresh.';
+    document.querySelector('.container').prepend(d);
+  }
+}, 5000);
+</script>
+</body>
+</html>
