@@ -2055,14 +2055,45 @@ function renderPosterPreview() {
   }
 }
 
-function downloadPosterPNG() {
+async function downloadPosterPNG() {
   if (!POSTER_STATE.svg) { showToast("Nothing to download yet — generate a preview first.", "info"); return; }
   var svgEl = document.querySelector("#posterPreview svg");
   if (!svgEl) return;
   var vb = svgEl.getAttribute("viewBox").split(" ").map(Number);
   var w = vb[2], h = vb[3];
   var scale = 2;
-  var svgData = new XMLSerializer().serializeToString(svgEl);
+
+  showToast("Preparing your poster for download…", "info");
+
+  // Rasterizing an SVG via the img->canvas technique loads the SVG in a sandboxed mode that
+  // silently refuses to fetch any externally-referenced images inside it (e.g. Firebase Storage
+  // photos) — that's why photos show fine on screen but vanish from the downloaded PNG.
+  // Fix: work on a clone, fetch every photo ourselves, and inline each one as a self-contained
+  // data URI so nothing needs to be fetched during that sandboxed step.
+  var clone = svgEl.cloneNode(true);
+  var imageEls = Array.from(clone.querySelectorAll("image"));
+  await Promise.all(imageEls.map(async function (imgEl) {
+    var href = imgEl.getAttribute("href");
+    if (!href || href.indexOf("data:") === 0) return;
+    try {
+      var resp = await fetch(href);
+      if (!resp.ok) throw new Error("fetch failed");
+      var blob = await resp.blob();
+      var dataUrl = await new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function () { resolve(reader.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      imgEl.setAttribute("href", dataUrl);
+    } catch (e) {
+      // Couldn't fetch this one photo for the export — drop it from this clone only,
+      // so the download still succeeds with a letter-initial in its place rather than failing entirely.
+      imgEl.remove();
+    }
+  }));
+
+  var svgData = new XMLSerializer().serializeToString(clone);
   var svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
   var url = URL.createObjectURL(svgBlob);
   var img = new Image();
