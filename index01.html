@@ -1814,6 +1814,35 @@ function posterAvatarSrc(member) {
   return photos.length ? photos[0] : "";
 }
 
+// If a poster photo fails to load (broken/expired URL, network hiccup, etc.),
+// swap it for the same clean letter-initial circle used for people with no photo at all.
+function posterImageError(imgEl) {
+  if (imgEl.dataset.fallbackApplied) return;
+  imgEl.dataset.fallbackApplied = "1";
+  var ns = "http://www.w3.org/2000/svg";
+  var cx = imgEl.getAttribute("data-fallback-cx");
+  var cy = imgEl.getAttribute("data-fallback-cy");
+  var r = imgEl.getAttribute("data-fallback-r");
+  var initial = imgEl.getAttribute("data-fallback-initial");
+  var nameFill = imgEl.getAttribute("data-fallback-namefill");
+  var circle = document.createElementNS(ns, "circle");
+  circle.setAttribute("cx", cx); circle.setAttribute("cy", cy); circle.setAttribute("r", r);
+  circle.setAttribute("fill", "#efe4c8"); circle.setAttribute("stroke", "#a8863e"); circle.setAttribute("stroke-width", "1.5");
+  var text = document.createElementNS(ns, "text");
+  text.setAttribute("x", cx);
+  text.setAttribute("y", parseFloat(cy) + parseFloat(r) * 0.34);
+  text.setAttribute("text-anchor", "middle");
+  text.setAttribute("font-family", "Cormorant Garamond, serif");
+  text.setAttribute("font-size", parseFloat(r) * 0.68);
+  text.setAttribute("fill", nameFill);
+  text.textContent = initial;
+  var parent = imgEl.parentNode;
+  parent.insertBefore(circle, imgEl);
+  parent.insertBefore(text, imgEl);
+  imgEl.remove();
+}
+window.posterImageError = posterImageError;
+
 function posterPersonBox(p, x, y, w, h, isCouple) {
   var isFemale = p.gender === "F";
   var fill = isFemale ? "#fdf2f6" : p.gender === "M" ? "#f4f9fd" : "#f6efdd";
@@ -1826,7 +1855,9 @@ function posterPersonBox(p, x, y, w, h, isCouple) {
   var clipId = "pclip" + Math.round(x) + "_" + Math.round(y) + "_" + Math.round(Math.random() * 9999);
   var avatarSvg = avatarSrc
     ? '<defs><clipPath id="' + clipId + '"><circle cx="' + cx + '" cy="' + cy + '" r="' + r + '"/></clipPath></defs>' +
-      '<image href="' + posterEsc(avatarSrc) + '" x="' + (cx - r) + '" y="' + (cy - r) + '" width="' + (r * 2) + '" height="' + (r * 2) + '" preserveAspectRatio="xMidYMid slice" clip-path="url(#' + clipId + ')"/>' +
+      '<image href="' + posterEsc(avatarSrc) + '" x="' + (cx - r) + '" y="' + (cy - r) + '" width="' + (r * 2) + '" height="' + (r * 2) + '" preserveAspectRatio="xMidYMid slice" clip-path="url(#' + clipId + ')" ' +
+      'data-fallback-cx="' + cx + '" data-fallback-cy="' + cy + '" data-fallback-r="' + r + '" data-fallback-initial="' + initial + '" data-fallback-namefill="' + nameFill + '" ' +
+      'onerror="posterImageError(this)"/>' +
       '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#a8863e" stroke-width="1.5"/>'
     : '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#efe4c8" stroke="#a8863e" stroke-width="1.5"/>' +
       '<text x="' + cx + '" y="' + (cy + h * 0.06) + '" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="' + (h * 0.34) + '" fill="' + nameFill + '">' + initial + "</text>";
