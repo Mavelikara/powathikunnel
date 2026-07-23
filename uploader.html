@@ -142,7 +142,9 @@ const COL_MAP = {
   'Gen':                       'gen',
   'First Name':                'first_name',
   'Parent ID':                 'parent_id',
-  'Life Status':               'life_status',   // values: 'alive' or 'deceased'
+  'Life Status':               'life_status',   // values: 'alive', 'deceased', or 'uncertain'
+  'Spouse Life Status':        'spouse1_life_status',
+  'Spouse (2) Life Status':    'spouse2_life_status',
   'Pet\nName':                 'pet_name',
   'Gender':                    'gender',
   'Date of Birth':             'date_of_birth',
@@ -208,9 +210,9 @@ document.getElementById('file-in').addEventListener('change', function(e) {
         let val = r[excelCol];
         // Normalise empty/nan
         if (val === '' || val === 'NaN' || val === undefined) val = null;
-        // life_status: TRUE string or boolean true → true (deceased)
-        if (fsKey === 'life_status' && val !== null) {
-          val = String(val).trim().toLowerCase(); // 'alive' or 'deceased'
+        // life_status fields: normalise to lowercase 'alive' / 'deceased' / 'uncertain'
+        if (['life_status','spouse1_life_status','spouse2_life_status'].includes(fsKey) && val !== null) {
+          val = String(val).trim().toLowerCase();
         }
         // id, parent_id, gen, children, siblings: integer or string
         if (fsKey === 'id' && val !== null) val = String(val).trim();
