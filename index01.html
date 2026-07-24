@@ -1808,8 +1808,14 @@ function posterGetParents(m) {
   var motherName = (m.mother || "").trim();
   var parentIsFather = parentMember && parentMember.first_name === fatherName;
   var parentIsMother = parentMember && parentMember.first_name === motherName;
-  var father = fatherName ? { name: fatherName, member: parentIsFather ? parentMember : null } : null;
-  var mother = motherName ? { name: motherName, member: parentIsMother ? parentMember : null } : null;
+  // The other parent (not the tracked member) may still have a photo if they were
+  // entered as this tracked member's own spouse, via the spouse photo feature.
+  function cleanSpouseName(n) { return (n || "").replace(/\s*\u2020\s*$/, "").replace(/\s*\*\d+/g, "").trim(); }
+  var fatherPhoto = null, motherPhoto = null;
+  if (parentIsFather && cleanSpouseName(parentMember.spouse1_name) === motherName) motherPhoto = parentMember.spouse1_photo || null;
+  if (parentIsMother && cleanSpouseName(parentMember.spouse1_name) === fatherName) fatherPhoto = parentMember.spouse1_photo || null;
+  var father = fatherName ? { name: fatherName, member: parentIsFather ? parentMember : null, photo: fatherPhoto } : null;
+  var mother = motherName ? { name: motherName, member: parentIsMother ? parentMember : null, photo: motherPhoto } : null;
   return { father: father, mother: mother };
 }
 
@@ -1830,8 +1836,8 @@ function buildPosterTiers(focusId, ancDepth, descDepth) {
     var pp = posterGetParents(cursor);
     if (!pp.father && !pp.mother) break;
     var people = [];
-    if (pp.father) people.push({ name: pp.father.name, gender: "M", member: pp.father.member });
-    if (pp.mother) people.push({ name: pp.mother.name, gender: "F", member: pp.mother.member });
+    if (pp.father) people.push({ name: pp.father.name, gender: "M", member: pp.father.member, photo: pp.father.photo });
+    if (pp.mother) people.push({ name: pp.mother.name, gender: "F", member: pp.mother.member, photo: pp.mother.photo });
     ancTiersRaw.push({ people: people });
     var nextCursor = (pp.father && pp.father.member) ? pp.father.member : (pp.mother && pp.mother.member ? pp.mother.member : null);
     if (!nextCursor) break;
