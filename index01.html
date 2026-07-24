@@ -1309,7 +1309,7 @@
       </div>
       <div id="modalEditHint" style="font-size:.64rem;color:var(--muted);margin:2px 0 4px">Spot something to add or correct? Your suggestion goes to the family administrator for review.</div>
       <div class="nav-btns">
-        <button class="nb" id="navParentBtn" onclick="navToParent()">⬆ Parent</button>
+        <button class="nb" id="navParentBtn" onclick="">⬆ Parent</button>
         <button class="nb" onclick="closeModal()">Close</button>
       </div>
       <p style="margin-top:14px;padding-top:10px;border-top:1px solid var(--border);font-size:.68rem;color:var(--muted);line-height:1.7;font-style:italic">
@@ -1809,11 +1809,22 @@ function posterGetParents(m) {
   var parentIsFather = parentMember && parentMember.first_name === fatherName;
   var parentIsMother = parentMember && parentMember.first_name === motherName;
   // The other parent (not the tracked member) may still have a photo if they were
-  // entered as this tracked member's own spouse, via the spouse photo feature.
+  // entered as this tracked member's own spouse (1, 2, or 3), via the spouse photo feature.
   function cleanSpouseName(n) { return (n || "").replace(/\s*\u2020\s*$/, "").replace(/\s*\*\d+/g, "").trim(); }
+  function firstWord(s) { return (s || "").trim().split(/\s+/)[0] || ""; }
+  function findSpousePhoto(member, targetName) {
+    if (!member || !targetName) return null;
+    var targetFirst = firstWord(targetName).toLowerCase();
+    if (!targetFirst) return null;
+    for (var i = 1; i <= 3; i++) {
+      var spName = cleanSpouseName(member["spouse" + i + "_name"]);
+      if (spName && firstWord(spName).toLowerCase() === targetFirst) return member["spouse" + i + "_photo"] || null;
+    }
+    return null;
+  }
   var fatherPhoto = null, motherPhoto = null;
-  if (parentIsFather && cleanSpouseName(parentMember.spouse1_name) === motherName) motherPhoto = parentMember.spouse1_photo || null;
-  if (parentIsMother && cleanSpouseName(parentMember.spouse1_name) === fatherName) fatherPhoto = parentMember.spouse1_photo || null;
+  if (parentIsFather) motherPhoto = findSpousePhoto(parentMember, motherName);
+  if (parentIsMother) fatherPhoto = findSpousePhoto(parentMember, fatherName);
   var father = fatherName ? { name: fatherName, member: parentIsFather ? parentMember : null, photo: fatherPhoto } : null;
   var mother = motherName ? { name: motherName, member: parentIsMother ? parentMember : null, photo: motherPhoto } : null;
   return { father: father, mother: mother };
@@ -2040,7 +2051,7 @@ function renderPosterSVG(tiers, focus) {
       upper.positions.forEach(function (pos) {
         var srcX = pos.cx, srcY = pos.y + pos.h;
         var midY = srcY + (targetTopY - srcY) * 0.55;
-        connectors.push('<path d="M' + srcX + " " + srcY + " C " + srcX + " " + midY + ", " + targetX + " " + midY + ", " + targetX + " " + targetTopY + '" fill="none" stroke="#5a3d24" stroke-width="3" stroke-linecap="round" opacity="0.85"/>');
+        connectors.push('<path d="M' + srcX + " " + srcY + " V" + midY + " H" + targetX + " V" + targetTopY + '" fill="none" stroke="#5a3d24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>');
       });
       if (loKind === "descendant") {
         // focus tier -> first descendant tier: fan from marriage midpoint to all children
