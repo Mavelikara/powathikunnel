@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chess Control</title>
+<style>
+:root{--blue:#1a56a0;--green:#188038;--red:#c5221f;--amber:#f9ab00;--line:#e3e3e3}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6f8;color:#1a1a1a}
+#topbar{background:#111;color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+#topbar h1{font-size:16px;margin:0;letter-spacing:.5px}
+#topbar .who{font-size:12px;color:#bbb}
+#topbar button{background:transparent;border:1px solid #555;color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer}
+#navbar{background:var(--blue);color:#fff;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;display:none}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+.screen{display:none}.screen.active{display:block}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+h2{font-size:18px;margin:0 0 12px}
+h3{font-size:14px;margin:0 0 8px}
+p.hint{font-size:13px;color:#666;line-height:1.5;margin:0 0 10px}
+label{display:block;font-size:12px;font-weight:600;margin:10px 0 4px;color:#333}
+input,select,textarea{width:100%;padding:11px;font-size:15px;border:1px solid #ccc;border-radius:8px;background:#fff;font-family:inherit}
+textarea{font-family:monospace;font-size:13px;min-height:150px;resize:vertical}
+button.btn{width:100%;padding:14px;font-size:15px;font-weight:600;border:none;border-radius:9px;cursor:pointer;margin-top:8px;color:#fff;background:var(--blue)}
+button.btn.green{background:var(--green)}
+button.btn.grey{background:#5f6368}
+button.btn.red{background:var(--red)}
+button.btn.amber{background:var(--amber);color:#111}
+button.btn:disabled{background:#c0c0c0;color:#666;cursor:not-allowed}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.msg{margin-top:12px;padding:12px;border-radius:9px;font-size:13px;white-space:pre-wrap;line-height:1.5;display:none}
+.msg.ok{background:#e6f4ea;color:#12652a;display:block}
+.msg.err{background:#fce8e6;color:#a50e0b;display:block}
+.msg.warn{background:#fef7e0;color:#8a5300;display:block}
+.tlist{display:grid;gap:10px}
+.tcard{background:#fff;border-radius:11px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.08);cursor:pointer;border-left:5px solid var(--blue);display:flex;justify-content:space-between;align-items:center}
+.tcard .nm{font-weight:700;font-size:15px}
+.tcard .sub{font-size:12px;color:#777;margin-top:3px}
+.tcard .go{color:#999;font-size:20px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.rbtn{background:#fff;border:2px solid var(--line);border-radius:10px;padding:16px 8px;text-align:center;cursor:pointer;font-weight:700;font-size:15px}
+.rbtn .pc{display:block;font-size:11px;color:#888;font-weight:400;margin-top:4px}
+.rbtn.done{border-color:var(--green)}
+.bcard{background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,.07);display:flex;align-items:center;gap:12px;cursor:pointer;border-left:4px solid transparent}
+.bcard.scored{border-left-color:var(--green)}
+.bcard.byeb{border-left-color:var(--amber);background:#fffdf5}
+.bcard .bno{font-weight:800;color:#888;width:26px;flex:none;font-size:14px}
+.bcard .pl{flex:1;font-size:14px;line-height:1.45}
+.bcard .pl .vs{color:#aaa;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.bcard .rs{font-weight:800;font-size:15px;color:#bbb;flex:none}
+.bcard.scored .rs{color:var(--green)}
+.badge{display:inline-block;background:var(--amber);color:#000;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle}
+#modalBack{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;align-items:center;justify-content:center;padding:14px}
+#modalBack.on{display:flex}
+.modal{background:#fff;border-radius:14px;padding:20px;width:100%;max-width:400px;max-height:92vh;overflow:auto}
+.modal h3{font-size:17px;margin:0 0 3px}
+.modal .msub{font-size:13px;color:#777;margin-bottom:14px}
+.resgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.resgrid button{padding:16px 8px;font-size:16px;font-weight:800;border-radius:9px;border:2px solid var(--line);background:#fafafa;cursor:pointer}
+.resgrid button.ff{font-size:12px;background:#fff8e8;border-color:var(--amber);font-weight:700}
+.resgrid button.sel{border-color:var(--green);background:#e6f4ea}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left}
+th{background:#eef3fb;font-weight:700}
+tr.bad td{background:#fce8e6}
+.plrow{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #eee}
+.plrow .nm{flex:1;font-size:14px}
+.plrow button{padding:8px 12px;font-size:12px;font-weight:700;border-radius:7px;border:1px solid #ccc;background:#fff;cursor:pointer}
+.plrow button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.stat{display:flex;gap:14px;margin-bottom:10px}
+.stat div{flex:1;background:#fff;border-radius:10px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.stat .n{font-size:22px;font-weight:800}
+.stat .l{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+#boot{padding:40px 20px;text-align:center;font-size:14px;color:#666}
+.danger{border:1px solid #f3c0be;border-radius:10px;padding:12px;margin-top:14px;background:#fffafa}
+.danger h3{color:var(--red)}
+@media print{#topbar,#navbar,button,.noprint{display:none!important}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>CHESS CONTROL</h1>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="who" id="whoLabel"></span>
+    <button id="logoutBtn" style="display:none">Log out</button>
+  </div>
+</div>
+<div id="navbar">&#8592; BACK</div>
+
+<div id="boot">Loading&hellip;</div>
+
+<div class="wrap">
+
+<!-- LOGIN -->
+<div class="screen" id="scLogin">
+  <div class="card">
+    <h2>Sign in</h2>
+    <label>Username</label>
+    <input id="inUser" autocomplete="username" autocapitalize="none">
+    <label>PIN</label>
+    <input id="inPin" type="tel" inputmode="numeric" autocomplete="current-password">
+    <button class="btn" id="loginBtn">Sign in</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- FIRST RUN -->
+<div class="screen" id="scFirst">
+  <div class="card">
+    <h2>First-time setup</h2>
+    <p class="hint">No accounts exist yet. Create the chief arbiter account. You can add everyone else afterwards.</p>
+    <label>Your name</label>
+    <input id="fsName" placeholder="Anitha Rajendran">
+    <label>Username (lowercase, no spaces)</label>
+    <input id="fsUser" placeholder="anitha" autocapitalize="none">
+    <label>PIN (4 digits)</label>
+    <input id="fsPin" type="tel" inputmode="numeric" placeholder="9001">
+    <button class="btn green" id="fsBtn">Create account</button>
+    <div class="msg" id="fsMsg"></div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="scHome">
+  <div class="card">
+    <h2>Tournaments</h2>
+    <p class="hint" id="homeHint"></p>
+    <div class="tlist" id="tList"></div>
+    <button class="btn green" id="newTBtn" style="display:none">+ New tournament</button>
+    <button class="btn grey" id="usersBtn" style="display:none">Manage people &amp; logins</button>
+  </div>
+</div>
+
+<!-- NEW / EDIT TOURNAMENT -->
+<div class="screen" id="scSetup">
+  <div class="card">
+    <h2 id="setupTitle">New tournament</h2>
+    <label>Tournament name</label>
+    <input id="tName" placeholder="Chess Ladder - Sub Juniors">
+    <label>Short code (letters/numbers, no spaces)</label>
+    <input id="tCode" placeholder="SJ" autocapitalize="characters">
+    <div class="row2">
+      <div><label>Date</label><input id="tDate" type="date"></div>
+      <div><label>Number of rounds</label><input id="tRounds" type="number" min="1" max="15" value="5"></div>
+    </div>
+    <label>Number of players</label>
+    <input id="tPlayers" type="number" min="2" max="200" value="24">
+    <p class="hint" id="boardHint">That makes 12 boards per round.</p>
+    <button class="btn green" id="saveTBtn">Create tournament</button>
+    <div class="msg" id="setupMsg"></div>
+  </div>
+</div>
+
+<!-- TOURNAMENT MENU -->
+<div class="screen" id="scMenu">
+  <div class="card">
+    <h2 id="menuTitle"></h2>
+    <p class="hint" id="menuSub"></p>
+    <div class="tlist">
+      <div class="tcard" data-go="rounds"><div><div class="nm">Rounds &amp; results</div><div class="sub">Enter game results</div></div><div class="go">&#8250;</div></div>
+      <div class="tcard" data-go="attend"><div><div class="nm">Attendance</div><div class="sub">Who has arrived</div></div><div class="go">&#8250;</div></div>
+      <div class="tcard" data-go="stand"><div><div class="nm">Standings</div><div class="sub">Scores and ranking</div></div><div class="go">&#8250;</div></div>
+      <div class="tcard admin-only" data-go="players"><div><div class="nm">Players</div><div class="sub">Add or replace the player list</div></div><div class="go">&#8250;</div></div>
+      <div class="tcard admin-only" data-go="pair"><div><div class="nm">Pairings</div><div class="sub">Paste a round from Swiss-Manager</div></div><div class="go">&#8250;</div></div>
+      <div class="tcard admin-only" data-go="tools"><div><div class="nm">Reset tools</div><div class="sub">Clear a round or start over</div></div><div class="go">&#8250;</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYERS -->
+<div class="screen" id="scPlayers">
+  <div class="card">
+    <h2>Players</h2>
+    <p class="hint">One name per line. This replaces the whole list for this tournament. Do this before importing pairings.</p>
+    <textarea id="plPaste" placeholder="Eden George Eldho&#10;David Boney Varghese&#10;Adel Joseph"></textarea>
+    <button class="btn" id="plCheckBtn">Check list</button>
+    <div id="plPreview"></div>
+    <button class="btn green" id="plSaveBtn" style="display:none">Save player list</button>
+    <div class="msg" id="plMsg"></div>
+  </div>
+</div>
+
+<!-- PAIRINGS -->
+<div class="screen" id="scPair">
+  <div class="card">
+    <h2>Import pairings</h2>
+    <label>Round</label>
+    <select id="prRound"></select>
+    <p class="hint">Copy the round from Swiss-Manager or Chess-Results and paste below. Or type one line per board:<br><code>1 White Name - Black Name</code></p>
+    <textarea id="prPaste" placeholder="Paste here"></textarea>
+    <button class="btn" id="prCheckBtn">Check pairing</button>
+    <div id="prPreview"></div>
+    <button class="btn green" id="prSaveBtn" style="display:none">Save pairings</button>
+    <div class="msg" id="prMsg"></div>
+  </div>
+</div>
+
+<!-- ROUNDS -->
+<div class="screen" id="scRounds">
+  <div class="card">
+    <h2 id="roundsTitle">Rounds</h2>
+    <div class="rgrid" id="rGrid"></div>
+  </div>
+</div>
+
+<!-- BOARDS -->
+<div class="screen" id="scBoards">
+  <div class="card">
+    <h2 id="boardsTitle"></h2>
+    <div id="bList"></div>
+  </div>
+</div>
+
+<!-- ATTENDANCE -->
+<div class="screen" id="scAttend">
+  <div class="card">
+    <h2>Attendance</h2>
+    <div class="stat"><div><div class="n" id="atPresent">0</div><div class="l">Present</div></div><div><div class="n" id="atAbsent">0</div><div class="l">Not arrived</div></div></div>
+    <div id="atList"></div>
+  </div>
+</div>
+
+<!-- STANDINGS -->
+<div class="screen" id="scStand">
+  <div class="card">
+    <h2 id="standTitle">Standings</h2>
+    <p class="hint noprint">Sorted by points, then Buchholz, then number of wins.</p>
+    <div id="standTable"></div>
+    <button class="btn grey noprint" id="printBtn">Print / save as PDF</button>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div class="screen" id="scTools">
+  <div class="card">
+    <h2>Reset tools</h2>
+    <p class="hint">These only affect <b id="toolsWhich"></b>. No other tournament is touched.</p>
+    <label>Round</label>
+    <select id="tlRound"></select>
+    <button class="btn amber" id="tlClearRes">Clear results for this round</button>
+    <p class="hint">Keeps the pairings, wipes the scores.</p>
+    <button class="btn amber" id="tlClearAll">Clear pairings AND results for this round</button>
+    <p class="hint">Boards go back to blank.</p>
+    <div class="danger">
+      <h3>Start this tournament over</h3>
+      <p class="hint">Deletes every pairing, result and attendance mark for this tournament. The player list and settings stay. Type <b>RESET</b> to enable.</p>
+      <input id="tlConfirm" placeholder="Type RESET">
+      <button class="btn red" id="tlReset" disabled>Reset whole tournament</button>
+    </div>
+    <div class="msg" id="tlMsg"></div>
+  </div>
+</div>
+
+<!-- USERS -->
+<div class="screen" id="scUsers">
+  <div class="card">
+    <h2>People &amp; logins</h2>
+    <div id="uList"></div>
+  </div>
+  <div class="card">
+    <h3>Add a person</h3>
+    <label>Name</label><input id="uName" placeholder="Shiju Jacob">
+    <label>Username</label><input id="uUser" placeholder="shiju" autocapitalize="none">
+    <label>PIN</label><input id="uPin" type="tel" inputmode="numeric" placeholder="4 digits">
+    <label>Role</label>
+    <select id="uRole">
+      <option value="Chief">Chief arbiter - full access</option>
+      <option value="Deputy">Deputy - full access</option>
+      <option value="Arbiter">Floor arbiter - results and attendance</option>
+      <option value="Attendance">Attendance desk only</option>
+    </select>
+    <button class="btn green" id="uAddBtn">Add person</button>
+    <div class="msg" id="uMsg"></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- RESULT MODAL -->
+<div id="modalBack">
+  <div class="modal">
+    <h3 id="mdTitle"></h3>
+    <div class="msub" id="mdSub"></div>
+    <div class="resgrid" id="mdRes">
+      <button data-res="1 - 0">1 - 0</button>
+      <button data-res="0 - 1">0 - 1</button>
+      <button data-res="&#189; - &#189;">&#189; - &#189;</button>
+      <button data-res="- / -">- / -</button>
+      <button class="ff" data-res="+ / -">White wins, black absent</button>
+      <button class="ff" data-res="- / +">Black wins, white absent</button>
+    </div>
+    <label>Note (optional)</label>
+    <input id="mdNote">
+    <div class="row2" style="margin-top:12px">
+      <button class="btn grey" id="mdClose" style="margin:0">Close</button>
+      <button class="btn red" id="mdClear" style="margin:0">Clear result</button>
+    </div>
+    <div class="msg" id="mdMsg"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   Chess Control - single file tournament manager
+   Collections are prefixed cc_ so nothing here can collide with
+   data from any earlier version of the software.
+   ============================================================ */
+
+var C={users:'cc_users',tourn:'cc_tournaments',players:'cc_players',games:'cc_games'};
+var FB={
+  apiKey:"AIzaSyAduUzHCW_LCSZoY7mf8U7jqTOlOnyfWT8",
+  authDomain:"infok-chesscontrol.firebaseapp.com",
+  projectId:"infok-chesscontrol",
+  storageBucket:"infok-chesscontrol.firebasestorage.app",
+  messagingSenderId:"1022228188225",
+  appId:"1:1022228188225:web:565a7f7266f37a2009cac0"
+};
+/* Firebase is loaded from whichever of these the network allows. */
+var SOURCES=[
+  ['lib/firebase-app-compat.js','lib/firebase-firestore-compat.js'],
+  ['https://mavelikara.github.io/INFOK-ChessControl/lib/firebase-app-compat.js','https://mavelikara.github.io/INFOK-ChessControl/lib/firebase-firestore-compat.js'],
+  ['https://www.gstatic.com/firebasejs/8.10.1/firebase-app-compat.js','https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore-compat.js'],
+  ['https://cdn.jsdelivr.net/npm/firebase@8.10.1/firebase-app-compat.js','https://cdn.jsdelivr.net/npm/firebase@8.10.1/firebase-firestore-compat.js'],
+  ['https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app-compat.js','https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-firestore-compat.js']
+];
+
+var db=null,me=null,T=null,curRound=1,activeGame=null;
+var unsub=[];
+
+function $(id){return document.getElementById(id);}
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var el=$(id); if(el)el.classList.add('active');
+  window.scrollTo(0,0);
+}
+function msg(id,text,cls){var e=$(id);if(!e)return;e.textContent=text;e.className='msg '+(cls||'ok');}
+function clearMsg(id){var e=$(id);if(e){e.className='msg';e.textContent='';}}
+function detach(){unsub.forEach(function(f){try{f();}catch(e){}});unsub=[];}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function pad2(n){return (n<10?'0':'')+n;}
+
+/* ---------- boot ---------- */
+function loadScript(src){
+  return new Promise(function(res,rej){
+    var s=document.createElement('script');
+    var t=setTimeout(function(){rej(new Error('timeout'));},12000);
+    s.src=src;
+    s.onload=function(){clearTimeout(t);res();};
+    s.onerror=function(){clearTimeout(t);rej(new Error('blocked'));};
+    document.head.appendChild(s);
+  });
+}
+function loadFirebase(i){
+  i=i||0;
+  if(typeof firebase!=='undefined'&&firebase.firestore)return Promise.resolve('already present');
+  if(i>=SOURCES.length)return Promise.reject(new Error('Could not load Firebase from any source. Check the internet connection.'));
+  return loadScript(SOURCES[i][0])
+    .then(function(){return loadScript(SOURCES[i][1]);})
+    .then(function(){
+      if(typeof firebase==='undefined'||!firebase.firestore)throw new Error('incomplete');
+      return SOURCES[i][0];
+    })
+    .catch(function(){return loadFirebase(i+1);});
+}
+
+loadFirebase().then(function(){
+  firebase.initializeApp(FB);
+  db=firebase.firestore();
+  $('boot').style.display='none';
+  var saved=null;
+  try{saved=JSON.parse(localStorage.getItem('cc_user')||'null');}catch(e){}
+  if(saved){me=saved;afterLogin();}
+  else{
+    return db.collection(C.users).limit(1).get().then(function(s){
+      if(s.empty)show('scFirst'); else show('scLogin');
+    });
+  }
+}).catch(function(e){
+  $('boot').innerHTML='<b style="color:#c5221f">Could not start</b><br><br>'+esc(e.message);
+});
+
+/* ---------- first run ---------- */
+$('fsBtn').addEventListener('click',function(){
+  var n=$('fsName').value.trim(),u=$('fsUser').value.trim().toLowerCase(),p=$('fsPin').value.trim();
+  if(!n||!u||!p){msg('fsMsg','Fill in all three fields.','err');return;}
+  this.disabled=true;
+  db.collection(C.users).doc(u).set({username:u,name:n,role:'Chief',pin:p,active:'Y'})
+   .then(function(){me={username:u,name:n,role:'Chief'};localStorage.setItem('cc_user',JSON.stringify(me));afterLogin();})
+   .catch(function(e){msg('fsMsg','Error: '+e.message,'err');$('fsBtn').disabled=false;});
+});
+
+/* ---------- login ---------- */
+function doLogin(){
+  var u=$('inUser').value.trim().toLowerCase(),p=$('inPin').value.trim();
+  if(!u||!p){msg('loginMsg','Enter username and PIN.','err');return;}
+  $('loginBtn').disabled=true;
+  db.collection(C.users).doc(u).get().then(function(d){
+    if(!d.exists){msg('loginMsg','No such username.','err');$('loginBtn').disabled=false;return;}
+    var v=d.data();
+    if(String(v.pin)!==p){msg('loginMsg','Wrong PIN.','err');$('loginBtn').disabled=false;return;}
+    if(v.active==='N'){msg('loginMsg','This account is switched off.','err');$('loginBtn').disabled=false;return;}
+    me={username:v.username,name:v.name,role:v.role};
+    localStorage.setItem('cc_user',JSON.stringify(me));
+    clearMsg('loginMsg');$('loginBtn').disabled=false;
+    afterLogin();
+  }).catch(function(e){msg('loginMsg','Error: '+e.message,'err');$('loginBtn').disabled=false;});
+}
+$('loginBtn').addEventListener('click',doLogin);
+$('inPin').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+
+$('logoutBtn').addEventListener('click',function(){
+  localStorage.removeItem('cc_user');detach();me=null;T=null;
+  $('whoLabel').textContent='';this.style.display='none';$('navbar').style.display='none';
+  show('scLogin');
+});
+
+function isAdmin(){return me&&(me.role==='Chief'||me.role==='Deputy');}
+
+function afterLogin(){
+  $('whoLabel').textContent=me.name+' ('+me.role+')';
+  $('logoutBtn').style.display='inline-block';
+  openHome();
+}
+
+/* ---------- navigation ---------- */
+var navStack=[];
+function goto(fn,label){navStack.push(fn);setNav(label);}
+function setNav(label){
+  var nb=$('navbar');
+  if(label){nb.style.display='block';nb.textContent='← '+label;}
+  else nb.style.display='none';
+}
+$('navbar').addEventListener('click',function(){
+  detach();
+  if(navStack.length){var f=navStack.pop();f();}
+  else openHome();
+});
+
+/* ---------- home ---------- */
+function openHome(){
+  detach();navStack=[];setNav('');
+  $('newTBtn').style.display=isAdmin()?'block':'none';
+  $('usersBtn').style.display=isAdmin()?'block':'none';
+  $('homeHint').textContent=isAdmin()?'Pick a tournament, or create one for today.':'Pick the tournament you are working on.';
+  show('scHome');
+  var box=$('tList');box.innerHTML='<p class="hint">Loading&hellip;</p>';
+  var u=db.collection(C.tourn).onSnapshot(function(snap){
+    var arr=[];snap.forEach(function(d){arr.push(d.data());});
+    arr.sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''))||String(a.code).localeCompare(String(b.code));});
+    if(!arr.length){box.innerHTML='<p class="hint">No tournaments yet.'+(isAdmin()?' Create one below.':'')+'</p>';return;}
+    box.innerHTML='';
+    arr.forEach(function(t){
+      var d=document.createElement('div');
+      d.className='tcard';
+      d.innerHTML='<div><div class="nm">'+esc(t.name)+'</div><div class="sub">'+esc(t.date||'')+' &middot; '+t.rounds+' rounds &middot; '+t.playerCount+' players</div></div><div class="go">&#8250;</div>';
+      d.addEventListener('click',function(){openTournament(t);});
+      box.appendChild(d);
+    });
+  },function(e){box.innerHTML='<div class="msg err" style="display:block">Could not load: '+esc(e.message)+'</div>';});
+  unsub.push(u);
+}
+$('newTBtn').addEventListener('click',function(){
+  $('setupTitle').textContent='New tournament';
+  $('tName').value='';$('tCode').value='';$('tRounds').value='5';$('tPlayers').value='24';
+  $('tDate').value=new Date().toISOString().slice(0,10);
+  clearMsg('setupMsg');
+  goto(openHome,'Tournaments');show('scSetup');
+});
+$('tPlayers').addEventListener('input',function(){
+  var n=parseInt(this.value,10)||0;
+  $('boardHint').textContent='That makes '+Math.ceil(n/2)+' boards per round.';
+});
+
+$('saveTBtn').addEventListener('click',function(){
+  var name=$('tName').value.trim();
+  var code=$('tCode').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  var rounds=parseInt($('tRounds').value,10);
+  var players=parseInt($('tPlayers').value,10);
+  var date=$('tDate').value;
+  if(!name){msg('setupMsg','Give the tournament a name.','err');return;}
+  if(!code){msg('setupMsg','Give it a short code, e.g. SJ.','err');return;}
+  if(!rounds||rounds<1){msg('setupMsg','Rounds must be at least 1.','err');return;}
+  if(!players||players<2){msg('setupMsg','Need at least 2 players.','err');return;}
+  var boards=Math.ceil(players/2);
+  var btn=this;btn.disabled=true;
+  msg('setupMsg','Creating…','ok');
+  db.collection(C.tourn).doc(code).get().then(function(d){
+    if(d.exists)throw new Error('A tournament with code '+code+' already exists. Use a different code.');
+    var t={code:code,name:name,date:date,rounds:rounds,playerCount:players,boards:boards,createdBy:me.username};
+    return db.collection(C.tourn).doc(code).set(t).then(function(){
+      // create blank boards for every round
+      var batch=db.batch(),n=0;
+      for(var r=1;r<=rounds;r++){
+        for(var b=1;b<=boards;b++){
+          var gid=code+'-R'+r+'-'+pad2(b);
+          batch.set(db.collection(C.games).doc(gid),{
+            gameId:gid,tournament:code,round:r,board:b,
+            white:'',black:'',result:'',isBye:false,note:'',updatedBy:''
+          });
+          n++;
+        }
+      }
+      return batch.commit().then(function(){return t;});
+    });
+  }).then(function(t){
+    btn.disabled=false;
+    openTournament(t);
+  }).catch(function(e){
+    msg('setupMsg',e.message,'err');btn.disabled=false;
+  });
+});
+
+/* ---------- tournament menu ---------- */
+function openTournament(t){
+  detach();T=t;
+  $('menuTitle').textContent=t.name;
+  $('menuSub').textContent=(t.date||'')+' · '+t.rounds+' rounds · '+t.playerCount+' players · '+t.boards+' boards';
+  document.querySelectorAll('.admin-only').forEach(function(el){el.style.display=isAdmin()?'flex':'none';});
+  navStack=[openHome];setNav('Tournaments');
+  if(me.role==='Attendance'){openAttendance();return;}
+  show('scMenu');
+}
+$('scMenu').addEventListener('click',function(e){
+  var card=e.target.closest('[data-go]');if(!card)return;
+  var go=card.getAttribute('data-go');
+  navStack.push(function(){openTournament(T);});
+  setNav(T.name);
+  if(go==='rounds')openRounds();
+  else if(go==='attend')openAttendance();
+  else if(go==='stand')openStandings();
+  else if(go==='players')openPlayers();
+  else if(go==='pair')openPair();
+  else if(go==='tools')openTools();
+});
+$('usersBtn').addEventListener('click',function(){
+  navStack.push(openHome);setNav('Tournaments');openUsers();
+});
+
+/* ---------- players ---------- */
+var plParsed=[];
+function openPlayers(){
+  clearMsg('plMsg');$('plPreview').innerHTML='';$('plSaveBtn').style.display='none';
+  show('scPlayers');
+  db.collection(C.players).where('tournament','==',T.code).get().then(function(s){
+    var names=[];s.forEach(function(d){names.push(d.data());});
+    names.sort(function(a,b){return (a.seed||0)-(b.seed||0);});
+    if(names.length)$('plPaste').value=names.map(function(p){return p.name;}).join('\n');
+  });
+}
+$('plCheckBtn').addEventListener('click',function(){
+  var lines=$('plPaste').value.split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean);
+  // strip a leading number if present ("1 Eden George" -> "Eden George")
+  plParsed=lines.map(function(l){return l.replace(/^\d+[\s.)\-:]+/,'').trim();}).filter(Boolean);
+  if(!plParsed.length){msg('plMsg','No names found.','err');return;}
+  var seen={},dup=[];
+  plParsed.forEach(function(n){var k=n.toLowerCase();if(seen[k])dup.push(n);seen[k]=1;});
+  var h='<table><tr><th>#</th><th>Name</th></tr>';
+  plParsed.forEach(function(n,i){h+='<tr><td>'+(i+1)+'</td><td>'+esc(n)+'</td></tr>';});
+  h+='</table>';
+  $('plPreview').innerHTML=h;
+  $('plSaveBtn').style.display='block';
+  var w=[];
+  if(dup.length)w.push('Duplicate names: '+dup.join(', '));
+  if(plParsed.length!==T.playerCount)w.push('This list has '+plParsed.length+' players but the tournament is set up for '+T.playerCount+'.');
+  if(w.length)msg('plMsg',w.join('\n\n'),'warn');
+  else msg('plMsg',plParsed.length+' players read. Looks right.','ok');
+});
+$('plSaveBtn').addEventListener('click',function(){
+  if(!plParsed.length)return;
+  var btn=this;btn.disabled=true;msg('plMsg','Saving…','ok');
+  db.collection(C.players).where('tournament','==',T.code).get().then(function(s){
+    var batch=db.batch();
+    s.forEach(function(d){batch.delete(d.ref);});
+    plParsed.forEach(function(n,i){
+      var pid=T.code+'-P'+pad2(i+1);
+      batch.set(db.collection(C.players).doc(pid),{
+        playerId:pid,tournament:T.code,name:n,seed:i+1,present:false,withdrawn:false
+      });
+    });
+    return batch.commit();
+  }).then(function(){
+    msg('plMsg','Saved '+plParsed.length+' players.','ok');btn.disabled=false;
+  }).catch(function(e){msg('plMsg','Error: '+e.message,'err');btn.disabled=false;});
+});
+
+/* ---------- pairing import ---------- */
+var prParsed=[];
+function fillRounds(sel){
+  var s=$(sel);s.innerHTML='';
+  for(var r=1;r<=T.rounds;r++){
+    var o=document.createElement('option');o.value=r;o.textContent='Round '+r;s.appendChild(o);
+  }
+}
+function openPair(){
+  clearMsg('prMsg');$('prPreview').innerHTML='';$('prSaveBtn').style.display='none';
+  $('prPaste').value='';fillRounds('prRound');show('scPair');
+}
+function isNoise(s){
+  s=(s||'').trim();
+  if(!s)return true;
+  if(/^\d+([.,]\d+)?$/.test(s))return true;
+  if(/^[A-Z]{3}$/.test(s))return true;
+  if(/^(GM|IM|FM|CM|WGM|WIM|WFM|WCM)$/i.test(s))return true;
+  if(/^(1|0|½|0\.5)?\s*[-–:]\s*(1|0|½|0\.5)?$/.test(s))return true;
+  if(/^(bye|-|—)$/i.test(s))return true;
+  if(!/[a-zA-Z]/.test(s))return true;
+  return false;
+}
+function parsePairing(raw){
+  var out=[];
+  raw.split(/\r?\n/).forEach(function(line){
+    if(!line.trim())return;
+    if(/chess-?results|swiss-?manager/i.test(line))return;
+    var board=null,white='',black='',bye=false;
+    if(line.indexOf('\t')!==-1){
+      var cells=line.split('\t').map(function(c){return c.trim();});
+      if(!/^\d+$/.test(cells[0]))return;
+      board=parseInt(cells[0],10);
+      var names=cells.slice(1).filter(function(c){return !isNoise(c);});
+      if(/\bbye\b/i.test(line)&&names.length===1){white=names[0];bye=true;}
+      else if(names.length>=2){white=names[0];black=names[names.length-1];}
+      else return;
+    }else{
+      var m=line.match(/^\s*(\d+)[\s.)\-:]+(.+?)\s+(?:-|–|vs\.?)\s+(.+?)\s*$/i);
+      if(m){board=parseInt(m[1],10);white=m[2].trim();black=m[3].trim();}
+      else{
+        var b2=line.match(/^\s*(\d+)[\s.)\-:]+(.+?)\s+bye\s*$/i);
+        if(b2){board=parseInt(b2[1],10);white=b2[2].trim();bye=true;}
+        else return;
+      }
+    }
+    if(!board)return;
+    if(/^bye$/i.test(black)){black='';bye=true;}
+    out.push({board:board,white:white,black:black,bye:bye});
+  });
+  return out;
+}
+$('prCheckBtn').addEventListener('click',function(){
+  prParsed=parsePairing($('prPaste').value);
+  $('prSaveBtn').style.display='none';
+  if(!prParsed.length){
+    msg('prMsg','Could not read any boards.\n\nTry typing them instead, one line per board:\n1 White Name - Black Name','err');
+    $('prPreview').innerHTML='';return;
+  }
+  var seen={},dup=[],bad=[];
+  prParsed.forEach(function(p){
+    if(seen[p.board])dup.push(p.board);seen[p.board]=1;
+    if(p.board<1||p.board>T.boards)bad.push(p.board);
+  });
+  var h='<table><tr><th>Bd</th><th>White</th><th>Black</th></tr>';
+  prParsed.forEach(function(p){
+    var isBad=p.board<1||p.board>T.boards;
+    h+='<tr class="'+(isBad?'bad':'')+'"><td>'+p.board+'</td><td>'+esc(p.white||'?')+'</td><td>'+(p.bye?'<i>Bye</i>':esc(p.black||'?'))+'</td></tr>';
+  });
+  h+='</table>';
+  $('prPreview').innerHTML=h;
+  $('prSaveBtn').style.display='block';
+  var w=[];
+  if(bad.length)w.push('Board numbers outside 1-'+T.boards+': '+bad.join(', ')+' (shown in red).');
+  if(dup.length)w.push('Duplicate board numbers: '+dup.join(', '));
+  if(prParsed.length!==T.boards)w.push('Read '+prParsed.length+' boards, expected '+T.boards+'.');
+  if(w.length)msg('prMsg',w.join('\n\n'),'warn');
+  else msg('prMsg','Read '+prParsed.length+' boards. All correct.','ok');
+});
+$('prSaveBtn').addEventListener('click',function(){
+  if(!prParsed.length)return;
+  var rnd=parseInt($('prRound').value,10);
+  var btn=this;btn.disabled=true;msg('prMsg','Saving…','ok');
+  var batch=db.batch();
+  prParsed.forEach(function(p){
+    var gid=T.code+'-R'+rnd+'-'+pad2(p.board);
+    batch.set(db.collection(C.games).doc(gid),{
+      gameId:gid,tournament:T.code,round:rnd,board:p.board,
+      white:p.white,black:p.black,
+      isBye:!!p.bye,           /* always written, so a stale bye cannot survive */
+      result:p.bye?'1 - 0':'',
+      note:'',updatedBy:me.username
+    },{merge:true});
+  });
+  batch.commit().then(function(){
+    return db.collection(C.games).where('tournament','==',T.code).where('round','==',rnd).get();
+  }).then(function(s){
+    var filled=0;s.forEach(function(d){if(d.data().white)filled++;});
+    msg('prMsg','Saved. Round '+rnd+': '+filled+' of '+s.size+' boards now have players.','ok');
+    btn.disabled=false;
+  }).catch(function(e){msg('prMsg','Error: '+e.message,'err');btn.disabled=false;});
+});
+
+/* ---------- rounds ---------- */
+function openRounds(){
+  detach();$('roundsTitle').textContent=T.name;
+  var g=$('rGrid');g.innerHTML='';
+  for(var r=1;r<=T.rounds;r++){
+    (function(r){
+      var d=document.createElement('div');
+      d.className='rbtn';d.id='rb-'+r;
+      d.innerHTML='Round '+r+'<span class="pc" id="rp-'+r+'">&hellip;</span>';
+      d.addEventListener('click',function(){
+        navStack.push(openRounds);setNav('Rounds');
+        openBoards(r);
+      });
+      g.appendChild(d);
+    })(r);
+  }
+  show('scRounds');
+  var u=db.collection(C.games).where('tournament','==',T.code).onSnapshot(function(snap){
+    var tot={},done={};
+    snap.forEach(function(d){
+      var v=d.data();
+      tot[v.round]=(tot[v.round]||0)+1;
+      if(v.result)done[v.round]=(done[v.round]||0)+1;
+    });
+    for(var r=1;r<=T.rounds;r++){
+      var el=$('rp-'+r);if(!el)continue;
+      var t=tot[r]||0,dn=done[r]||0;
+      el.textContent=dn+' / '+t+' done';
+      var box=$('rb-'+r);
+      if(box)box.className='rbtn'+(t&&dn===t?' done':'');
+    }
+  });
+  unsub.push(u);
+}
+
+/* ---------- boards + result entry ---------- */
+function openBoards(round){
+  detach();curRound=round;
+  $('boardsTitle').textContent=T.name+' — Round '+round;
+  show('scBoards');
+  var list=$('bList');list.innerHTML='<p class="hint">Loading…</p>';
+  var u=db.collection(C.games).where('tournament','==',T.code).where('round','==',round)
+    .onSnapshot(function(snap){
+      var games=[];snap.forEach(function(d){games.push(d.data());});
+      games.sort(function(a,b){return (a.board||0)-(b.board||0);});
+      if(!games.length){list.innerHTML='<p class="hint">No boards for this round.</p>';return;}
+      list.innerHTML='';
+      games.forEach(function(g){
+        var d=document.createElement('div');
+        d.className='bcard'+(g.result?' scored':'')+(g.isBye?' byeb':'');
+        d.setAttribute('data-gid',g.gameId);
+        var w=esc(g.white||'(not set)');
+        var b=g.isBye?'<i style="color:#999">bye</i>':esc(g.black||'(not set)');
+        d.innerHTML='<div class="bno">'+pad2(g.board)+'</div>'+
+          '<div class="pl">'+w+(g.isBye?'<span class="badge">BYE</span>':'')+
+          '<br><span class="vs">vs</span> '+b+'</div>'+
+          '<div class="rs">'+(g.result?esc(g.result):'—')+'</div>';
+        list.appendChild(d);
+      });
+    },function(e){list.innerHTML='<div class="msg err" style="display:block">'+esc(e.message)+'</div>';});
+  unsub.push(u);
+}
+
+/* Event delegation - the board list is rebuilt constantly, so we listen
+   on the container rather than on each card. */
+$('bList').addEventListener('click',function(e){
+  var card=e.target.closest('[data-gid]');if(!card)return;
+  var gid=card.getAttribute('data-gid');
+  db.collection(C.games).doc(gid).get().then(function(d){
+    if(!d.exists)return;
+    var g=d.data();
+    if(g.isBye){alert('Board '+g.board+' is a bye - there is no result to enter.');return;}
+    if(!g.white&&!g.black){alert('This board has no players yet. Import the pairing first.');return;}
+    activeGame=g;
+    $('mdTitle').textContent='Board '+pad2(g.board);
+    $('mdSub').textContent=(g.white||'?')+'  vs  '+(g.black||'?');
+    $('mdNote').value=g.note||'';
+    clearMsg('mdMsg');
+    document.querySelectorAll('#mdRes button').forEach(function(b){
+      b.classList.toggle('sel',g.result===b.getAttribute('data-res'));
+    });
+    $('modalBack').classList.add('on');
+  });
+});
+
+/* Result buttons - delegation again, and scoped to the real container id. */
+$('mdRes').addEventListener('click',function(e){
+  var btn=e.target.closest('button[data-res]');if(!btn||!activeGame)return;
+  saveResult(btn.getAttribute('data-res'));
+});
+function saveResult(res){
+  if(!activeGame)return;
+  var gid=activeGame.gameId;
+  msg('mdMsg','Saving…','ok');
+  db.collection(C.games).doc(gid).update({
+    result:res,note:$('mdNote').value.trim(),
+    updatedBy:me.username,updatedAt:new Date().toISOString()
+  }).then(function(){
+    closeModal();
+  }).catch(function(e){msg('mdMsg','Could not save: '+e.message,'err');});
+}
+$('mdClear').addEventListener('click',function(){saveResult('');});
+$('mdClose').addEventListener('click',closeModal);
+$('modalBack').addEventListener('click',function(e){if(e.target===this)closeModal();});
+function closeModal(){$('modalBack').classList.remove('on');activeGame=null;}
+
+/* ---------- attendance ---------- */
+function openAttendance(){
+  detach();show('scAttend');
+  var list=$('atList');list.innerHTML='<p class="hint">Loading…</p>';
+  var u=db.collection(C.players).where('tournament','==',T.code).onSnapshot(function(snap){
+    var arr=[];snap.forEach(function(d){arr.push(d.data());});
+    arr.sort(function(a,b){return a.name.localeCompare(b.name);});
+    var pres=arr.filter(function(p){return p.present;}).length;
+    $('atPresent').textContent=pres;
+    $('atAbsent').textContent=arr.length-pres;
+    list.innerHTML='';
+    arr.forEach(function(p){
+      var d=document.createElement('div');
+      d.className='plrow';
+      d.innerHTML='<div class="nm">'+esc(p.name)+'</div>'+
+        '<button data-pid="'+p.playerId+'" class="'+(p.present?'on':'')+'">'+(p.present?'Present':'Mark present')+'</button>';
+      list.appendChild(d);
+    });
+  },function(e){list.innerHTML='<div class="msg err" style="display:block">'+esc(e.message)+'</div>';});
+  unsub.push(u);
+}
+$('atList').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-pid]');if(!b)return;
+  var pid=b.getAttribute('data-pid');
+  b.disabled=true;
+  db.collection(C.players).doc(pid).get().then(function(d){
+    return db.collection(C.players).doc(pid).update({
+      present:!d.data().present,markedBy:me.username,markedAt:new Date().toISOString()
+    });
+  }).then(function(){b.disabled=false;}).catch(function(err){b.disabled=false;alert('Error: '+err.message);});
+});
+
+/* ---------- standings ---------- */
+function scoreFor(res,side){
+  if(!res)return 0;
+  if(res==='1 - 0')return side==='w'?1:0;
+  if(res==='0 - 1')return side==='w'?0:1;
+  if(res==='½ - ½')return 0.5;
+  if(res==='+ / -')return side==='w'?1:0;
+  if(res==='- / +')return side==='w'?0:1;
+  return 0;
+}
+function openStandings(){
+  detach();$('standTitle').textContent=T.name+' — Standings';
+  show('scStand');
+  var box=$('standTable');box.innerHTML='<p class="hint">Calculating…</p>';
+  Promise.all([
+    db.collection(C.players).where('tournament','==',T.code).get(),
+    db.collection(C.games).where('tournament','==',T.code).get()
+  ]).then(function(r){
+    var players={},order=[];
+    r[0].forEach(function(d){var p=d.data();players[p.name]={name:p.name,pts:0,wins:0,opp:[],seed:p.seed||999};order.push(p.name);});
+    function ensure(n){if(n&&!players[n]){players[n]={name:n,pts:0,wins:0,opp:[],seed:999};order.push(n);}return players[n];}
+    r[1].forEach(function(d){
+      var g=d.data();if(!g.result)return;
+      var W=ensure(g.white),B=g.isBye?null:ensure(g.black);
+      var ws=scoreFor(g.result,'w'),bs=scoreFor(g.result,'b');
+      if(W){W.pts+=ws;if(ws===1)W.wins++;if(B)W.opp.push(B.name);}
+      if(B){B.pts+=bs;if(bs===1)B.wins++;if(W)B.opp.push(W.name);}
+    });
+    var arr=order.map(function(n){return players[n];});
+    arr.forEach(function(p){
+      p.buch=p.opp.reduce(function(s,n){return s+(players[n]?players[n].pts:0);},0);
+    });
+    arr.sort(function(a,b){return b.pts-a.pts||b.buch-a.buch||b.wins-a.wins||a.seed-b.seed;});
+    var h='<table><tr><th>#</th><th>Name</th><th>Points</th><th>Buchholz</th><th>Wins</th></tr>';
+    arr.forEach(function(p,i){
+      h+='<tr><td>'+(i+1)+'</td><td>'+esc(p.name)+'</td><td><b>'+p.pts+'</b></td><td>'+p.buch+'</td><td>'+p.wins+'</td></tr>';
+    });
+    h+='</table>';
+    box.innerHTML=arr.length?h:'<p class="hint">No players yet.</p>';
+  }).catch(function(e){box.innerHTML='<div class="msg err" style="display:block">'+esc(e.message)+'</div>';});
+}
+$('printBtn').addEventListener('click',function(){window.print();});
+
+/* ---------- reset tools ---------- */
+function openTools(){
+  clearMsg('tlMsg');$('tlConfirm').value='';$('tlReset').disabled=true;
+  $('toolsWhich').textContent=T.name;
+  fillRounds('tlRound');show('scTools');
+}
+$('tlConfirm').addEventListener('input',function(){
+  $('tlReset').disabled=this.value.trim().toUpperCase()!=='RESET';
+});
+function clearRound(full){
+  var rnd=parseInt($('tlRound').value,10);
+  if(!confirm((full?'Clear pairings AND results':'Clear results')+' for Round '+rnd+' of '+T.name+'?'))return;
+  msg('tlMsg','Working…','ok');
+  db.collection(C.games).where('tournament','==',T.code).where('round','==',rnd).get().then(function(s){
+    var batch=db.batch();
+    s.forEach(function(d){
+      var upd={result:'',note:'',updatedBy:me.username};
+      if(full){upd.white='';upd.black='';upd.isBye=false;}
+      batch.update(d.ref,upd);
+    });
+    return batch.commit().then(function(){return s.size;});
+  }).then(function(n){
+    msg('tlMsg','Done. '+n+' boards cleared in Round '+rnd+'.','ok');
+  }).catch(function(e){msg('tlMsg','Error: '+e.message,'err');});
+}
+$('tlClearRes').addEventListener('click',function(){clearRound(false);});
+$('tlClearAll').addEventListener('click',function(){clearRound(true);});
+$('tlReset').addEventListener('click',function(){
+  if(!confirm('Reset the ENTIRE tournament "'+T.name+'"? All pairings, results and attendance will be wiped.'))return;
+  msg('tlMsg','Resetting…','ok');
+  var btn=this;btn.disabled=true;
+  Promise.all([
+    db.collection(C.games).where('tournament','==',T.code).get(),
+    db.collection(C.players).where('tournament','==',T.code).get()
+  ]).then(function(r){
+    var batch=db.batch();
+    r[0].forEach(function(d){batch.update(d.ref,{white:'',black:'',result:'',isBye:false,note:'',updatedBy:me.username});});
+    r[1].forEach(function(d){batch.update(d.ref,{present:false,withdrawn:false});});
+    return batch.commit();
+  }).then(function(){
+    msg('tlMsg','Tournament reset. Player list and settings kept.','ok');
+    $('tlConfirm').value='';
+  }).catch(function(e){msg('tlMsg','Error: '+e.message,'err');btn.disabled=false;});
+});
+
+/* ---------- users ---------- */
+function openUsers(){
+  clearMsg('uMsg');show('scUsers');
+  var box=$('uList');box.innerHTML='<p class="hint">Loading…</p>';
+  var u=db.collection(C.users).onSnapshot(function(snap){
+    var arr=[];snap.forEach(function(d){arr.push(d.data());});
+    arr.sort(function(a,b){return String(a.role).localeCompare(String(b.role))||String(a.username).localeCompare(String(b.username));});
+    var h='<table><tr><th>Name</th><th>Username</th><th>PIN</th><th>Role</th></tr>';
+    arr.forEach(function(v){
+      h+='<tr><td>'+esc(v.name)+'</td><td>'+esc(v.username)+'</td><td>'+esc(v.pin)+'</td><td>'+esc(v.role)+'</td></tr>';
+    });
+    h+='</table>';
+    box.innerHTML=h;
+  });
+  unsub.push(u);
+}
+$('uAddBtn').addEventListener('click',function(){
+  var n=$('uName').value.trim(),u=$('uUser').value.trim().toLowerCase(),p=$('uPin').value.trim(),r=$('uRole').value;
+  if(!n||!u||!p){msg('uMsg','Fill in name, username and PIN.','err');return;}
+  var btn=this;btn.disabled=true;
+  db.collection(C.users).doc(u).set({username:u,name:n,pin:p,role:r,active:'Y'}).then(function(){
+    msg('uMsg','Added '+n+' ('+u+' / PIN '+p+')','ok');
+    $('uName').value='';$('uUser').value='';$('uPin').value='';
+    btn.disabled=false;
+  }).catch(function(e){msg('uMsg','Error: '+e.message,'err');btn.disabled=false;});
+});
+</script>
+</body>
+</html>
