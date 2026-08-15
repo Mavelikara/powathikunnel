@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chess Control - Network Check</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:620px;margin:0 auto;padding:18px;background:#fafafa;color:#111}
+header{background:#111;color:#fff;padding:16px;border-radius:10px;margin-bottom:16px}
+header h1{font-size:18px;margin:0}
+header p{font-size:13px;margin:6px 0 0;color:#bbb}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+h2{font-size:14px;margin:0 0 8px}
+p{font-size:13px;color:#555;line-height:1.5;margin:0 0 10px}
+button{width:100%;padding:15px;font-size:16px;font-weight:600;color:#fff;background:#1a73e8;border:none;border-radius:10px;cursor:pointer}
+button:disabled{background:#bbb}
+.row{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid #eee;font-size:14px}
+.row:last-child{border-bottom:none}
+.mark{font-size:18px;width:26px;flex:none;line-height:1.2}
+.name{font-weight:600}
+.detail{display:block;font-size:11px;color:#888;margin-top:2px;word-break:break-all}
+.pass .mark{color:#188038}.fail .mark{color:#c5221f}.pend .mark{color:#ccc}
+#verdict{margin-top:14px;padding:14px;border-radius:10px;font-size:14px;display:none;line-height:1.5}
+#verdict.ok{background:#e6f4ea;color:#1a7a32;display:block}
+#verdict.bad{background:#fce8e6;color:#c5221f;display:block}
+code{background:#eee;padding:1px 5px;border-radius:4px;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Chess Control</h1>
+  <p>Network check &mdash; finding where Firebase can load from on this network.</p>
+</header>
+
+<div class="card">
+  <h2>Which sources work here?</h2>
+  <p>This tries five different places to load the Firebase library from, and reports which ones your network allows. It writes nothing to the database. Run it on the same wifi you will use at the venue.</p>
+  <button id="runBtn">Run network check</button>
+</div>
+
+<div class="card" id="results" style="display:none">
+  <h2>Sources</h2>
+  <div id="rows"></div>
+  <div id="verdict"></div>
+</div>
+
+<script>
+var SOURCES=[
+  {key:'local',   name:'This repo (lib/ folder)',        url:'lib/firebase-app-compat.js'},
+  {key:'infok',   name:'Your INFOK site',                 url:'https://mavelikara.github.io/INFOK-ChessControl/lib/firebase-app-compat.js'},
+  {key:'gstatic', name:'Google CDN (gstatic.com)',        url:'https://www.gstatic.com/firebasejs/8.10.1/firebase-app-compat.js'},
+  {key:'jsdelivr',name:'jsDelivr CDN',                    url:'https://cdn.jsdelivr.net/npm/firebase@8.10.1/firebase-app-compat.js'},
+  {key:'cdnjs',   name:'Cloudflare cdnjs',                url:'https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app-compat.js'}
+];
+
+var rowsEl=document.getElementById('rows');
+SOURCES.forEach(function(s){
+  var d=document.createElement('div');
+  d.className='row pend';
+  d.id='row-'+s.key;
+  d.innerHTML='<span class="mark">&#9679;</span><span><span class="name">'+s.name+'</span><span class="detail">'+s.url+'</span><span class="detail" id="msg-'+s.key+'"></span></span>';
+  rowsEl.appendChild(d);
+});
+
+function mark(key,ok,msg){
+  var el=document.getElementById('row-'+key);
+  el.className='row '+(ok?'pass':'fail');
+  el.querySelector('.mark').innerHTML=ok?'&#10003;':'&#10007;';
+  document.getElementById('msg-'+key).textContent=msg||'';
+}
+
+// Load a script in isolation. We only care whether the network allows it.
+function tryLoad(url){
+  return new Promise(function(res){
+    var s=document.createElement('script');
+    var done=false;
+    var timer=setTimeout(function(){ if(!done){done=true;s.remove();res({ok:false,msg:'timed out after 12s'});} },12000);
+    s.src=url;
+    s.onload=function(){ if(!done){done=true;clearTimeout(timer);res({ok:true,msg:'loaded'});} };
+    s.onerror=function(){ if(!done){done=true;clearTimeout(timer);res({ok:false,msg:'blocked or not found'});} };
+    document.head.appendChild(s);
+  });
+}
+
+document.getElementById('runBtn').addEventListener('click',function(){
+  this.disabled=true;
+  document.getElementById('results').style.display='block';
+  var working=[];
+  var chain=Promise.resolve();
+  SOURCES.forEach(function(s){
+    chain=chain.then(function(){
+      return tryLoad(s.url).then(function(r){
+        mark(s.key,r.ok,r.msg);
+        if(r.ok)working.push(s);
+      });
+    });
+  });
+  chain.then(function(){
+    var v=document.getElementById('verdict');
+    if(working.length){
+      v.className='ok';
+      v.innerHTML='<b>'+working.length+' source(s) work on this network:</b><br>'+
+        working.map(function(w){return '&bull; '+w.name;}).join('<br>')+
+        '<br><br>The app will be built to use <code>'+working[0].name+'</code> first. Send Claude this screen.';
+    } else {
+      v.className='bad';
+      v.innerHTML='<b>No source worked.</b> This network is blocking all of them, or there is no internet connection right now. Send Claude this screen.';
+    }
+    document.getElementById('runBtn').disabled=false;
+  });
+});
+</script>
+</body>
+</html>
