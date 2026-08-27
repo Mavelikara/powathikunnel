@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DNA Information Submission — Powathikunnel Family Directory</title>
+<style>
+:root {
+  --navy:#1F3864; --gold:#C9A84C; --light:#F4F7FB; --white:#FFFFFF;
+  --border:#D0D9E8; --text:#1A252F; --muted:#6B7C93;
+  --green:#1D7A4E; --red:#A32D2D;
+  --sdna:#5B3A8E; --scontact:#784212;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Cambria,Georgia,serif;background:var(--light);color:var(--text);font-size:14px;}
+
+.site-header{background:var(--navy);color:var(--white);padding:14px 24px;}
+.logo{font-size:20px;font-weight:700;letter-spacing:1px;color:var(--gold);}
+.subtitle{font-size:12px;opacity:.75;margin-top:2px;}
+
+.page{max-width:760px;margin:0 auto;padding:28px 16px 60px;}
+.page-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.page-desc{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:24px;}
+.info-box{background:#EBF5FB;border-left:4px solid var(--navy);border-radius:0 6px 6px 0;
+  padding:10px 14px;font-size:12px;color:#1A5276;line-height:1.6;margin-bottom:20px;}
+
+/* ── PERSON PICKER ── */
+.picker-card{background:var(--white);border:2px solid var(--navy);border-radius:12px;
+  padding:22px;margin-bottom:20px;}
+.picker-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px;}
+.picker-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;
+  font-size:14px;font-family:inherit;background:#FAFCFF;}
+.picker-input:focus{outline:none;border-color:var(--navy);background:var(--white);}
+.picker-results{margin-top:8px;border:1px solid var(--border);border-radius:8px;
+  max-height:260px;overflow-y:auto;display:none;background:var(--white);}
+.picker-results.show{display:block;}
+.picker-row{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.picker-row:last-child{border-bottom:none;}
+.picker-row:hover{background:#F0F4FF;}
+.picker-row .pr-name{font-weight:600;font-size:13px;}
+.picker-row .pr-meta{font-size:11px;color:var(--muted);flex-shrink:0;}
+.picker-empty{padding:12px 14px;font-size:12px;color:var(--muted);}
+.picker-hint{font-size:11px;color:var(--muted);margin-top:6px;}
+
+.selected-person{background:#EAF6EF;border:1.5px solid var(--green);border-radius:10px;
+  padding:14px 16px;margin-top:12px;display:none;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;}
+.selected-person.show{display:flex;}
+.sp-label{font-size:11px;color:#1D7A4E;text-transform:uppercase;letter-spacing:.4px;font-weight:700;}
+.sp-name{font-size:15px;font-weight:700;color:var(--text);margin-top:2px;}
+.sp-change{background:var(--white);border:1.5px solid var(--green);color:var(--green);
+  padding:6px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+
+/* ── SECTION CARDS ── */
+.section-card{background:var(--white);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:16px;overflow:hidden;display:none;}
+.section-card.show{display:block;}
+.section-head{display:flex;align-items:center;gap:10px;padding:11px 18px;}
+.sec-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:14px;color:var(--white);flex-shrink:0;}
+.sec-title{font-weight:600;font-size:13px;color:var(--white);flex:1;}
+.sh-dna{background:var(--sdna);}
+.sh-contact{background:var(--scontact);}
+.section-body{padding:18px;border-top:1px solid var(--border);}
+
+.dna-field{margin-bottom:16px;}
+.dna-field:last-child{margin-bottom:0;}
+.dna-field label{display:block;font-size:12px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+.dna-field label .req{color:#C0392B;margin-left:2px;}
+input[type=text],input[type=email],input[type=tel],select,textarea{
+  width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;
+  font-size:13px;font-family:inherit;color:var(--text);
+  background:#FAFCFF;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--navy);background:var(--white);}
+textarea{resize:vertical;min-height:70px;}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.share-row{display:flex;align-items:center;gap:7px;margin-top:7px;}
+.share-row input[type=checkbox]{width:15px;height:15px;accent-color:var(--green);cursor:pointer;}
+.share-row label{margin:0;font-size:11.5px;text-transform:none;letter-spacing:0;font-weight:500;
+  color:#1D7A4E;cursor:pointer;}
+
+/* ── CONTACT SECTION ── */
+.contact-body{background:#FEF9E7;}
+
+/* ── SUBMIT ── */
+.submit-area{background:var(--white);border:1px solid var(--border);
+  border-radius:10px;padding:20px 24px;
+  display:none;align-items:center;gap:14px;flex-wrap:wrap;}
+.submit-area.show{display:flex;}
+.btn-submit{background:var(--navy);color:var(--white);border:none;
+  padding:11px 28px;border-radius:7px;font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .2s;}
+.btn-submit:hover{background:#162C52;}
+.btn-submit:disabled{background:#AAB;cursor:not-allowed;}
+.submit-note{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ── CONFIRMATION ── */
+#confirmation{display:none;background:#EAF6EF;border:1.5px solid var(--green);
+  border-radius:10px;padding:28px;text-align:center;margin-bottom:24px;}
+.conf-icon{font-size:40px;margin-bottom:10px;}
+.conf-title{font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px;}
+.conf-desc{font-size:13px;color:#1D7A4E;line-height:1.6;margin-bottom:18px;}
+.btn-another{background:var(--green);color:var(--white);border:none;
+  padding:10px 24px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;}
+
+/* ── VALIDATION ── */
+.field-error{border-color:var(--red)!important;}
+.error-msg{font-size:11px;color:var(--red);margin-top:2px;}
+
+footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
+  border-top:1px solid var(--border);margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="logo">Powathikunnel</div>
+  <div class="subtitle">Family Directory — DNA Information Submission</div>
+</div>
+
+<div class="page">
+  <div class="page-title">Share DNA Test Information</div>
+  <div class="page-desc">
+    Add DNA test results (haplogroups, ancestry estimate, testing service) to an existing
+    profile in the Powathikunnel Family Directory. The website Administrator will review and
+    verify with you before anything is added to the tree.
+  </div>
+
+  <div class="info-box">
+    ℹ&nbsp; The person must already have a profile in the family directory — search for them below.
+    You'll also need to leave your email or phone number so the website Administrator can confirm
+    the details with you before publishing them.
+  </div>
+
+  <!-- CONFIRMATION -->
+  <div id="confirmation">
+    <div class="conf-icon">✅</div>
+    <div class="conf-title">Submitted for review!</div>
+    <div class="conf-desc" id="conf-desc"></div>
+    <button class="btn-another" onclick="resetForm()">+ Submit Another</button>
+  </div>
+
+  <form id="mainForm" novalidate>
+
+    <!-- PERSON PICKER -->
+    <div class="picker-card" id="pickerCard">
+      <div class="picker-title">Whose DNA information is this?</div>
+      <input type="text" class="picker-input" id="personSearch" placeholder="Start typing a name…" autocomplete="off">
+      <div class="picker-results" id="pickerResults"></div>
+      <div class="picker-hint" id="pickerLoading">Loading family directory…</div>
+
+      <div class="selected-person" id="selectedPerson">
+        <div>
+          <div class="sp-label">Submitting DNA info for</div>
+          <div class="sp-name" id="spName"></div>
+        </div>
+        <button type="button" class="sp-change" onclick="clearSelection()">Change</button>
+      </div>
+    </div>
+
+    <!-- DNA FIELDS -->
+    <div class="section-card" id="dnaSection">
+      <div class="section-head sh-dna">
+        <div class="sec-icon">🧬</div>
+        <div class="sec-title">DNA Test Details</div>
+      </div>
+      <div class="section-body">
+
+        <div class="dna-field">
+          <label for="dna_tested">Has this person taken a DNA test?</label>
+          <select id="dna_tested">
+            <option value="">— Select —</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="dna-field">
+          <label for="dna_service">Testing Service <span class="opt" style="font-weight:400">(e.g. 23andMe, AncestryDNA, MyHeritage, FamilyTreeDNA)</span></label>
+          <input type="text" id="dna_service" placeholder="e.g. 23andMe">
+          <div class="share-row">
+            <input type="checkbox" id="dna_service_public" checked>
+            <label for="dna_service_public">OK to show this publicly on the profile</label>
+          </div>
+        </div>
+
+        <div class="dna-field">
+          <label for="y_dna">Y-DNA Haplogroup (Paternal line)</label>
+          <input type="text" id="y_dna" placeholder="e.g. R-Y6">
+          <div class="share-row">
+            <input type="checkbox" id="y_dna_public" checked>
+            <label for="y_dna_public">OK to show this publicly on the profile</label>
+          </div>
+        </div>
+
+        <div class="dna-field">
+          <label for="mt_dna">mtDNA Haplogroup (Maternal line)</label>
+          <input type="text" id="mt_dna" placeholder="e.g. U1a3">
+          <div class="share-row">
+            <input type="checkbox" id="mt_dna_public" checked>
+            <label for="mt_dna_public">OK to show this publicly on the profile</label>
+          </div>
+        </div>
+
+        <div class="dna-field">
+          <label for="ancestry_estimate">Ancestry / Ethnicity Estimate</label>
+          <textarea id="ancestry_estimate" placeholder="e.g. Central &amp; South Asian 99.9% (Malayali Subgroup 96.9%, Southern Indian &amp; Sri Lankan 2.7%, ...)"></textarea>
+          <div class="share-row">
+            <input type="checkbox" id="ancestry_estimate_public" checked>
+            <label for="ancestry_estimate_public">OK to show this publicly on the profile</label>
+          </div>
+        </div>
+
+        <div class="dna-field">
+          <label for="open_to_contact">Open to being contacted about shared DNA matches?</label>
+          <select id="open_to_contact">
+            <option value="">— Select —</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+          <div class="share-row">
+            <input type="checkbox" id="open_to_contact_public" checked>
+            <label for="open_to_contact_public">OK to show this publicly on the profile</label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="section-card" id="contactSection">
+      <div class="section-head sh-contact">
+        <div class="sec-icon">✉</div>
+        <div class="sec-title">Your Contact Details</div>
+      </div>
+      <div class="section-body contact-body">
+        <div class="dna-field">
+          <label for="your_name">Your Name <span class="req">*</span></label>
+          <input type="text" id="your_name" placeholder="Full name">
+        </div>
+        <div class="dna-field">
+          <label for="your_email">Your Email Address</label>
+          <input type="email" id="your_email" placeholder="So the Administrator can verify with you">
+        </div>
+        <div class="dna-field">
+          <label for="your_phone">Your Phone Number</label>
+          <input type="tel" id="your_phone" placeholder="So the Administrator can verify with you">
+        </div>
+        <div class="hint">Please provide at least one — email or phone — so the website Administrator can confirm these details are correct before they're published.</div>
+      </div>
+    </div>
+
+    <div class="submit-area" id="submitArea">
+      <button type="button" class="btn-submit" id="submitBtn" onclick="doSubmit()">✔ Submit for Review</button>
+      <div class="submit-note">
+        This will be sent to the Administrator's review queue — it will not appear on the public profile
+        until he accepts it.
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<footer>Powathikunnel Family Directory — DNA Information Submission</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDRQr7_gfGg1tV5iv86-c7ZIzoU1GW72A",
+  authDomain: "powathikunnel-40a66.firebaseapp.com",
+  databaseURL: "https://powathikunnel-40a66-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "powathikunnel-40a66",
+  storageBucket: "powathikunnel-40a66.firebasestorage.app",
+  messagingSenderId: "698176790898",
+  appId: "1:698176790898:web:0ad065f108fd273152fdeb"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const COLL = "members_v2";
+
+let MEMBERS = [];
+let selected = null;
+
+const el = id => document.getElementById(id);
+const v  = id => (el(id)?.value || '').trim();
+
+function displayName(m) {
+  let n = m.first_name || m.name || '(unnamed)';
+  if (m.pet_name) n += ` (${m.pet_name})`;
+  return n;
+}
+function metaLine(m) {
+  const bits = [];
+  if (m.house_name) bits.push(m.house_name);
+  if (m.gen) bits.push('Gen ' + m.gen);
+  bits.push('ID ' + m.id);
+  return bits.join(' · ');
+}
+
+async function loadMembers() {
+  try {
+    const snap = await getDocs(collection(db, COLL));
+    MEMBERS = snap.docs.map(d => ({ ...d.data(), id: d.data().id || d.id }));
+    el('pickerLoading').textContent = MEMBERS.length + ' people loaded — start typing a name above.';
+  } catch (err) {
+    console.error(err);
+    el('pickerLoading').textContent = 'Could not load the family directory. Please refresh and try again.';
+  }
+}
+loadMembers();
+
+el('personSearch').addEventListener('input', () => {
+  const q = el('personSearch').value.trim().toLowerCase();
+  const results = el('pickerResults');
+  if (!q) { results.classList.remove('show'); results.innerHTML = ''; return; }
+  const matches = MEMBERS.filter(m => displayName(m).toLowerCase().includes(q)
+    || String(m.id) === q).slice(0, 25);
+  if (!matches.length) {
+    results.innerHTML = '<div class="picker-empty">No matching profiles found. Check the spelling, or ask the website Administrator to add this person to the directory first.</div>';
+  } else {
+    results.innerHTML = matches.map(m =>
+      `<div class="picker-row" data-id="${m.id}">
+        <span class="pr-name">${displayName(m)}</span>
+        <span class="pr-meta">${metaLine(m)}</span>
+      </div>`).join('');
+  }
+  results.classList.add('show');
+});
+
+el('pickerResults').addEventListener('click', e => {
+  const row = e.target.closest('.picker-row');
+  if (!row) return;
+  const id = row.getAttribute('data-id');
+  selected = MEMBERS.find(m => String(m.id) === String(id));
+  if (!selected) return;
+  el('personSearch').value = '';
+  el('pickerResults').classList.remove('show');
+  el('pickerResults').innerHTML = '';
+  el('spName').textContent = displayName(selected) + ' — ' + metaLine(selected);
+  el('selectedPerson').classList.add('show');
+  el('dnaSection').classList.add('show');
+  el('contactSection').classList.add('show');
+  el('submitArea').classList.add('show');
+  el('pickerCard').querySelector('.picker-title').textContent = 'Whose DNA information is this?';
+});
+
+window.clearSelection = function() {
+  selected = null;
+  el('selectedPerson').classList.remove('show');
+  el('dnaSection').classList.remove('show');
+  el('contactSection').classList.remove('show');
+  el('submitArea').classList.remove('show');
+  el('personSearch').value = '';
+  el('personSearch').focus();
+};
+
+function clearErrors() {
+  document.querySelectorAll('.field-error').forEach(e => e.classList.remove('field-error'));
+  document.querySelectorAll('.error-msg').forEach(e => e.remove());
+}
+function flagError(id, msg) {
+  const e = el(id);
+  if (!e) return;
+  e.classList.add('field-error');
+  const m = document.createElement('div');
+  m.className = 'error-msg'; m.textContent = msg;
+  e.parentNode.appendChild(m);
+}
+
+function validate() {
+  clearErrors();
+  let ok = true;
+  if (!selected) { alert('Please search for and select who this DNA information is about first.'); ok = false; }
+  if (!v('your_name')) { flagError('your_name', 'Your name is required'); ok = false; }
+  if (!v('your_email') && !v('your_phone')) {
+    flagError('your_email', 'Please provide an email or phone number so the Administrator can verify with you');
+    ok = false;
+  }
+  const anyDna = v('dna_tested') || v('dna_service') || v('y_dna') || v('mt_dna') || v('ancestry_estimate') || v('open_to_contact');
+  if (!anyDna) { alert('Please fill in at least one DNA detail.'); ok = false; }
+  return ok;
+}
+
+window.doSubmit = async function() {
+  if (!validate()) return;
+
+  const btn = el('submitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  const FIELD_LABELS = {
+    dna_tested: 'DNA Tested',
+    dna_service: 'DNA Testing Service',
+    dna_service_public: 'Testing Service — Public',
+    y_dna_haplogroup: 'Y-DNA Haplogroup (Paternal)',
+    y_dna_haplogroup_public: 'Y-DNA Haplogroup — Public',
+    mt_dna_haplogroup: 'mtDNA Haplogroup (Maternal)',
+    mt_dna_haplogroup_public: 'mtDNA Haplogroup — Public',
+    ancestry_estimate: 'Ancestry/Ethnicity Estimate',
+    ancestry_estimate_public: 'Ancestry Estimate — Public',
+    open_to_dna_contact: 'Open to DNA Contact',
+    open_to_dna_contact_public: 'Open to Contact — Public'
+  };
+
+  const proposed = {};
+  if (v('dna_tested'))        proposed.dna_tested = v('dna_tested');
+  if (v('dna_service')) {
+    proposed.dna_service = v('dna_service');
+    proposed.dna_service_public = el('dna_service_public').checked ? 'Yes' : 'No';
+  }
+  if (v('y_dna')) {
+    proposed.y_dna_haplogroup = v('y_dna');
+    proposed.y_dna_haplogroup_public = el('y_dna_public').checked ? 'Yes' : 'No';
+  }
+  if (v('mt_dna')) {
+    proposed.mt_dna_haplogroup = v('mt_dna');
+    proposed.mt_dna_haplogroup_public = el('mt_dna_public').checked ? 'Yes' : 'No';
+  }
+  if (v('ancestry_estimate')) {
+    proposed.ancestry_estimate = v('ancestry_estimate');
+    proposed.ancestry_estimate_public = el('ancestry_estimate_public').checked ? 'Yes' : 'No';
+  }
+  if (v('open_to_contact')) {
+    proposed.open_to_dna_contact = v('open_to_contact');
+    proposed.open_to_dna_contact_public = el('open_to_contact_public').checked ? 'Yes' : 'No';
+  }
+
+  const changes = Object.keys(proposed).map(field => ({
+    field,
+    current: selected[field] != null ? String(selected[field]) : '',
+    suggested: String(proposed[field])
+  }));
+
+  const contactParts = [];
+  if (v('your_email')) contactParts.push(v('your_email'));
+  if (v('your_phone')) contactParts.push(v('your_phone'));
+
+  const payload = {
+    memberId: selected.id,
+    memberName: displayName(selected),
+    yourName: v('your_name'),
+    contact: contactParts.join(' · '),
+    notes: 'DNA information submission',
+    changes: changes,
+    submitted: new Date().toISOString(),
+    status: 'pending'
+  };
+
+  try {
+    await addDoc(collection(db, 'submissions'), payload);
+    el('conf-desc').textContent =
+      `Thank you, ${payload.yourName}. The website Administrator will review this DNA information for ${payload.memberName} ` +
+      `and reach out to you to verify before it's added to the profile.`;
+    document.getElementById('confirmation').style.display = 'block';
+    document.getElementById('mainForm').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong submitting this. Please try again, or contact the website Administrator directly.');
+    btn.disabled = false; btn.textContent = '✔ Submit for Review';
+  }
+};
+
+window.resetForm = function() {
+  clearSelection();
+  el('mainForm').reset();
+  document.getElementById('confirmation').style.display = 'none';
+  document.getElementById('mainForm').style.display = 'block';
+  const submitBtn = el('submitBtn');
+  submitBtn.disabled = false; submitBtn.textContent = '✔ Submit for Review';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+</script>
+
+</body>
+</html>
