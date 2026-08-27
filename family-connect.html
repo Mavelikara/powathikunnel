@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Connect Your Family — Powathikunnel Family Directory</title>
+<style>
+:root {
+  --navy:#1F3864; --gold:#C9A84C; --light:#F4F7FB; --white:#FFFFFF;
+  --border:#D0D9E8; --text:#1A252F; --muted:#6B7C93;
+  --green:#1D7A4E; --red:#A32D2D;
+  --slink:#2E6B5E; --scontact:#784212;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Cambria,Georgia,serif;background:var(--light);color:var(--text);font-size:14px;}
+
+.site-header{background:var(--navy);color:var(--white);padding:14px 24px;}
+.logo{font-size:20px;font-weight:700;letter-spacing:1px;color:var(--gold);}
+.subtitle{font-size:12px;opacity:.75;margin-top:2px;}
+
+.page{max-width:760px;margin:0 auto;padding:28px 16px 60px;}
+.page-title{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.page-desc{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:24px;}
+.info-box{background:#EBF5FB;border-left:4px solid var(--navy);border-radius:0 6px 6px 0;
+  padding:10px 14px;font-size:12px;color:#1A5276;line-height:1.6;margin-bottom:20px;}
+
+/* ── SECTION CARDS ── */
+.section-card{background:var(--white);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:16px;overflow:hidden;}
+.section-head{display:flex;align-items:center;gap:10px;padding:11px 18px;}
+.sec-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:14px;color:var(--white);flex-shrink:0;}
+.sec-title{font-weight:600;font-size:13px;color:var(--white);flex:1;}
+.sh-link{background:var(--slink);}
+.sh-contact{background:var(--scontact);}
+.section-body{padding:18px;border-top:1px solid var(--border);}
+
+.dna-field{margin-bottom:16px;}
+.dna-field:last-child{margin-bottom:0;}
+.dna-field label{display:block;font-size:12px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+.dna-field label .req{color:#C0392B;margin-left:2px;}
+input[type=text],input[type=email],input[type=tel],input[type=url],select,textarea{
+  width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;
+  font-size:13px;font-family:inherit;color:var(--text);
+  background:#FAFCFF;transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--navy);background:var(--white);}
+textarea{resize:vertical;min-height:70px;}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
+
+/* ── CONTACT SECTION ── */
+.contact-body{background:#FEF9E7;}
+
+/* ── SUBMIT ── */
+.submit-area{background:var(--white);border:1px solid var(--border);
+  border-radius:10px;padding:20px 24px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.btn-submit{background:var(--navy);color:var(--white);border:none;
+  padding:11px 28px;border-radius:7px;font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .2s;}
+.btn-submit:hover{background:#162C52;}
+.btn-submit:disabled{background:#AAB;cursor:not-allowed;}
+.submit-note{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ── CONFIRMATION ── */
+#confirmation{display:none;background:#EAF6EF;border:1.5px solid var(--green);
+  border-radius:10px;padding:28px;text-align:center;margin-bottom:24px;}
+.conf-icon{font-size:40px;margin-bottom:10px;}
+.conf-title{font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px;}
+.conf-desc{font-size:13px;color:#1D7A4E;line-height:1.6;margin-bottom:18px;}
+.btn-another{background:var(--green);color:var(--white);border:none;
+  padding:10px 24px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;}
+
+/* ── VALIDATION ── */
+.field-error{border-color:var(--red)!important;}
+.error-msg{font-size:11px;color:var(--red);margin-top:2px;}
+
+footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
+  border-top:1px solid var(--border);margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="logo">Powathikunnel</div>
+  <div class="subtitle">Family Directory — Connect Your Family</div>
+</div>
+
+<div class="page">
+  <div class="page-title">Connect Your Family to Powathikunnel</div>
+  <div class="page-desc">
+    The families listed on our site have become part of the Powathikunnel story through marriage
+    across generations. If your family is one of them and you maintain a family website, family
+    tree, genealogy or online family history, we would be delighted to connect our histories.
+    Send us your family website and, once the connection is verified, we can add a link beside
+    your family name — allowing descendants on both sides to discover how our families are
+    connected.
+  </div>
+
+  <div class="info-box">
+    ℹ&nbsp; The website Administrator will verify the connection with you before any link is
+    published. You'll also need to leave your email or phone number so he can reach you.
+  </div>
+
+  <!-- CONFIRMATION -->
+  <div id="confirmation">
+    <div class="conf-icon">✅</div>
+    <div class="conf-title">Submitted for review!</div>
+    <div class="conf-desc" id="conf-desc"></div>
+    <button class="btn-another" onclick="resetForm()">+ Submit Another</button>
+  </div>
+
+  <form id="mainForm" novalidate>
+
+    <!-- CONNECTION DETAILS -->
+    <div class="section-card">
+      <div class="section-head sh-link">
+        <div class="sec-icon">🔗</div>
+        <div class="sec-title">Your Family's Connection</div>
+      </div>
+      <div class="section-body">
+
+        <div class="dna-field">
+          <label for="family_name">Which family or house does yours connect through? <span class="req">*</span></label>
+          <input type="text" id="family_name" placeholder="e.g. Vazhuthanathu, Chenathara, Palackkamannil…">
+          <div class="hint">The Powathikunnel house or branch your family married into, if you know it.</div>
+        </div>
+
+        <div class="dna-field">
+          <label for="website_url">Your Family Website, Tree or Genealogy Page <span class="req">*</span></label>
+          <input type="url" id="website_url" placeholder="https://…">
+        </div>
+
+        <div class="dna-field">
+          <label for="relationship_note">How are our families connected?</label>
+          <textarea id="relationship_note" placeholder="e.g. My great-grandmother married into the Powathikunnel family in the early 1900s…"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="section-card">
+      <div class="section-head sh-contact">
+        <div class="sec-icon">✉</div>
+        <div class="sec-title">Your Contact Details</div>
+      </div>
+      <div class="section-body contact-body">
+        <div class="dna-field">
+          <label for="your_name">Your Name <span class="req">*</span></label>
+          <input type="text" id="your_name" placeholder="Full name">
+        </div>
+        <div class="dna-field">
+          <label for="your_email">Your Email Address</label>
+          <input type="email" id="your_email" placeholder="So the Administrator can verify with you">
+        </div>
+        <div class="dna-field">
+          <label for="your_phone">Your Phone Number</label>
+          <input type="tel" id="your_phone" placeholder="So the Administrator can verify with you">
+        </div>
+        <div class="hint">Please provide at least one — email or phone — so the website Administrator can confirm this connection before a link is published.</div>
+      </div>
+    </div>
+
+    <div class="submit-area" id="submitArea">
+      <button type="button" class="btn-submit" id="submitBtn" onclick="doSubmit()">✔ Submit for Review</button>
+      <div class="submit-note">
+        This will be sent to the Administrator's review queue — no link is published
+        until he verifies the connection.
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<footer>Powathikunnel Family Directory — Connect Your Family</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDRQr7_gfGg1tV5iv86-c7ZIzoU1GW72A",
+  authDomain: "powathikunnel-40a66.firebaseapp.com",
+  databaseURL: "https://powathikunnel-40a66-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "powathikunnel-40a66",
+  storageBucket: "powathikunnel-40a66.firebasestorage.app",
+  messagingSenderId: "698176790898",
+  appId: "1:698176790898:web:0ad065f108fd273152fdeb"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const el = id => document.getElementById(id);
+const v  = id => (el(id)?.value || '').trim();
+
+function clearErrors() {
+  document.querySelectorAll('.field-error').forEach(e => e.classList.remove('field-error'));
+  document.querySelectorAll('.error-msg').forEach(e => e.remove());
+}
+function flagError(id, msg) {
+  const e = el(id);
+  if (!e) return;
+  e.classList.add('field-error');
+  const m = document.createElement('div');
+  m.className = 'error-msg'; m.textContent = msg;
+  e.parentNode.appendChild(m);
+}
+
+function validate() {
+  clearErrors();
+  let ok = true;
+  if (!v('family_name')) { flagError('family_name', 'Please tell us which family or house this connects through'); ok = false; }
+  if (!v('website_url')) { flagError('website_url', 'Please provide a link to your family website, tree or genealogy page'); ok = false; }
+  if (!v('your_name')) { flagError('your_name', 'Your name is required'); ok = false; }
+  if (!v('your_email') && !v('your_phone')) {
+    flagError('your_email', 'Please provide an email or phone number so the Administrator can verify with you');
+    ok = false;
+  }
+  return ok;
+}
+
+window.doSubmit = async function() {
+  if (!validate()) return;
+
+  const btn = el('submitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  const contactParts = [];
+  if (v('your_email')) contactParts.push(v('your_email'));
+  if (v('your_phone')) contactParts.push(v('your_phone'));
+
+  const payload = {
+    type: 'family_link',
+    familyName: v('family_name'),
+    websiteUrl: v('website_url'),
+    relationshipNote: v('relationship_note'),
+    yourName: v('your_name'),
+    contact: contactParts.join(' · '),
+    submitted: new Date().toISOString(),
+    status: 'pending'
+  };
+
+  try {
+    await addDoc(collection(db, 'submissions'), payload);
+    el('conf-desc').textContent =
+      `Thank you, ${payload.yourName}. The website Administrator will verify the connection between ` +
+      `your family and ${payload.familyName}, and will be in touch before anything is published.`;
+    document.getElementById('confirmation').style.display = 'block';
+    document.getElementById('mainForm').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    console.error(err);
+    alert('Something went wrong submitting this. Please try again, or contact the website Administrator directly.');
+    btn.disabled = false; btn.textContent = '✔ Submit for Review';
+  }
+};
+
+window.resetForm = function() {
+  el('mainForm').reset();
+  clearErrors();
+  document.getElementById('confirmation').style.display = 'none';
+  document.getElementById('mainForm').style.display = 'block';
+  const submitBtn = el('submitBtn');
+  submitBtn.disabled = false; submitBtn.textContent = '✔ Submit for Review';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+</script>
+
+</body>
+</html>
