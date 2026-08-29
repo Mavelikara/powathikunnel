@@ -24,7 +24,7 @@ body{font-family:Cambria,Georgia,serif;background:var(--light);color:var(--text)
 .info-box{background:#EBF5FB;border-left:4px solid var(--navy);border-radius:0 6px 6px 0;
   padding:10px 14px;font-size:12px;color:#1A5276;line-height:1.6;margin-bottom:20px;}
 
-/* ── SECTION CARDS ── */
+/* — SECTION CARDS — */
 .section-card{background:var(--white);border:1px solid var(--border);
   border-radius:10px;margin-bottom:16px;overflow:hidden;}
 .section-head{display:flex;align-items:center;gap:10px;padding:11px 18px;}
@@ -49,10 +49,17 @@ input:focus,select:focus,textarea:focus{
 textarea{resize:vertical;min-height:70px;}
 .hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
 
-/* ── CONTACT SECTION ── */
+/* — CONNECTION TYPE — */
+.conn-type-options{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
+.dna-field label.conn-type-opt{display:flex;align-items:flex-start;gap:8px;
+  font-size:13px;font-weight:400;text-transform:none;letter-spacing:normal;
+  color:var(--text);cursor:pointer;margin-bottom:0;}
+.conn-type-opt input[type=radio]{width:auto;margin-top:3px;flex-shrink:0;}
+
+/* — CONTACT SECTION — */
 .contact-body{background:#FEF9E7;}
 
-/* ── SUBMIT ── */
+/* — SUBMIT — */
 .submit-area{background:var(--white);border:1px solid var(--border);
   border-radius:10px;padding:20px 24px;
   display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
@@ -63,7 +70,7 @@ textarea{resize:vertical;min-height:70px;}
 .btn-submit:disabled{background:#AAB;cursor:not-allowed;}
 .submit-note{font-size:12px;color:var(--muted);line-height:1.5;}
 
-/* ── CONFIRMATION ── */
+/* — CONFIRMATION — */
 #confirmation{display:none;background:#EAF6EF;border:1.5px solid var(--green);
   border-radius:10px;padding:28px;text-align:center;margin-bottom:24px;}
 .conf-icon{font-size:40px;margin-bottom:10px;}
@@ -72,7 +79,7 @@ textarea{resize:vertical;min-height:70px;}
 .btn-another{background:var(--green);color:var(--white);border:none;
   padding:10px 24px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;}
 
-/* ── VALIDATION ── */
+/* — VALIDATION — */
 .field-error{border-color:var(--red)!important;}
 .error-msg{font-size:11px;color:var(--red);margin-top:2px;}
 
@@ -90,12 +97,12 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
 <div class="page">
   <div class="page-title">Connect Your Family to Powathikunnel</div>
   <div class="page-desc">
-    The families listed on our site have become part of the Powathikunnel story through marriage
-    across generations. If your family is one of them and you maintain a family website, family
-    tree, genealogy or online family history, we would be delighted to connect our histories.
-    Send us your family website and, once the connection is verified, we can add a link beside
-    your family name — allowing descendants on both sides to discover how our families are
-    connected.
+    Over the generations, our story has grown two ways — through marriage, and through families
+    who share our own ancestry, branches of the same tree that took a different path long ago.
+    If either describes your family, and you maintain a website, family tree, genealogy record or
+    online family history, we would be delighted to connect our histories. Tell us how we're
+    connected and share your family's website — once verified, we can add a link so descendants
+    on both sides can find each other.
   </div>
 
   <div class="info-box">
@@ -122,9 +129,18 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
       <div class="section-body">
 
         <div class="dna-field">
-          <label for="family_name">Which family or house does yours connect through? <span class="req">*</span></label>
+          <label>How is your family connected to ours? <span class="req">*</span></label>
+          <div class="conn-type-options">
+            <label class="conn-type-opt"><input type="radio" name="connection_type" id="ct_married" value="married_in" checked> We married into the Powathikunnel family</label>
+            <label class="conn-type-opt"><input type="radio" name="connection_type" id="ct_shared" value="shared_origin"> We're a branch of the same family (shared ancestor, no marriage)</label>
+            <label class="conn-type-opt"><input type="radio" name="connection_type" id="ct_other" value="other"> Not sure — just tell us below</label>
+          </div>
+        </div>
+
+        <div class="dna-field">
+          <label for="family_name" id="family_name_label">Which family or house does yours connect through? <span class="req">*</span></label>
           <input type="text" id="family_name" placeholder="e.g. Vazhuthanathu, Chenathara, Palackkamannil…">
-          <div class="hint">The Powathikunnel house or branch your family married into, if you know it.</div>
+          <div class="hint" id="family_name_hint">The Powathikunnel house or branch your family married into, if you know it.</div>
         </div>
 
         <div class="dna-field">
@@ -133,7 +149,7 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
         </div>
 
         <div class="dna-field">
-          <label for="relationship_note">How are our families connected?</label>
+          <label for="relationship_note" id="relationship_note_label">How are our families connected?</label>
           <textarea id="relationship_note" placeholder="e.g. My great-grandmother married into the Powathikunnel family in the early 1900s…"></textarea>
         </div>
 
@@ -164,7 +180,7 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
     </div>
 
     <div class="submit-area" id="submitArea">
-      <button type="button" class="btn-submit" id="submitBtn" onclick="doSubmit()">✔ Submit for Review</button>
+      <button type="button" class="btn-submit" id="submitBtn" onclick="doSubmit()">✓ Submit for Review</button>
       <div class="submit-note">
         This will be sent to the Administrator's review queue — no link is published
         until he verifies the connection.
@@ -181,19 +197,58 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBDRQr7_gfGg1tV5iv86-c7ZIzoU1GW72A",
+  apiKey: "AIzaSyBDRQr7_gFGg1tV5iv86-c7ZIzoU1GW72A",
   authDomain: "powathikunnel-40a66.firebaseapp.com",
   databaseURL: "https://powathikunnel-40a66-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "powathikunnel-40a66",
   storageBucket: "powathikunnel-40a66.firebasestorage.app",
   messagingSenderId: "698176790898",
-  appId: "1:698176790898:web:0ad065f108fd273152fdeb"
+  appId: "1:698176790898:web:0ad065f108fd273152feb"
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const el = id => document.getElementById(id);
 const v  = id => (el(id)?.value || '').trim();
+
+const CONN_COPY = {
+  married_in: {
+    familyLabel: 'Which family or house does yours connect through? <span class="req">*</span>',
+    familyPlaceholder: 'e.g. Vazhuthanathu, Chenathara, Palackkamannil…',
+    familyHint: 'The Powathikunnel house or branch your family married into, if you know it.',
+    noteLabel: 'How are our families connected?',
+    notePlaceholder: 'e.g. My great-grandmother married into the Powathikunnel family in the early 1900s…'
+  },
+  shared_origin: {
+    familyLabel: 'Which of our ancestors or houses does your family trace back to? <span class="req">*</span>',
+    familyPlaceholder: "e.g. the Mavelikara branch, or a specific ancestor's name…",
+    familyHint: 'The Powathikunnel branch, house or ancestor your family shares a common origin with, if you know it.',
+    noteLabel: 'How do the two families trace back to the same origin?',
+    notePlaceholder: 'e.g. names, generations, and approximate dates — whatever you have'
+  },
+  other: {
+    familyLabel: "What's the name of the connecting family or ancestor, if known? <span class=\"req\">*</span>",
+    familyPlaceholder: 'e.g. a family or ancestor name, or leave blank if unsure…',
+    familyHint: 'Anything that might help us place the connection — even a rough guess is fine.',
+    noteLabel: 'Tell us what you know',
+    notePlaceholder: "e.g. even if it's incomplete — we'll help figure out the rest"
+  }
+};
+
+function currentConnType() {
+  const sel = document.querySelector('input[name="connection_type"]:checked');
+  return sel ? sel.value : 'married_in';
+}
+
+function applyConnType() {
+  const c = CONN_COPY[currentConnType()] || CONN_COPY.married_in;
+  el('family_name_label').innerHTML = c.familyLabel;
+  el('family_name').placeholder = c.familyPlaceholder;
+  el('family_name_hint').textContent = c.familyHint;
+  el('relationship_note_label').textContent = c.noteLabel;
+  el('relationship_note').placeholder = c.notePlaceholder;
+}
+document.querySelectorAll('input[name="connection_type"]').forEach(r => r.addEventListener('change', applyConnType));
 
 function clearErrors() {
   document.querySelectorAll('.field-error').forEach(e => e.classList.remove('field-error'));
@@ -233,6 +288,7 @@ window.doSubmit = async function() {
 
   const payload = {
     type: 'family_link',
+    connectionType: currentConnType(),
     familyName: v('family_name'),
     websiteUrl: v('website_url'),
     relationshipNote: v('relationship_note'),
@@ -253,17 +309,18 @@ window.doSubmit = async function() {
   } catch (err) {
     console.error(err);
     alert('Something went wrong submitting this. Please try again, or contact the website Administrator directly.');
-    btn.disabled = false; btn.textContent = '✔ Submit for Review';
+    btn.disabled = false; btn.textContent = '✓ Submit for Review';
   }
 };
 
 window.resetForm = function() {
   el('mainForm').reset();
   clearErrors();
+  applyConnType();
   document.getElementById('confirmation').style.display = 'none';
   document.getElementById('mainForm').style.display = 'block';
   const submitBtn = el('submitBtn');
-  submitBtn.disabled = false; submitBtn.textContent = '✔ Submit for Review';
+  submitBtn.disabled = false; submitBtn.textContent = '✓ Submit for Review';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
