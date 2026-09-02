@@ -326,6 +326,50 @@
     #lbOverlay img{max-width:92vw;max-height:82vh;border:4px solid #fff;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
     #lbCap{color:#e8dcc0;font-size:.9rem;margin-top:14px;max-width:700px;text-align:center;line-height:1.5}
     #lbClose{position:fixed;top:18px;right:26px;color:#fff;font-size:2rem;cursor:pointer;line-height:1}
+
+    /* ── Featured: doctoral thesis ── */
+    .thesis-card{
+      background:var(--white);
+      border:1px solid var(--rule);
+      border-top:4px solid var(--gold);
+      border-radius:6px;
+      padding:1.8rem 2rem;
+      margin-bottom:var(--section-gap);
+      box-shadow:0 2px 14px rgba(80,60,20,.09);
+    }
+    .thesis-eyebrow{
+      font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+      color:var(--gold);font-weight:700;margin-bottom:.6rem;
+    }
+    .thesis-card h2{
+      font-size:1.32rem;line-height:1.35;font-weight:700;color:var(--ink);
+      margin-bottom:.5rem;text-wrap:balance;
+    }
+    .thesis-byline{
+      font-size:.9rem;color:var(--ink-light);font-style:italic;
+      padding-bottom:.9rem;margin-bottom:.9rem;border-bottom:1px solid var(--gold-light);
+    }
+    .thesis-card p{font-size:.97rem;color:var(--ink-light);margin-bottom:1.2rem}
+    .thesis-actions{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+    .thesis-btn{
+      display:inline-flex;align-items:center;gap:.5rem;
+      font-family:inherit;font-size:.9rem;text-decoration:none;
+      padding:.62rem 1.2rem;border-radius:5px;transition:background .15s,color .15s;
+    }
+    .thesis-btn-main{background:var(--gold);color:var(--white);border:1px solid var(--gold)}
+    .thesis-btn-main:hover{background:#725a2f}
+    .thesis-btn-alt{background:transparent;color:var(--gold);border:1px solid var(--rule)}
+    .thesis-btn-alt:hover{background:var(--gold-light)}
+    .thesis-note{
+      font-size:.82rem;color:#7a6648;margin-top:1.1rem;padding:.7rem 1rem;
+      background:var(--gold-light);border-left:3px solid var(--gold);border-radius:4px;
+    }
+    @media (max-width:600px){
+      .thesis-card{padding:1.4rem 1.2rem}
+      .thesis-card h2{font-size:1.15rem}
+      .thesis-actions{flex-direction:column;align-items:stretch}
+      .thesis-btn{justify-content:center}
+    }
   </style>
 </head>
 <body>
@@ -388,7 +432,36 @@
   <!-- Page body -->
   <div class="page-body">
 
-    <a class="back-link" href="index.html">← Back to Directory</a>
+    <a class="back-link" href="index.html">&larr; Back to Directory</a>
+
+    <!-- ══ FEATURED: DOCTORAL THESIS ══ -->
+    <div class="thesis-card">
+      <div class="thesis-eyebrow">Doctoral Research on His Life &amp; Work</div>
+      <h2>The Literary Contributions of Chitramezhuthu K. M. Varghese</h2>
+      <div class="thesis-byline">
+        A PhD thesis by Leelamma George &nbsp;&middot;&nbsp; Mahatma Gandhi University, Faculty of Oriental Studies &nbsp;&middot;&nbsp; 2007
+      </div>
+      <p>
+        In 2007, Leelamma George &mdash; then Lecturer in the Department of Malayalam at Bishop Moore
+        College, Mavelikara &mdash; completed a doctoral thesis devoted entirely to K. M. Varghese's
+        writing: his novels, histories, essays and criticism, and the place they hold in Malayalam
+        literature. It remains the most thorough study of his literary life yet written.
+      </p>
+      <div class="thesis-actions">
+        <a class="thesis-btn thesis-btn-main" href="km-varghese-thesis-english.pdf" target="_blank" rel="noopener">
+          &#128214; Read in English &nbsp;<span style="opacity:.75;font-size:.82rem">(PDF &middot; 82 pages)</span>
+        </a>
+        <a class="thesis-btn thesis-btn-alt" href="https://shodhganga.inflibnet.ac.in/handle/10603/22588" target="_blank" rel="noopener">
+          Original Malayalam thesis &rarr;
+        </a>
+      </div>
+      <div class="thesis-note">
+        The English edition is an informal, reader-friendly translation prepared so that family and
+        readers who do not know Malayalam can follow the work. It is not an official or academic
+        translation &mdash; the original Malayalam thesis, archived at Shodhganga, remains the
+        authoritative version.
+      </div>
+    </div>
 
     <!-- ══ SECTION 1: PAINTINGS ══ -->
     <div class="section">
