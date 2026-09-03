@@ -209,13 +209,13 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
   <div class="page-title">Family Record Submission</div>
   <div class="page-desc">
     Add a family member to the Powathikunnel Family Directory.
-    Fill in as much as you know — Jacob Oommen will review everything before it is added to the tree.
+    Fill in as much as you know — the Web Administrator will review everything before it is added to the tree.
   </div>
 
   <div class="info-box">
     ℹ &nbsp;<strong>Middle Name</strong> = father's first name (e.g. Suja <strong>Eapen</strong> George).
     Please include this wherever possible — many people share the same first name and the middle name
-    helps Jacob identify each person correctly in the tree.
+    helps the Web Administrator identify each person correctly in the tree.
   </div>
 
   <!-- CONFIRMATION -->
@@ -515,7 +515,7 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;">
         <div class="field full">
           <label>Your Email Address <span class="req">*</span></label>
-          <input type="email" id="myself_email" placeholder="So Jacob can contact you if needed"/>
+          <input type="email" id="myself_email" placeholder="So the Web Administrator can contact you if needed"/>
         </div>
       </div>
     </div>
@@ -530,7 +530,7 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
         </div>
         <div class="field">
           <label>Your Email <span class="req">*</span></label>
-          <input type="email" id="sub_email" placeholder="So Jacob can contact you"/>
+          <input type="email" id="sub_email" placeholder="So the Web Administrator can contact you"/>
         </div>
         <div class="field">
           <label>Your Phone <span class="opt">(optional)</span></label>
@@ -543,8 +543,8 @@ footer{text-align:center;font-size:11px;color:var(--muted);padding:20px;
     <div class="submit-area" id="submit-area" style="display:none;">
       <button type="button" class="btn-submit" id="submitBtn" onclick="doSubmit()">✔ Submit Record</button>
       <div class="submit-note">
-        Your record will be sent directly to Jacob Oommen.<br>
-        He will review and add it to the family tree.
+        Your record will be sent directly to the Web Administrator.<br>
+        It will be reviewed and added to the family tree.
       </div>
     </div>
 
@@ -830,16 +830,35 @@ async function doSubmit() {
   };
 
   try {
-    await fetch(SCRIPT_URL, {
-      method:'POST', mode:'no-cors',
-      headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify(payload)
-    });
+    // Read the reply, so a real failure is shown instead of a false "submitted".
+    // text/plain avoids a CORS preflight, which Apps Script cannot answer.
+    let serverSaid = null;
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      serverSaid = await res.json();
+    } catch (netErr) {
+      // Reply unreadable (CORS/offline): send it blind so the record is not
+      // lost, but we then cannot confirm it landed.
+      console.warn('could not read reply, retrying blind:', netErr);
+      await fetch(SCRIPT_URL, {
+        method:'POST', mode:'no-cors',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    if (serverSaid && serverSaid.status === 'error') {
+      throw new Error(serverSaid.message || 'The server could not save this record.');
+    }
 
     const line = familyLine !== 'Not Sure' ? ` (${familyLine} line)` : '';
     el('conf-title').textContent = `Record for ${fn} submitted!`;
     el('conf-desc').textContent  =
-      `Thank you, ${submitterName}. This record has been sent to Jacob for review${line}. ` +
+      `Thank you, ${submitterName}. This record has been sent to the Web Administrator for review${line}. ` +
       `You can add another family member using the button below.`;
     show('confirmation');
     hide('mainForm');
@@ -847,7 +866,7 @@ async function doSubmit() {
 
   } catch(err) {
     console.error(err);
-    alert('Something went wrong. Please try again or contact Jacob directly.');
+    alert('Something went wrong. Please try again, or contact the Web Administrator.');
     btn.disabled = false; btn.textContent = '✔ Submit Record';
   }
 }
