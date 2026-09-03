@@ -202,12 +202,25 @@ document.getElementById('file-in').addEventListener('change', function(e) {
     // Use Combined sheet
     const sheetName = wb.SheetNames.find(s => s === 'Combined') || wb.SheetNames[0];
     const ws = wb.Sheets[sheetName];
-    const raw = XLSX.utils.sheet_to_json(ws, { defval: null, raw: false });
+    // raw:true keeps real date cells as JS Date objects so we can format them
+    // ourselves. With raw:false SheetJS renders them using the cell's own number
+    // format, which for these files is m/d/yy — that drops the century and the
+    // site (which reads the year with a 4-digit match) then shows nothing.
+    const raw = XLSX.utils.sheet_to_json(ws, { defval: null, raw: true });
+    const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function fmtDate(d){
+      if (!(d instanceof Date) || isNaN(d.getTime())) return d;
+      // Excel dates arrive at UTC midnight; read them in UTC to avoid a
+      // timezone shift moving the date back a day.
+      return d.getUTCDate() + '-' + MON[d.getUTCMonth()] + '-' + d.getUTCFullYear();
+    }
 
     rows = raw.map(r => {
       const out = {};
       for (const [excelCol, fsKey] of Object.entries(COL_MAP)) {
         let val = r[excelCol];
+        // Real date cells -> '5-Jul-1908' (never a 2-digit year)
+        if (val instanceof Date) val = fmtDate(val);
         // Normalise empty/nan
         if (val === '' || val === 'NaN' || val === undefined) val = null;
         // life_status fields: normalise to lowercase 'alive' / 'deceased' / 'uncertain'
