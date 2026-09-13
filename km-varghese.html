@@ -270,6 +270,21 @@
       color: var(--gold);
       font-weight: 700;
     }
+    .paintings-list li.extra-item, .articles-list li.extra-item { display: none; }
+    .paintings-list.expanded li.extra-item, .articles-list.expanded li.extra-item { display: block; }
+    .read-more-btn {
+      display: block;
+      margin: 1rem auto 0;
+      background: none;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Cambria', 'Georgia', serif;
+      font-size: 0.85rem;
+      padding: 0.5rem 1.3rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .read-more-btn:hover { background: var(--gold-light); }
     .article-pub {
       font-size: 0.75rem;
       color: var(--gold);
@@ -383,7 +398,7 @@
     (function(){
       var exts = ['png','jpg','jpeg','PNG','JPG','JPEG'], i = 0;
       (function attempt(){
-        if (i >= exts.length) return; // no file yet: placeholder stays
+        if (i >= exts.length) return;
         var im = new Image();
         im.onload = function(){
           im.className = 'hero-photo';
@@ -433,178 +448,7 @@
 
     <a class="back-link" href="index.html">&larr; Back to Directory</a>
 
-    <!-- ══ SECTION 1: PAINTINGS ══ -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-icon">🎨</div>
-        <h2>Paintings by K. M. Varghese</h2>
-        <span class="section-count">118 works · 1909–1960</span>
-      </div>
-
-      <div id="paintGalleryWrap" style="display:none">
-        <div class="gallery-note">Photographs of the original paintings, as gathered by the family.</div>
-        <div class="gallery-grid" id="galIdentified"></div>
-        <div id="galUnidentifiedWrap" style="display:none">
-          <div class="gallery-sub"><strong>Awaiting identification</strong> — do you recognise any of these works from the catalogue below? Please write in through the <a href="index.html">family directory</a>.</div>
-          <div class="gallery-grid" id="galUnidentified"></div>
-        </div>
-      </div>
-      <div class="photo-placeholder" id="paintPlaceholder">
-        <span>🖼</span>
-        Photographs of paintings to be added here
-      </div>
-
-      <ol class="paintings-list">
-        <li>An early portrait of Mar Joseph Divannasios, Metropolitan of Pulikot, Malankara Parish.</li>
-        <li>A full-length portrait of the Melpadi Metropolitan.</li>
-        <li>Picture of Shauryar Pathiri, father of Kurishingal Lonanpillai, Chettikad, Alappuzha (1909).</li>
-        <li>Picture of Lonanpillai's mother.</li>
-        <li>Picture of Muthakoithampuran at Ananthapuram, Haripad (1910).</li>
-        <li>Picture of Vanjipuzha Tampuran Uzhuthira (1910).</li>
-        <li>Picture of Purakkal Cor Episkopa at Ranni (1910).</li>
-        <li>Two images of Kuruvila and his wife at Nedyuzh in Kallisser.</li>
-        <li>Picture of Purakkal Chakochan in Kallisser (1911).</li>
-        <li>Image of Unnittan's wife at Tamarapalli in Kallisser.</li>
-        <li>Picture of Katanar at Pulimoot in Kallisser (1911).</li>
-        <li>Two portraits of the parents of Changanassery Murani Govindappilla's daughter-in-law and school inspector C. R. Krishnapillai B.A. (1911).</li>
-        <li>Picture of Kochi resident Joseph Alungal Achan, Vicar of Alappuzha Chettikad Poongkao Church.</li>
-        <li>A picture of Pulikot Youssef Shemmashon.</li>
-        <li>A picture of Panicker Katanar at Mavelikkara Parambam.</li>
-        <li>Picture of Puthanpurakkal Varki Vadhyar's wife in Mavelikkara Nakkava.</li>
-        <li>Pictures of Kunju Panikkan's father and mother in Mutt Uri.</li>
-        <li>Picture of Muttam Kokateth Pappu Channar.</li>
-        <li>Picture of the father of Travancore Govt. Chief Secretary C. O. Madhavan (Kattanam).</li>
-        <li>Picture of little baby Channar in Mumt Alimoot (Vetti Kolla).</li>
-        <li>Two pictures of Keerikat Kottur Govindan Channar's father and mother.</li>
-        <li>Photo of Kottayam Cherian Registrar's father.</li>
-        <li>Picture of Samuel's mother at Alamelutheri.</li>
-        <li>Image of Namboothiri at Keerikat Alappuram.</li>
-        <li>Picture of Kottayam Mattithara Mathai Chandy Father's father-in-law.</li>
-        <li>Image at Chengannur Aratupuzha Kizhavan Moop.</li>
-        <li>Image of Kottayam Venkedamat Achan (to Niranama).</li>
-        <li>Picture of Achan in Niranath Pattamuk.</li>
-        <li>Image of Valiappan at Veeyapuram Kurichiyet.</li>
-        <li>Portrait of Mar Ostatheos Methran, representative of Antioch, Kottayam, to Old Simmanari.</li>
-        <li>Three pictures of Ponkunnam Thampalakkat Puthumane Yusepachan and his two brothers.</li>
-        <li>Image of the Maharajah of Kochi (reigning, vacated), Thrissur C.M.S. High School.</li>
-        <li>Picture of Achan, manager of Iringalakuda Kariannoor Kanyaka Math, Kochi.</li>
-        <li>Two pictures of Pala Edamatam Kuruvinakunnel Thommachan and his wife.</li>
-        <li>Two pictures of the parents and sons of Elanjikaal Taryat Kunhithomman in Kothamangalam.</li>
-        <li>A picture of the Vicar of Kothamangalam Catholic Church.</li>
-        <li>A picture of Sree Narayanaguru for Changanassery Anandashram — the picture Mahatma Gandhi saw during his visit to Travancore and spoke highly of.</li>
-        <li>An image of Sree Narayanaguru for the Ayirur Kangeetkara Shiva Temple.</li>
-        <li>Image of Kavalam Govindapanik's mother.</li>
-        <li>Picture of Chengannur Arikara Kochukaliekal Purushothaman.</li>
-        <li>Two pictures of Chakochan and his wife at Kallanparam in Ranni.</li>
-        <li>Image of Ranni Viola Chakochan's daughter.</li>
-        <li>Portrait of the great Mar Divannasios Metropolitan, known as the Sixth Marthomma, for the Putankav Great Church (copied from an old picture).</li>
-        <li>Image of Thomas Panicker on Mavelikkara East Parambam.</li>
-        <li>Picture painted for the girls' school near Mavelikkara Kottakkam, commissioned by Sri Moolam Thirunal Maharaja on the occasion of Shashtipurthi.</li>
-        <li>Picture of Papi's mother at Mannar Arikupur.</li>
-        <li>A third portrait of Malankara Metropolitan Pulikot Mar Divannasios.</li>
-        <li>A picture of Dr. Kuryalassery, Bishop of Changanassery.</li>
-        <li>A portrait of Monsignor Father Kandankariyachan.</li>
-        <li>A portrait of Mar Peelaxinos Metropolitan (later Second Catholicos) at Vakathanat.</li>
-        <li>Image of Kandanat Murimatt Mar Evanios.</li>
-        <li>Image of Mar Abdul Messiah Patriarch, Kundera Simmanari.</li>
-        <li>Four paintings of Malankara Metropolitan Mar Geevarghese Deewannasyos Vatasser (for Kundara, Old Simmanari, Thazhakkara English School, and Parumala Simmanari).</li>
-        <li>Image of Mar Gregorios Metropolitan at Kallassery, for Kundera Simmanari.</li>
-        <li>Another picture of the Melpadi Bishop, painted after his conversion to Catholicism, for Kundara.</li>
-        <li>Two pictures of Melpadi Katholika's parents.</li>
-        <li>Two pictures of Pachani Pappachan and his wife at Poovarani in Meenachil.</li>
-        <li>Two pictures of Sarasakavi Mulur S. Padmanabhapanikar (one for high school).</li>
-        <li>Two pictures of Papachan and Amma in Meenachil Kallivyal.</li>
-        <li>Three paintings of Pottankulam Zakariachan, Anujan Thommachan Jr., and Vincent Saipin in Kanjirapalli.</li>
-        <li>Picture of Kottayam C.M.S. College Principal C. K. Thommasin, for the college.</li>
-        <li>Photo of Travancore Anchal Superintendent Padmanabhaiyar, Thiruvananthapuram.</li>
-        <li>Three pictures of Travancore Sanitary Commissioner John Chandy, his wife, and his father, Kottayam.</li>
-        <li>Image of Chengannur Budhanur Churahitta Unnithan.</li>
-        <li>Image by W. J. Edmond Saip for London Mission English School, Kollam.</li>
-        <li>Image of Varkala Chavarkot Kochucherukan Vaidyan.</li>
-        <li>Picture of Dr. Daniel's mother, south of Puthikav Alin.</li>
-        <li>Image of Tirunalveli Bishop Dr. West's sister, Madam Weston.</li>
-        <li>Portrait of Malayalam School Inspector Kottarakkara Aviyot Mathew Win (1931).</li>
-        <li>Portrait of Puthur Sankaran contractor's father at Chengannur Perisser (1923).</li>
-        <li>Portrait of Mar Xavierios Methran's mother at Wallakuzhi, Thiruvalla (1923).</li>
-        <li>Two pictures of Thiruvalla Irupallipra Chattanupalli Mrs. K. I. Varghese Mapila and her husband, late Manorama editor Kandathil Varghese Mapila.</li>
-        <li>Image of Kushmantaswami at Umbarnat Ashram (1925).</li>
-        <li>Picture of Manikathanar at Kurathikat Cheravalli (1925).</li>
-        <li>Image of Changanassery Bishop Dr. Kalassery (Aramana).</li>
-        <li>Picture of Mepral Manamel Conservator M. C. Chandy's mother.</li>
-        <li>Picture of Kanyantra Doctor Alexander's paternal grandfather Thommikku.</li>
-        <li>Two images of Sreedharasanyasi and his father in Chengannur Peringala Kulamulla.</li>
-        <li>Photo of Travancore Anchal Superintendent Padmanabhaiyar (1941).</li>
-        <li>Picture of Travancore High Court Judge K. K. Punnan Luko and Travancore Durbar Physician Ms. Lucas's wife (1942).</li>
-        <li>Picture of Thiruvananthapuram Hajjur Stationary Superintendent I. S. Narayanapillai, Arappuravilakath, Punnapuram (1943).</li>
-        <li>Image of Kottayam Palampadam Thomas Vakeel, for Kottayam Bank Head Office.</li>
-        <li>Portrait of British Prime Minister Winston Churchill, painted under the title <em>The Crouching Lion</em>, presented to Madame Miss Olive in Madras, who took it to London.</li>
-        <li>Portrait of an American gentleman (Klabis), painted at his request and later taken to America.</li>
-        <li>Picture of Aluva Union College Principal A. M. Varki, for Kottayam M.D. Simmanari.</li>
-        <li>Two pictures of Major P. C. Koshi's (Kuttai Doctor) parents.</li>
-        <li>Two pictures of Planter E. Kochumman and his wife at Chepatu Everathu East.</li>
-        <li>A painting of Kottayam Kilirur Mecherimath Ananthanarayanaiyar for the Karthayaneevilasam Reading Room.</li>
-        <li>Image of Chengannur Kotureth Cheryachan.</li>
-        <li>Photo of Doctor Punnan Jacobin at Kottayam Thekekummoot.</li>
-        <li>Image of Catholicos Bava (Kallassery), auctioned for Rs. 300 by Kayamkulam parish — Rs. 150 contributed to the Catholic Fund, Rs. 150 received by the artist (1949).</li>
-        <li>Picture of Abraham Marthomma Metropolitan, President of Malankara Marthomma, for the school building of Thazhakkara Marthomma Church.</li>
-        <li>Two images — Parumala Mar Gregorios Metropolitan and Pulikot Mar Divannasios Metropolitan — for Kundera Simmanari.</li>
-        <li>An image of the late Papi at Thevarvel, Kojancherry.</li>
-        <li>Image of Kottayam Palampadam Thomas Vakiel's bailiff C. K. Koshi (baby), for Mundakayam Gracie Memorial Chapel.</li>
-        <li>Two pictures of P. C. Matthew I.C.S. (Madras Transport Commissioner) and his father, for Madras.</li>
-        <li>Two pictures of Dr. Daniel and his wife, south of Puthikavil Allin.</li>
-        <li>Foot-length portrait of the late Mar Pilexinos Metropolitan, for Machamkunn Catholicate English High School.</li>
-        <li>Picture of Skaria Malpan Achan for the small chapel at Kottayam Orthodox Vedic College.</li>
-        <li>Picture of Manorama Editor K. C. Mamman Mapila, for the Manorama office.</li>
-        <li>Picture of Mrs. E. K. Kochumman at Chepat Everat East.</li>
-        <li>Picture of Manorama Editor K. C. Mamman Mapila's wife.</li>
-        <li>Picture of Kottayam Palampadam P. T. Thomas Vakiel, for Pampadi School.</li>
-        <li>Image of Mar Eugene Timotheus Metropolitan, for Muvattupuzha Vadakara English High School.</li>
-        <li>Portrait of the mother of Madras Transport Commissioner P. C. Mathew I.C.S., for Madras.</li>
-        <li>Two bust pictures of Manorama Editor K. C. Mamman Mapila and his wife, painted together in one frame (1954).</li>
-        <li>Painting of Geevarghese Isaac at Pauvvattikunnelaya Vazh (Thekemannil), Mallappally (1955).</li>
-        <li>Image of the mother of K. P. Krishnamenavan I.A.S., of Kozhikode Panniangara Mullassery Tharavat, North Malabar.</li>
-        <li>Picture of Judge P. A. Oommen B.A. M.L.'s father, Thonakad Palamootilachan.</li>
-        <li>Picture of seven members of the Palampadam family in a single large frame — including late Palampadam Thomas Vakiel, his late wife, their late youngest son, elder son Dr. P. T. Thomas M.L.A., Anujan P. T. Eepan, and sisters Akamma and Kunjamma. Completed 19 November, released 8 January 1956 — an unprecedented family portrait of seven people in human size in a single frame.</li>
-        <li>Picture of Thiruvananthapuram Hajjur Stationery Asst. Controller K. Karunakaran, donated freely at the wish of his eldest son Matthew (1956).</li>
-        <li>Picture of Pathanamthitta Catholicate College Principal Mr. Nainan Abraham, commissioned by students and professors to mark the founding of the college.</li>
-        <li>Picture of the mother of Kundera Aluminum Company Publicity Officer R. Parthasarathy M.A. of Thanjavur, painted one yard in length, taken to Kundara Aluminum Factory.</li>
-        <li>Bust portrait of P. C. Matthew I.A.S., presented to his mother when he was posted at the Delhi Secretariat.</li>
-        <li>A large picture of Mar Gregorios Metropolitan at Chaturuth, containing the tomb of Parumala, painted for the trustees of Thumbamon English School (1959).</li>
-        <li>Two pictures of Manorama Editor K. C. Mamman Mapila, commissioned by Manorama Managing Editor K. M. Matthew B.A. for the Manorama Office (1959).</li>
-        <li>A picture of Mavelikkara Erezhavatak Vallat Raman Kangani, painted at the request of Kunjupanikan.</li>
-        <li>Picture of Manorama Editor K. C. Mamman Mapila's wife, commissioned by K. M. Cherian M.A. (1960).</li>
-      </ol>
-    </div>
-
-    <!-- ══ FEATURED: DOCTORAL THESIS ══ -->
-    <div class="thesis-card">
-      <div class="thesis-eyebrow">Doctoral Research on His Life &amp; Work</div>
-      <h2>The Literary Contributions of Chitramezhuthu K. M. Varghese</h2>
-      <div class="thesis-byline">
-        A PhD thesis by Leelamma George &nbsp;&middot;&nbsp; Mahatma Gandhi University, Faculty of Oriental Studies &nbsp;&middot;&nbsp; 2007
-      </div>
-      <p>
-        In 2007, Leelamma George &mdash; then Lecturer in the Department of Malayalam at Bishop Moore
-        College, Mavelikara &mdash; completed a doctoral thesis devoted entirely to K. M. Varghese's
-        writing: his novels, histories, essays and criticism, and the place they hold in Malayalam
-        literature. It remains the most thorough study of his literary life yet written.
-      </p>
-      <div class="thesis-actions">
-        <a class="thesis-btn thesis-btn-main" href="km-varghese-thesis-english.pdf" target="_blank" rel="noopener">
-          &#128214; Read in English &nbsp;<span style="opacity:.75;font-size:.82rem">(PDF &middot; 82 pages)</span>
-        </a>
-        <a class="thesis-btn thesis-btn-alt" href="https://shodhganga.inflibnet.ac.in/handle/10603/22588" target="_blank" rel="noopener">
-          Original Malayalam thesis &rarr;
-        </a>
-      </div>
-      <div class="thesis-note">
-        The English edition is an informal, reader-friendly translation prepared so that family and
-        readers who do not know Malayalam can follow the work. It is not an official or academic
-        translation &mdash; the original Malayalam thesis, archived at Shodhganga, remains the
-        authoritative version.
-      </div>
-    </div>
-    <!-- ══ SECTION 2: BOOKS ══ -->
+    <!-- ══ SECTION 1: BOOKS ══ -->
     <div class="section">
       <div class="section-header">
         <div class="section-icon">📖</div>
@@ -661,7 +505,7 @@
           <div class="book-card-icon">📘</div>
           <div class="book-title">Thachil Mathuttharakan's Thangakompan</div>
           <div class="book-note">1929</div>
-          <div><a href="index.html#discover/books/fnMMwo9CkcDJdl0yVzsD">📖 Read the English translation</a></div>
+          <div><a href="thangakompan-english.pdf" target="_blank" rel="noopener">📄 Read PDF (English translation)</a></div>
         </div>
 
         <div class="book-card">
@@ -718,11 +562,184 @@
         <div class="book-card">
           <div class="book-card-icon">📘</div>
           <div class="book-title">Ente Jeevithayathra</div>
-          <div><a href="index.html#discover/books/qrr59eKDbTKyYs5qL8zz">📖 Read the Malayalam original</a><br>
-          <a href="index.html#discover/books/coCfuskBPP77MOEjYXjP">📖 Read the English translation</a></div>
+          <div><a href="ente-jeevithayathra-malayalam.pdf" target="_blank" rel="noopener">📄 Read PDF (Malayalam original)</a><br>
+          <a href="ente-jeevithayathra-english.pdf" target="_blank" rel="noopener">📄 Read PDF (English translation)</a></div>
         </div>
 
       </div>
+    </div>
+
+    <!-- ══ FEATURED: DOCTORAL THESIS ══ -->
+    <div class="thesis-card">
+      <div class="thesis-eyebrow">Doctoral Research on His Life &amp; Work</div>
+      <h2>The Literary Contributions of Chitramezhuthu K. M. Varghese</h2>
+      <div class="thesis-byline">
+        A PhD thesis by Leelamma George &nbsp;&middot;&nbsp; Mahatma Gandhi University, Faculty of Oriental Studies &nbsp;&middot;&nbsp; 2007
+      </div>
+      <p>
+        In 2007, Leelamma George &mdash; then Lecturer in the Department of Malayalam at Bishop Moore
+        College, Mavelikara &mdash; completed a doctoral thesis devoted entirely to K. M. Varghese's
+        writing: his novels, histories, essays and criticism, and the place they hold in Malayalam
+        literature. It remains the most thorough study of his literary life yet written.
+      </p>
+      <div class="thesis-actions">
+        <a class="thesis-btn thesis-btn-main" href="km-varghese-thesis-english.pdf" target="_blank" rel="noopener">
+          &#128214; Read in English &nbsp;<span style="opacity:.75;font-size:.82rem">(PDF &middot; 82 pages)</span>
+        </a>
+        <a class="thesis-btn thesis-btn-alt" href="https://shodhganga.inflibnet.ac.in/handle/10603/22588" target="_blank" rel="noopener">
+          Original Malayalam thesis &rarr;
+        </a>
+      </div>
+      <div class="thesis-note">
+        The English edition is an informal, reader-friendly translation prepared so that family and
+        readers who do not know Malayalam can follow the work. It is not an official or academic
+        translation &mdash; the original Malayalam thesis, archived at Shodhganga, remains the
+        authoritative version.
+      </div>
+    </div>
+
+    <!-- ══ SECTION 2: PAINTINGS ══ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">🎨</div>
+        <h2>Paintings by K. M. Varghese</h2>
+        <span class="section-count">118 works · 1909–1960</span>
+      </div>
+
+      <div id="paintGalleryWrap" style="display:none">
+        <div class="gallery-note">Photographs of the original paintings, as gathered by the family.</div>
+        <div class="gallery-grid" id="galIdentified"></div>
+        <div id="galUnidentifiedWrap" style="display:none">
+          <div class="gallery-sub"><strong>Awaiting identification</strong> — do you recognise any of these works from the catalogue below? Please write in through the <a href="index.html">family directory</a>.</div>
+          <div class="gallery-grid" id="galUnidentified"></div>
+        </div>
+      </div>
+      <div class="photo-placeholder" id="paintPlaceholder">
+        <span>🖼</span>
+        Photographs of paintings to be added here
+      </div>
+
+      <ol class="paintings-list">
+        <li>An early portrait of Mar Joseph Divannasios, Metropolitan of Pulikot, Malankara Parish.</li>
+        <li>A full-length portrait of the Melpadi Metropolitan.</li>
+        <li>Picture of Shauryar Pathiri, father of Kurishingal Lonanpillai, Chettikad, Alappuzha (1909).</li>
+        <li>Picture of Lonanpillai's mother.</li>
+        <li>Picture of Muthakoithampuran at Ananthapuram, Haripad (1910).</li>
+        <li>Picture of Vanjipuzha Tampuran Uzhuthira (1910).</li>
+        <li>Picture of Purakkal Cor Episkopa at Ranni (1910).</li>
+        <li>Two images of Kuruvila and his wife at Nedyuzh in Kallisser.</li>
+        <li>Picture of Purakkal Chakochan in Kallisser (1911).</li>
+        <li>Image of Unnittan's wife at Tamarapalli in Kallisser.</li>
+        <li class="extra-item">Picture of Katanar at Pulimoot in Kallisser (1911).</li>
+        <li class="extra-item">Two portraits of the parents of Changanassery Murani Govindappilla's daughter-in-law and school inspector C. R. Krishnapillai B.A. (1911).</li>
+        <li class="extra-item">Picture of Kochi resident Joseph Alungal Achan, Vicar of Alappuzha Chettikad Poongkao Church.</li>
+        <li class="extra-item">A picture of Pulikot Youssef Shemmashon.</li>
+        <li class="extra-item">A picture of Panicker Katanar at Mavelikkara Parambam.</li>
+        <li class="extra-item">Picture of Puthanpurakkal Varki Vadhyar's wife in Mavelikkara Nakkava.</li>
+        <li class="extra-item">Pictures of Kunju Panikkan's father and mother in Mutt Uri.</li>
+        <li class="extra-item">Picture of Muttam Kokateth Pappu Channar.</li>
+        <li class="extra-item">Picture of the father of Travancore Govt. Chief Secretary C. O. Madhavan (Kattanam).</li>
+        <li class="extra-item">Picture of little baby Channar in Mumt Alimoot (Vetti Kolla).</li>
+        <li class="extra-item">Two pictures of Keerikat Kottur Govindan Channar's father and mother.</li>
+        <li class="extra-item">Photo of Kottayam Cherian Registrar's father.</li>
+        <li class="extra-item">Picture of Samuel's mother at Alamelutheri.</li>
+        <li class="extra-item">Image of Namboothiri at Keerikat Alappuram.</li>
+        <li class="extra-item">Picture of Kottayam Mattithara Mathai Chandy Father's father-in-law.</li>
+        <li class="extra-item">Image at Chengannur Aratupuzha Kizhavan Moop.</li>
+        <li class="extra-item">Image of Kottayam Venkedamat Achan (to Niranama).</li>
+        <li class="extra-item">Picture of Achan in Niranath Pattamuk.</li>
+        <li class="extra-item">Image of Valiappan at Veeyapuram Kurichiyet.</li>
+        <li class="extra-item">Portrait of Mar Ostatheos Methran, representative of Antioch, Kottayam, to Old Simmanari.</li>
+        <li class="extra-item">Three pictures of Ponkunnam Thampalakkat Puthumane Yusepachan and his two brothers.</li>
+        <li class="extra-item">Image of the Maharajah of Kochi (reigning, vacated), Thrissur C.M.S. High School.</li>
+        <li class="extra-item">Picture of Achan, manager of Iringalakuda Kariannoor Kanyaka Math, Kochi.</li>
+        <li class="extra-item">Two pictures of Pala Edamatam Kuruvinakunnel Thommachan and his wife.</li>
+        <li class="extra-item">Two pictures of the parents and sons of Elanjikaal Taryat Kunhithomman in Kothamangalam.</li>
+        <li class="extra-item">A picture of the Vicar of Kothamangalam Catholic Church.</li>
+        <li class="extra-item">A picture of Sree Narayanaguru for Changanassery Anandashram — the picture Mahatma Gandhi saw during his visit to Travancore and spoke highly of.</li>
+        <li class="extra-item">An image of Sree Narayanaguru for the Ayirur Kangeetkara Shiva Temple.</li>
+        <li class="extra-item">Image of Kavalam Govindapanik's mother.</li>
+        <li class="extra-item">Picture of Chengannur Arikara Kochukaliekal Purushothaman.</li>
+        <li class="extra-item">Two pictures of Chakochan and his wife at Kallanparam in Ranni.</li>
+        <li class="extra-item">Image of Ranni Viola Chakochan's daughter.</li>
+        <li class="extra-item">Portrait of the great Mar Divannasios Metropolitan, known as the Sixth Marthomma, for the Putankav Great Church (copied from an old picture).</li>
+        <li class="extra-item">Image of Thomas Panicker on Mavelikkara East Parambam.</li>
+        <li class="extra-item">Picture painted for the girls' school near Mavelikkara Kottakkam, commissioned by Sri Moolam Thirunal Maharaja on the occasion of Shashtipurthi.</li>
+        <li class="extra-item">Picture of Papi's mother at Mannar Arikupur.</li>
+        <li class="extra-item">A third portrait of Malankara Metropolitan Pulikot Mar Divannasios.</li>
+        <li class="extra-item">A picture of Dr. Kuryalassery, Bishop of Changanassery.</li>
+        <li class="extra-item">A portrait of Monsignor Father Kandankariyachan.</li>
+        <li class="extra-item">A portrait of Mar Peelaxinos Metropolitan (later Second Catholicos) at Vakathanat.</li>
+        <li class="extra-item">Image of Kandanat Murimatt Mar Evanios.</li>
+        <li class="extra-item">Image of Mar Abdul Messiah Patriarch, Kundera Simmanari.</li>
+        <li class="extra-item">Four paintings of Malankara Metropolitan Mar Geevarghese Deewannasyos Vatasser (for Kundara, Old Simmanari, Thazhakkara English School, and Parumala Simmanari).</li>
+        <li class="extra-item">Image of Mar Gregorios Metropolitan at Kallassery, for Kundera Simmanari.</li>
+        <li class="extra-item">Another picture of the Melpadi Bishop, painted after his conversion to Catholicism, for Kundara.</li>
+        <li class="extra-item">Two pictures of Melpadi Katholika's parents.</li>
+        <li class="extra-item">Two pictures of Pachani Pappachan and his wife at Poovarani in Meenachil.</li>
+        <li class="extra-item">Two pictures of Sarasakavi Mulur S. Padmanabhapanikar (one for high school).</li>
+        <li class="extra-item">Two pictures of Papachan and Amma in Meenachil Kallivyal.</li>
+        <li class="extra-item">Three paintings of Pottankulam Zakariachan, Anujan Thommachan Jr., and Vincent Saipin in Kanjirapalli.</li>
+        <li class="extra-item">Picture of Kottayam C.M.S. College Principal C. K. Thommasin, for the college.</li>
+        <li class="extra-item">Photo of Travancore Anchal Superintendent Padmanabhaiyar, Thiruvananthapuram.</li>
+        <li class="extra-item">Three pictures of Travancore Sanitary Commissioner John Chandy, his wife, and his father, Kottayam.</li>
+        <li class="extra-item">Image of Chengannur Budhanur Churahitta Unnithan.</li>
+        <li class="extra-item">Image by W. J. Edmond Saip for London Mission English School, Kollam.</li>
+        <li class="extra-item">Image of Varkala Chavarkot Kochucherukan Vaidyan.</li>
+        <li class="extra-item">Picture of Dr. Daniel's mother, south of Puthikav Alin.</li>
+        <li class="extra-item">Image of Tirunalveli Bishop Dr. West's sister, Madam Weston.</li>
+        <li class="extra-item">Portrait of Malayalam School Inspector Kottarakkara Aviyot Mathew Win (1931).</li>
+        <li class="extra-item">Portrait of Puthur Sankaran contractor's father at Chengannur Perisser (1923).</li>
+        <li class="extra-item">Portrait of Mar Xavierios Methran's mother at Wallakuzhi, Thiruvalla (1923).</li>
+        <li class="extra-item">Two pictures of Thiruvalla Irupallipra Chattanupalli Mrs. K. I. Varghese Mapila and her husband, late Manorama editor Kandathil Varghese Mapila.</li>
+        <li class="extra-item">Image of Kushmantaswami at Umbarnat Ashram (1925).</li>
+        <li class="extra-item">Picture of Manikathanar at Kurathikat Cheravalli (1925).</li>
+        <li class="extra-item">Image of Changanassery Bishop Dr. Kalassery (Aramana).</li>
+        <li class="extra-item">Picture of Mepral Manamel Conservator M. C. Chandy's mother.</li>
+        <li class="extra-item">Picture of Kanyantra Doctor Alexander's paternal grandfather Thommikku.</li>
+        <li class="extra-item">Two images of Sreedharasanyasi and his father in Chengannur Peringala Kulamulla.</li>
+        <li class="extra-item">Photo of Travancore Anchal Superintendent Padmanabhaiyar (1941).</li>
+        <li class="extra-item">Picture of Travancore High Court Judge K. K. Punnan Luko and Travancore Durbar Physician Ms. Lucas's wife (1942).</li>
+        <li class="extra-item">Picture of Thiruvananthapuram Hajjur Stationary Superintendent I. S. Narayanapillai, Arappuravilakath, Punnapuram (1943).</li>
+        <li class="extra-item">Image of Kottayam Palampadam Thomas Vakeel, for Kottayam Bank Head Office.</li>
+        <li class="extra-item">Portrait of British Prime Minister Winston Churchill, painted under the title <em>The Crouching Lion</em>, presented to Madame Miss Olive in Madras, who took it to London.</li>
+        <li class="extra-item">Portrait of an American gentleman (Klabis), painted at his request and later taken to America.</li>
+        <li class="extra-item">Picture of Aluva Union College Principal A. M. Varki, for Kottayam M.D. Simmanari.</li>
+        <li class="extra-item">Two pictures of Major P. C. Koshi's (Kuttai Doctor) parents.</li>
+        <li class="extra-item">Two pictures of Planter E. Kochumman and his wife at Chepatu Everathu East.</li>
+        <li class="extra-item">A painting of Kottayam Kilirur Mecherimath Ananthanarayanaiyar for the Karthayaneevilasam Reading Room.</li>
+        <li class="extra-item">Image of Chengannur Kotureth Cheryachan.</li>
+        <li class="extra-item">Photo of Doctor Punnan Jacobin at Kottayam Thekekummoot.</li>
+        <li class="extra-item">Image of Catholicos Bava (Kallassery), auctioned for Rs. 300 by Kayamkulam parish — Rs. 150 contributed to the Catholic Fund, Rs. 150 received by the artist (1949).</li>
+        <li class="extra-item">Picture of Abraham Marthomma Metropolitan, President of Malankara Marthomma, for the school building of Thazhakkara Marthomma Church.</li>
+        <li class="extra-item">Two images — Parumala Mar Gregorios Metropolitan and Pulikot Mar Divannasios Metropolitan — for Kundera Simmanari.</li>
+        <li class="extra-item">An image of the late Papi at Thevarvel, Kojancherry.</li>
+        <li class="extra-item">Image of Kottayam Palampadam Thomas Vakiel's bailiff C. K. Koshi (baby), for Mundakayam Gracie Memorial Chapel.</li>
+        <li class="extra-item">Two pictures of P. C. Matthew I.C.S. (Madras Transport Commissioner) and his father, for Madras.</li>
+        <li class="extra-item">Two pictures of Dr. Daniel and his wife, south of Puthikavil Allin.</li>
+        <li class="extra-item">Foot-length portrait of the late Mar Pilexinos Metropolitan, for Machamkunn Catholicate English High School.</li>
+        <li class="extra-item">Picture of Skaria Malpan Achan for the small chapel at Kottayam Orthodox Vedic College.</li>
+        <li class="extra-item">Picture of Manorama Editor K. C. Mamman Mapila, for the Manorama office.</li>
+        <li class="extra-item">Picture of Mrs. E. K. Kochumman at Chepat Everat East.</li>
+        <li class="extra-item">Picture of Manorama Editor K. C. Mamman Mapila's wife.</li>
+        <li class="extra-item">Picture of Kottayam Palampadam P. T. Thomas Vakiel, for Pampadi School.</li>
+        <li class="extra-item">Image of Mar Eugene Timotheus Metropolitan, for Muvattupuzha Vadakara English High School.</li>
+        <li class="extra-item">Portrait of the mother of Madras Transport Commissioner P. C. Mathew I.C.S., for Madras.</li>
+        <li class="extra-item">Two bust pictures of Manorama Editor K. C. Mamman Mapila and his wife, painted together in one frame (1954).</li>
+        <li class="extra-item">Painting of Geevarghese Isaac at Pauvvattikunnelaya Vazh (Thekemannil), Mallappally (1955).</li>
+        <li class="extra-item">Image of the mother of K. P. Krishnamenavan I.A.S., of Kozhikode Panniangara Mullassery Tharavat, North Malabar.</li>
+        <li class="extra-item">Picture of Judge P. A. Oommen B.A. M.L.'s father, Thonakad Palamootilachan.</li>
+        <li class="extra-item">Picture of seven members of the Palampadam family in a single large frame — including late Palampadam Thomas Vakiel, his late wife, their late youngest son, elder son Dr. P. T. Thomas M.L.A., Anujan P. T. Eepan, and sisters Akamma and Kunjamma. Completed 19 November, released 8 January 1956 — an unprecedented family portrait of seven people in human size in a single frame.</li>
+        <li class="extra-item">Picture of Thiruvananthapuram Hajjur Stationery Asst. Controller K. Karunakaran, donated freely at the wish of his eldest son Matthew (1956).</li>
+        <li class="extra-item">Picture of Pathanamthitta Catholicate College Principal Mr. Nainan Abraham, commissioned by students and professors to mark the founding of the college.</li>
+        <li class="extra-item">Picture of the mother of Kundera Aluminum Company Publicity Officer R. Parthasarathy M.A. of Thanjavur, painted one yard in length, taken to Kundara Aluminum Factory.</li>
+        <li class="extra-item">Bust portrait of P. C. Matthew I.A.S., presented to his mother when he was posted at the Delhi Secretariat.</li>
+        <li class="extra-item">A large picture of Mar Gregorios Metropolitan at Chaturuth, containing the tomb of Parumala, painted for the trustees of Thumbamon English School (1959).</li>
+        <li class="extra-item">Two pictures of Manorama Editor K. C. Mamman Mapila, commissioned by Manorama Managing Editor K. M. Matthew B.A. for the Manorama Office (1959).</li>
+        <li class="extra-item">A picture of Mavelikkara Erezhavatak Vallat Raman Kangani, painted at the request of Kunjupanikan.</li>
+        <li class="extra-item">Picture of Manorama Editor K. C. Mamman Mapila's wife, commissioned by K. M. Cherian M.A. (1960).</li>
+      </ol>
+      <button class="read-more-btn" onclick="document.querySelector('.paintings-list').classList.add('expanded');this.style.display='none'">Read more (108 more) &#9662;</button>
     </div>
 
     <!-- ══ SECTION 3: ARTICLES ══ -->
@@ -744,45 +761,46 @@
         <li><span>Jaundice &nbsp;<span class="article-pub">Nasrani Deepika, 1916</span></span></li>
         <li><span>Photography &nbsp;<span class="article-pub">Nasrani Deepika, 1913</span></span></li>
         <li><span>Nayans and Nasrani &nbsp;<span class="article-pub">Samadarshi, Thiruvananthapuram</span></span></li>
-        <li><span>State of Roads in Kerala &nbsp;<span class="article-pub">Manorama, 1920</span></span></li>
-        <li><span>Titles of the Nasrani Community &nbsp;<span class="article-pub">Manorama, 1923</span></span></li>
-        <li><span>A Dharmanishtha (story of Marthandavarma Maharaja and a Christian Swaputri in Travancore) &nbsp;<span class="article-pub">Manorama, 1928</span></span></li>
-        <li><span>Caste Dialects in the Malayalam Language &nbsp;<span class="article-pub">Manorama, 1919</span></span></li>
-        <li><span>Inscription &nbsp;<span class="article-pub">Atmaposhini, Kunnamkulam, 1914</span></span></li>
-        <li><span>Chiri &nbsp;<span class="article-pub">Atmaposhini</span></span></li>
-        <li><span>Architecture and Hydrology &nbsp;<span class="article-pub">Atmaposhini, 1912</span></span></li>
-        <li><span>Mantras of the Malankara Nasrani &nbsp;<span class="article-pub">Bhashaposhini, 1920</span></span></li>
-        <li><span>Pullelikunju (review of the book Pullelikunju) &nbsp;<span class="article-pub">Bhashaposhini, 1924</span></span></li>
-        <li><span>Forgeries of Muttass Namboothiri &nbsp;<span class="article-pub">Bhashaposhini, 1924</span></span></li>
-        <li><span>Some Special Phases in the Catholic Prohibition &nbsp;<span class="article-pub">Kerala Kesari, Kottayam, 1928</span></span></li>
-        <li><span>Vaiyakaran Geevarghese Katanaar &nbsp;<span class="article-pub">Manorama</span></span></li>
-        <li><span>Early Examples of Modern Malayalam Prose &nbsp;<span class="article-pub">Manorama, 1927</span></span></li>
-        <li><span>Domestic Form of Aluva Mahayoga &nbsp;<span class="article-pub">Manorama</span></span></li>
-        <li><span>Bishop Play &nbsp;<span class="article-pub">Manorama</span></span></li>
-        <li><span>A Sadirkottu Vidhi — History of the Thachal Family &nbsp;<span class="article-pub">Manorama, 1932</span></span></li>
-        <li><span>A Dedication (short story) &nbsp;<span class="article-pub">Atmaposhini, 1917</span></span></li>
-        <li><span>Kavita Devi Where (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
-        <li><span>Tripputharat (short story) &nbsp;<span class="article-pub">Atmaposhini, 1919</span></span></li>
-        <li><span>Sumaswapnamritham (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1919</span></span></li>
-        <li><span>Aswathanyathamas (short story) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
-        <li><span>Shastyabdapurthi (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
-        <li><span>Vihyamangalam (prose poem) &nbsp;<span class="article-pub">Atmaposhini, Makaram 1921</span></span></li>
-        <li><span>Alappuzha Orthodox Church in Front of My Eyes (prose poem) &nbsp;<span class="article-pub">Manorama, 1949</span></span></li>
-        <li><span>Ito Pathiri Malayalam; and Buddha and Vishnu in the Christian Church &nbsp;<span class="article-pub">Pauraprabha, 1940 &amp; 1957</span></span></li>
-        <li><span>Misguided Viceroy Memorial Movement (political essay) &nbsp;<span class="article-pub">Bharata Patrika, Thiruvananthapuram, 1925</span></span></li>
-        <li><span>Malankara Suryani Sabha — Path to Peace (serialised in four issues) &nbsp;<span class="article-pub">Pauraprabha, Kottayam, 1941</span></span></li>
-        <li><span>Kerala Kalidasa or Prose Writer &nbsp;<span class="article-pub">1931</span></span></li>
-        <li><span>Malankara Nasrani and Prehistoric Memoirs (serialised in three issues) &nbsp;<span class="article-pub">Nasrani Deepika, 1921</span></span></li>
-        <li><span>Unninainar Patatharakan &nbsp;<span class="article-pub">Keraliya Abhimani, 1920</span></span></li>
-        <li><span>Member &nbsp;<span class="article-pub">Nasrani Deepika, Kottayam, 1948</span></span></li>
-        <li><span>Travancore Consecration &nbsp;<span class="article-pub">Manorama, 1124 Idavam</span></span></li>
-        <li><span>A Miraculous Incident in the Sky about Parumala Mar Gregorios Bishop &nbsp;<span class="article-pub">Manorama, 1939</span></span></li>
-        <li><span>Obituary of Shri O. M. Cherian &nbsp;<span class="article-pub">Pauraprabha</span></span></li>
-        <li><span>Udayamperur Sunnahs (extended essay) &nbsp;<span class="article-pub">Manorama, 1939</span></span></li>
-        <li><span>Temple Entry of Christians &nbsp;<span class="article-pub">Pauraprabha, 1928</span></span></li>
-        <li><span>Debate on 'Mapilasabda' with K. M. Mani, Accounts Officer of the Travancore Government (serialised) &nbsp;<span class="article-pub">Pauraprabha, 1945</span></span></li>
-        <li><span>Jivakaruniya or Mithyaprapanchamad</span></li>
+        <li class="extra-item"><span>State of Roads in Kerala &nbsp;<span class="article-pub">Manorama, 1920</span></span></li>
+        <li class="extra-item"><span>Titles of the Nasrani Community &nbsp;<span class="article-pub">Manorama, 1923</span></span></li>
+        <li class="extra-item"><span>A Dharmanishtha (story of Marthandavarma Maharaja and a Christian Swaputri in Travancore) &nbsp;<span class="article-pub">Manorama, 1928</span></span></li>
+        <li class="extra-item"><span>Caste Dialects in the Malayalam Language &nbsp;<span class="article-pub">Manorama, 1919</span></span></li>
+        <li class="extra-item"><span>Inscription &nbsp;<span class="article-pub">Atmaposhini, Kunnamkulam, 1914</span></span></li>
+        <li class="extra-item"><span>Chiri &nbsp;<span class="article-pub">Atmaposhini</span></span></li>
+        <li class="extra-item"><span>Architecture and Hydrology &nbsp;<span class="article-pub">Atmaposhini, 1912</span></span></li>
+        <li class="extra-item"><span>Mantras of the Malankara Nasrani &nbsp;<span class="article-pub">Bhashaposhini, 1920</span></span></li>
+        <li class="extra-item"><span>Pullelikunju (review of the book Pullelikunju) &nbsp;<span class="article-pub">Bhashaposhini, 1924</span></span></li>
+        <li class="extra-item"><span>Forgeries of Muttass Namboothiri &nbsp;<span class="article-pub">Bhashaposhini, 1924</span></span></li>
+        <li class="extra-item"><span>Some Special Phases in the Catholic Prohibition &nbsp;<span class="article-pub">Kerala Kesari, Kottayam, 1928</span></span></li>
+        <li class="extra-item"><span>Vaiyakaran Geevarghese Katanaar &nbsp;<span class="article-pub">Manorama</span></span></li>
+        <li class="extra-item"><span>Early Examples of Modern Malayalam Prose &nbsp;<span class="article-pub">Manorama, 1927</span></span></li>
+        <li class="extra-item"><span>Domestic Form of Aluva Mahayoga &nbsp;<span class="article-pub">Manorama</span></span></li>
+        <li class="extra-item"><span>Bishop Play &nbsp;<span class="article-pub">Manorama</span></span></li>
+        <li class="extra-item"><span>A Sadirkottu Vidhi — History of the Thachal Family &nbsp;<span class="article-pub">Manorama, 1932</span></span></li>
+        <li class="extra-item"><span>A Dedication (short story) &nbsp;<span class="article-pub">Atmaposhini, 1917</span></span></li>
+        <li class="extra-item"><span>Kavita Devi Where (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
+        <li class="extra-item"><span>Tripputharat (short story) &nbsp;<span class="article-pub">Atmaposhini, 1919</span></span></li>
+        <li class="extra-item"><span>Sumaswapnamritham (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1919</span></span></li>
+        <li class="extra-item"><span>Aswathanyathamas (short story) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
+        <li class="extra-item"><span>Shastyabdapurthi (prose poem) &nbsp;<span class="article-pub">Atmaposhini, 1920</span></span></li>
+        <li class="extra-item"><span>Vihyamangalam (prose poem) &nbsp;<span class="article-pub">Atmaposhini, Makaram 1921</span></span></li>
+        <li class="extra-item"><span>Alappuzha Orthodox Church in Front of My Eyes (prose poem) &nbsp;<span class="article-pub">Manorama, 1949</span></span></li>
+        <li class="extra-item"><span>Ito Pathiri Malayalam; and Buddha and Vishnu in the Christian Church &nbsp;<span class="article-pub">Pauraprabha, 1940 &amp; 1957</span></span></li>
+        <li class="extra-item"><span>Misguided Viceroy Memorial Movement (political essay) &nbsp;<span class="article-pub">Bharata Patrika, Thiruvananthapuram, 1925</span></span></li>
+        <li class="extra-item"><span>Malankara Suryani Sabha — Path to Peace (serialised in four issues) &nbsp;<span class="article-pub">Pauraprabha, Kottayam, 1941</span></span></li>
+        <li class="extra-item"><span>Kerala Kalidasa or Prose Writer &nbsp;<span class="article-pub">1931</span></span></li>
+        <li class="extra-item"><span>Malankara Nasrani and Prehistoric Memoirs (serialised in three issues) &nbsp;<span class="article-pub">Nasrani Deepika, 1921</span></span></li>
+        <li class="extra-item"><span>Unninainar Patatharakan &nbsp;<span class="article-pub">Keraliya Abhimani, 1920</span></span></li>
+        <li class="extra-item"><span>Member &nbsp;<span class="article-pub">Nasrani Deepika, Kottayam, 1948</span></span></li>
+        <li class="extra-item"><span>Travancore Consecration &nbsp;<span class="article-pub">Manorama, 1124 Idavam</span></span></li>
+        <li class="extra-item"><span>A Miraculous Incident in the Sky about Parumala Mar Gregorios Bishop &nbsp;<span class="article-pub">Manorama, 1939</span></span></li>
+        <li class="extra-item"><span>Obituary of Shri O. M. Cherian &nbsp;<span class="article-pub">Pauraprabha</span></span></li>
+        <li class="extra-item"><span>Udayamperur Sunnahs (extended essay) &nbsp;<span class="article-pub">Manorama, 1939</span></span></li>
+        <li class="extra-item"><span>Temple Entry of Christians &nbsp;<span class="article-pub">Pauraprabha, 1928</span></span></li>
+        <li class="extra-item"><span>Debate on 'Mapilasabda' with K. M. Mani, Accounts Officer of the Travancore Government (serialised) &nbsp;<span class="article-pub">Pauraprabha, 1945</span></span></li>
+        <li class="extra-item"><span>Jivakaruniya or Mithyaprapanchamad</span></li>
       </ol>
+      <button class="read-more-btn" onclick="document.querySelector('.articles-list').classList.add('expanded');this.style.display='none'">Read more (38 more) &#9662;</button>
     </div>
 
   </div><!-- end page-body -->
@@ -818,24 +836,21 @@
     if (gridId === 'galUnidentified') document.getElementById('galUnidentifiedWrap').style.display = 'block';
   }
   var caps = [].slice.call(document.querySelectorAll('.paintings-list li')).map(function(li){ return li.textContent.trim(); });
-  // Identified works: painting-<catalogue number>.<ext>
   for (var n = 1; n <= 118; n++){
     (function(n){
       tryImg('painting-' + n, function(src){
         var full = caps[n-1] || '';
-        var cap = '\u2116 ' + n + (full ? ' \u2014 ' + (full.length > 95 ? full.slice(0,95) + '\u2026' : full) : '');
+        var cap = '№ ' + n + (full ? ' — ' + (full.length > 95 ? full.slice(0,95) + '…' : full) : '');
         addTile('galIdentified', src, cap, n);
       });
     })(n);
   }
-  // Unidentified photos: 001.jpg, 002.jpeg ... up to 040
   for (var m = 1; m <= 40; m++){
     (function(m){
       var b = ('00' + m).slice(-3);
       tryImg(b, function(src){ addTile('galUnidentified', src, '', m); });
     })(m);
   }
-  // Lightbox
   var ov = document.getElementById('lbOverlay');
   window.openLB = function(src, cap){
     document.getElementById('lbImg').src = src;
