@@ -879,5 +879,122 @@
   });
 })();
 </script>
+<script type="module">
+(function(){
+  var firebaseConfig={apiKey:"AIzaSyBDRQr7_gfGg1tV5iv86-c7ZIzoU1GW72A",authDomain:"powathikunnel-40a66.firebaseapp.com",databaseURL:"https://powathikunnel-40a66-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"powathikunnel-40a66",storageBucket:"powathikunnel-40a66.firebasestorage.app",messagingSenderId:"698176790898",appId:"1:698176790898:web:0ad065f108fd273152fdeb"};
+  var db, storage, currentRole = "viewer", coversCache = null;
+
+  async function boot(){
+    var fbApp = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    var fbFs = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    var fbAuth = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+    var fbSt = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js");
+    var app = fbApp.initializeApp(firebaseConfig);
+    db = fbFs.getFirestore(app);
+    storage = fbSt.getStorage(app);
+    window.__kmvFb = {fs: fbFs, st: fbSt};
+    var auth = fbAuth.getAuth(app);
+    fbAuth.onAuthStateChanged(auth, async function(user){
+      currentRole = "viewer";
+      if(user){
+        try{
+          var roleSnap = await fbFs.getDoc(fbFs.doc(db,"roles",user.uid));
+          var role = roleSnap.exists() ? roleSnap.data().role : null;
+          if(role==="admin"||role==="editor") currentRole = role;
+        }catch(e){}
+      }
+      renderSlots();
+    });
+    renderSlots();
+  }
+
+  async function loadCovers(force){
+    if(coversCache && !force) return coversCache;
+    try{
+      var snap = await window.__kmvFb.fs.getDoc(window.__kmvFb.fs.doc(db,"app_config","kmv_book_covers"));
+      coversCache = snap.exists() ? snap.data() : {};
+    }catch(e){ coversCache = coversCache || {}; }
+    return coversCache;
+  }
+
+  async function renderSlots(){
+    var cards = [].slice.call(document.querySelectorAll(".books-grid .book-card"));
+    var covers = await loadCovers();
+    cards.forEach(function(card, i){ buildSlot(card, "book"+(i+1), covers["book"+(i+1)]); });
+  }
+
+  function buildSlot(card, key, url){
+    var old = card.querySelector(".bkv-slot");
+    if(old) old.remove();
+    var icon = card.querySelector(".book-card-icon");
+    if(icon) icon.style.display = url ? "none" : "";
+    var wrap = document.createElement("div");
+    wrap.className = "bkv-slot";
+    wrap.style.cssText = "margin-bottom:6px";
+    if(url){
+      var img = document.createElement("img");
+      img.src = url; img.alt = "Book cover";
+      img.style.cssText = "width:100%;max-height:170px;object-fit:contain;border-radius:5px;border:1px solid #e0d5c0;background:#f7f2e8;cursor:pointer;display:block";
+      img.onclick = function(){ window.open(url,"_blank"); };
+      wrap.appendChild(img);
+    }
+    if(currentRole==="admin"||currentRole==="editor"){
+      var ctrl = document.createElement("div");
+      ctrl.style.cssText = "display:flex;gap:6px;margin-top:5px;flex-wrap:wrap";
+      var fileInput = document.createElement("input");
+      fileInput.type="file"; fileInput.accept="image/*"; fileInput.style.display="none";
+      var upBtn = document.createElement("button");
+      upBtn.type="button";
+      upBtn.textContent = url ? "↻ Replace cover" : "📤 Upload cover";
+      upBtn.style.cssText = "font-size:.65rem;padding:3px 8px;border-radius:5px;border:1px solid #c9bfae;background:#fff;cursor:pointer;color:#6b5c40";
+      upBtn.onclick = function(){ fileInput.click(); };
+      fileInput.onchange = function(){ handleUpload(fileInput, key, card); };
+      ctrl.appendChild(upBtn); ctrl.appendChild(fileInput);
+      if(url){
+        var rmBtn = document.createElement("button");
+        rmBtn.type="button"; rmBtn.textContent="🗑 Remove";
+        rmBtn.style.cssText = upBtn.style.cssText;
+        rmBtn.onclick = function(){ handleRemove(key, card); };
+        ctrl.appendChild(rmBtn);
+      }
+      wrap.appendChild(ctrl);
+    }
+    card.insertBefore(wrap, card.firstChild);
+  }
+
+  async function handleUpload(input, key, card){
+    var file = input.files && input.files[0];
+    if(!file) return;
+    var st = window.__kmvFb.st, fs = window.__kmvFb.fs;
+    try{
+      var path = "books/kmv_"+key+"_"+Date.now()+"_"+file.name;
+      var r = st.ref(storage, path);
+      var snap = await st.uploadBytes(r, file);
+      var url = await st.getDownloadURL(snap.ref);
+      var covers = await loadCovers();
+      var oldUrl = covers[key];
+      covers[key] = url;
+      await fs.setDoc(fs.doc(db,"app_config","kmv_book_covers"), covers);
+      if(oldUrl){ try{ await st.deleteObject(st.ref(storage, oldUrl)); }catch(e){} }
+      buildSlot(card, key, url);
+    }catch(e){ console.error(e); alert("Upload failed: "+(e.message||e)); }
+  }
+
+  async function handleRemove(key, card){
+    if(!confirm("Remove this cover image?")) return;
+    var st = window.__kmvFb.st, fs = window.__kmvFb.fs;
+    try{
+      var covers = await loadCovers();
+      var oldUrl = covers[key];
+      delete covers[key];
+      await fs.setDoc(fs.doc(db,"app_config","kmv_book_covers"), covers);
+      if(oldUrl){ try{ await st.deleteObject(st.ref(storage, oldUrl)); }catch(e){} }
+      buildSlot(card, key, null);
+    }catch(e){ console.error(e); alert("Remove failed: "+(e.message||e)); }
+  }
+
+  if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded", boot); } else { boot(); }
+})();
+</script>
 </body>
 </html>
