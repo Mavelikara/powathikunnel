@@ -967,7 +967,7 @@
     if(!file) return;
     var st = window.__kmvFb.st, fs = window.__kmvFb.fs;
     try{
-      var path = "books/kmv_"+key+"_"+Date.now()+"_"+file.name;
+      var path = "paintings/kmv_"+key+"_"+Date.now()+"_"+file.name;
       var r = st.ref(storage, path);
       var snap = await st.uploadBytes(r, file);
       var url = await st.getDownloadURL(snap.ref);
