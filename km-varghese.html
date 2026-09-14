@@ -936,6 +936,15 @@
     var cards = [].slice.call(document.querySelectorAll(".books-grid .book-card"));
     var covers = await loadCovers();
     cards.forEach(function(card, i){ buildSlot(card, "book"+(i+1), covers["book"+(i+1)]); });
+    updateBookPlaceholder();
+  }
+
+  function updateBookPlaceholder(){
+    var ph = document.getElementById("bookPlaceholder");
+    if(!ph) return;
+    var covers = coversCache || {};
+    var any = Object.keys(covers).some(function(k){ return !!covers[k]; });
+    ph.style.display = any ? "none" : "";
   }
 
   function buildSlot(card, key, url){
@@ -992,6 +1001,7 @@
       await fs.setDoc(fs.doc(db,"app_config","kmv_book_covers"), covers);
       if(oldUrl){ try{ await st.deleteObject(st.ref(storage, oldUrl)); }catch(e){} }
       buildSlot(card, key, url);
+      updateBookPlaceholder();
     }catch(e){ console.error(e); alert("Upload failed: "+(e.message||e)); }
   }
 
@@ -1005,6 +1015,7 @@
       await fs.setDoc(fs.doc(db,"app_config","kmv_book_covers"), covers);
       if(oldUrl){ try{ await st.deleteObject(st.ref(storage, oldUrl)); }catch(e){} }
       buildSlot(card, key, null);
+      updateBookPlaceholder();
     }catch(e){ console.error(e); alert("Remove failed: "+(e.message||e)); }
   }
 
