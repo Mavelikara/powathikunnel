@@ -3003,16 +3003,16 @@ function wnRenderTeaserStrip(){
     if(!(latestDate>(baselines[s.key]||"")))return null;
     var preview=s.preview(latest);
     if(!preview)return null;
-    return \'<div style="display:flex;align-items:baseline;gap:6px;font-size:.8rem;line-height:1.5">\'
-      +\'<span>\'+s.icon+\'</span>\'
-      +\'<span style="color:var(--text);font-weight:600;flex-shrink:0">\'+bwEsc(s.label)+\'</span>\'
-      +\'<span style="color:#5c4415;font-style:italic;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">\'+bwEsc(preview)+\'</span>\'
-      +\'<a href="#" onclick="event.preventDefault();\'+s.jump(latest.docId)+\'" style="color:var(--gold);font-size:.72rem;white-space:nowrap;text-decoration:none;border-bottom:1px dotted var(--gold)">See more &rarr;</a>\'
-      +\'</div>\';
+    return '<div style="display:flex;align-items:baseline;gap:6px;font-size:.8rem;line-height:1.5">'
+      +'<span>'+s.icon+'</span>'
+      +'<span style="color:var(--text);font-weight:600;flex-shrink:0">'+bwEsc(s.label)+'</span>'
+      +'<span style="color:#5c4415;font-style:italic;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+bwEsc(preview)+'</span>'
+      +'<a href="#" onclick="event.preventDefault();'+s.jump(latest.docId)+'" style="color:var(--gold);font-size:.72rem;white-space:nowrap;text-decoration:none;border-bottom:1px dotted var(--gold)">See more &rarr;</a>'
+      +'</div>';
   }).filter(Boolean);
   if(!lines.length){box.style.display="none";box.innerHTML="";return;}
   box.style.display="block";
-  box.innerHTML=\'<div style="font-family:Cormorant Garamond,serif;font-size:.72rem;letter-spacing:.5px;color:#6b4a23;font-weight:700;margin-bottom:10px">Recently added elsewhere</div><div style="display:flex;flex-direction:column;gap:9px">\'+lines.join("")+\'</div>\';
+  box.innerHTML='<div style="font-family:Cormorant Garamond,serif;font-size:.72rem;letter-spacing:.5px;color:#6b4a23;font-weight:700;margin-bottom:10px">Recently added elsewhere</div><div style="display:flex;flex-direction:column;gap:9px">'+lines.join("")+'</div>';
 }
 var WN_CATEGORIES=[
  {key:"all",label:"All"},
