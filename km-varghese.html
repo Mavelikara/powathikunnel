@@ -342,6 +342,24 @@
     #lbCap{color:#e8dcc0;font-size:.9rem;margin-top:14px;max-width:700px;text-align:center;line-height:1.5}
     #lbClose{position:fixed;top:18px;right:26px;color:#fff;font-size:2rem;cursor:pointer;line-height:1}
 
+    /* ── Writings about him ── */
+    .about-ml{font-family:'Noto Serif Malayalam','Cambria','Georgia',serif;font-size:.82rem;font-weight:600;color:var(--ink-light);line-height:1.5;margin-top:-.25rem}
+    .about-desc{font-size:.82rem;color:var(--ink-light);line-height:1.55}
+    .about-links{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:auto;padding-top:.25rem}
+    .about-links a{font-family:inherit;font-size:.78rem;color:var(--gold);text-decoration:none;border:1px solid var(--rule);border-radius:3px;padding:.3rem .6rem;transition:background .15s}
+    .about-links a:hover{background:var(--gold-light)}
+
+    .about-sub{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 .6rem}
+    .about-sub ~ .about-sub{margin-top:.4rem}
+    .about-list{list-style:none;counter-reset:about-counter;margin:0 0 .5rem}
+    .about-list li{counter-increment:about-counter;position:relative;padding:.5rem 0 .5rem 2.85rem;border-bottom:1px solid #e8e0d4;font-size:.9rem;color:var(--ink-light);line-height:1.5}
+    .about-list li:last-child{border-bottom:none}
+    .about-list li::before{content:counter(about-counter);position:absolute;left:0;top:.6rem;width:2rem;text-align:right;font-size:.75rem;color:var(--gold);font-weight:700}
+    .about-list li.about-empty{padding-left:0;font-style:italic;font-size:.84rem;color:#9a8f80;counter-increment:none}
+    .about-list li.about-empty::before{content:none}
+    .about-read{font-size:.75rem;color:var(--gold);text-decoration:none;margin-left:.4rem;white-space:nowrap}
+    .about-read:hover{text-decoration:underline}
+
     /* ── Featured: doctoral thesis ── */
     .thesis-card{
       background:var(--white);
@@ -385,6 +403,7 @@
       .thesis-btn{justify-content:center}
     }
   </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Malayalam:wght@400;600&display=swap">
 </head>
 <body>
 
@@ -598,6 +617,40 @@
         translation &mdash; the original Malayalam thesis, archived at Shodhganga, remains the
         authoritative version.
       </div>
+    </div>
+
+    <!-- ══ WRITINGS ABOUT K. M. VARGHESE ══ -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon">✍️</div>
+        <h2>Writings About K. M. Varghese</h2>
+        <span class="section-count">Books &amp; articles</span>
+      </div>
+
+      <div class="about-sub">Books</div>
+      <div class="books-grid">
+
+        <div class="book-card about-card">
+          <div class="book-card-icon">📗</div>
+          <div class="book-title">Chithramezhuthu K. M. Varghese</div>
+          <div class="about-ml" lang="ml">ചിത്രമെഴുത്ത് കെ. എം. വറുഗീസ്</div>
+          <div class="book-note">A biography by K. V. Mammen · 1993</div>
+          <div class="about-desc">The life of the painter, prose-poet and historian, told by a former Assistant Editor of the <i>Malayala Manorama</i> from letters, newspapers and family records.</div>
+          <div class="about-links">
+            <a href="https://firebasestorage.googleapis.com/v0/b/powathikunnel-40a66.firebasestorage.app/o/books%2F1792161945285_Chithramezhuthu_KM_Varghese_Jeevacharithram_Malayalam.pdf?alt=media" target="_blank" rel="noopener">Malayalam original &rarr;</a>
+            <a href="https://firebasestorage.googleapis.com/v0/b/powathikunnel-40a66.firebasestorage.app/o/books%2F1792162035905_Chithramezhuthu_KM_Varghese_Biography_English.pdf?alt=media" target="_blank" rel="noopener">English translation &rarr;</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="about-sub">Articles &amp; tributes</div>
+      <ol class="about-list">
+        <!-- To add an article, copy this line and fill it in:
+        <li><span>Article title &nbsp;<span class="article-pub">Author · Newspaper or journal, date</span></span> <a class="about-read" href="LINK" target="_blank" rel="noopener">Read &rarr;</a></li>
+        -->
+        <li class="about-empty">Articles and tributes written about him will be listed here as they are added.</li>
+      </ol>
     </div>
 
     <!-- ══ SECTION 2: PAINTINGS ══ -->
