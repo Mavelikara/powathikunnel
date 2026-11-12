@@ -4031,7 +4031,7 @@ window.openAddRelationSheet=openAddRelationSheet,window.toggleAddRelMenu=toggleA
     var sub = [par ? 'child of ' + par : '', yr ? 'b. ' + yr : ''].filter(Boolean).join(' · ');
     if (tagEl) {
       tagEl.style.display = 'inline-flex';
-      tagEl.innerHTML = '✓ <strong>' + esc(m.name) + '</strong>'
+      tagEl.innerHTML = '✓ <strong>' + esc(m.first_name || m.name || '') + '</strong>'
         + (sub ? ' · ' + esc(sub) : '')
         + ' <span style="cursor:pointer;opacity:.6;margin-left:4px" onclick="window.cnClear(\'' + side + '\')">×</span>';
     }
@@ -4060,7 +4060,7 @@ window.openAddRelationSheet=openAddRelationSheet,window.toggleAddRelMenu=toggleA
     var chainB = ancestorChain(selB.id, map);
     var lcaResult = findLCA(chainA, chainB);
     if (!lcaResult) {
-      errEl.textContent = 'No common ancestor found between ' + selA.name + ' and ' + selB.name + '. They may be from different family lines.';
+      errEl.textContent = 'No common ancestor found between ' + (selA.first_name||selA.name||'?') + ' and ' + (selB.first_name||selB.name||'?') + '. They may be from different family lines.';
       errEl.style.display = 'block';
       resEl.style.display = 'none';
       return;
@@ -4080,7 +4080,7 @@ window.openAddRelationSheet=openAddRelationSheet,window.toggleAddRelMenu=toggleA
         + '<div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:' + stripe + ';border-radius:12px 0 0 12px"></div>'
         + '<div style="padding-left:8px">'
         + '<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.8px;color:' + cardClr + ';font-weight:700;margin-bottom:3px">Person ' + side.toUpperCase() + '</div>'
-        + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.05rem;font-weight:700;color:' + cardClr + ';line-height:1.3">' + esc(m.name) + '</div>'
+        + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.05rem;font-weight:700;color:' + cardClr + ';line-height:1.3">' + esc(m.first_name || m.name || '') + '</div>'
         + (m.pet_name ? '<div style="font-size:.78rem;color:' + cardClr + ';font-style:italic;opacity:.8">“' + esc(m.pet_name) + '”</div>' : '')
         + (sub ? '<div style="font-size:.7rem;color:#5a4f44;margin-top:3px">' + esc(sub) + '</div>' : '')
         + '<div style="font-size:.65rem;color:#a09080;margin-top:4px">#' + m.id + '</div>'
@@ -4096,7 +4096,7 @@ window.openAddRelationSheet=openAddRelationSheet,window.toggleAddRelMenu=toggleA
       + '</div>'
       + makeCard(selB, 'b')
       + '</div>'
-      + '<div style="margin-top:8px;font-size:.7rem;color:var(--muted)">Common ancestor: <strong style="color:var(--text)">' + esc(lca.name) + '</strong>'
+      + '<div style="margin-top:8px;font-size:.7rem;color:var(--muted)">Common ancestor: <strong style="color:var(--text)">' + esc(lca.first_name || lca.name || '') + '</strong>'
       + (getYear(lca) ? ' (b. ' + getYear(lca) + ')' : '') + '</div>';
     document.getElementById('cnDiagram').innerHTML = buildRelSvg(selA, selB, lcaResult, map);
     resEl.style.display = 'block';
