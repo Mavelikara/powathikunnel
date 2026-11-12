@@ -372,6 +372,7 @@
     <button class="btn btn-out" id="vbtnChain" onclick="setTreeView('chain')" style="font-size:.78rem;padding:6px 12px;border-color:var(--gold);color:var(--gold)">🔗 Chain view</button>
     <button class="btn btn-out" id="vbtnDiagram" onclick="setTreeView('diagram')" style="font-size:.78rem;padding:6px 12px">🗺 Diagram view</button>
     <button class="btn btn-out" id="vbtnFull" onclick="setTreeView('full')" style="font-size:.78rem;padding:6px 12px">🌐 Full tree</button>
+    <button class="btn btn-out" id="vbtnConnect" onclick="setTreeView('connect')" style="font-size:.78rem;padding:6px 12px">🔗 Connect</button>
     <span class="dt-hint">Click any card to focus · All ancestors above, all descendants below</span>
   </div>
   <div class="dt-breadcrumb" id="dtBreadcrumb"></div>
@@ -464,6 +465,34 @@
       <div class="ft-pop" id="ftPop"></div>
     </div>
   </div>
+
+<div id="connectContainer" class="hidden">
+  <div style="max-width:900px;margin:28px auto 60px;padding:0 24px">
+    <div style="margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:4px">🔗 Relationship Finder</div>
+      <div style="font-size:.78rem;color:var(--muted)">Enter two family members below to discover how they are related</div>
+    </div>
+    <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px;position:relative">
+        <label style="font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:4px">Person A</label>
+        <input id="cnSearchA" type="text" placeholder="Name or ID number…" autocomplete="off" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Jost',sans-serif;font-size:.87rem;background:var(--surface);color:var(--text);outline:none">
+        <div id="cnDropA" style="display:none;position:absolute;top:calc(100% + 4px);left:0;width:100%;min-width:300px;max-height:260px;overflow-y:auto;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shh);z-index:200"></div>
+        <div id="cnTagA" style="display:none;margin-top:6px;font-size:.72rem;padding:4px 10px;background:#fdf0ed;border:1px solid #d9917f;border-radius:16px;color:#7c2010;align-items:center;gap:6px"></div>
+      </div>
+      <div style="flex:1;min-width:220px;position:relative">
+        <label style="font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);display:block;margin-bottom:4px">Person B</label>
+        <input id="cnSearchB" type="text" placeholder="Name or ID number…" autocomplete="off" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Jost',sans-serif;font-size:.87rem;background:var(--surface);color:var(--text);outline:none">
+        <div id="cnDropB" style="display:none;position:absolute;top:calc(100% + 4px);left:0;width:100%;min-width:300px;max-height:260px;overflow-y:auto;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shh);z-index:200"></div>
+        <div id="cnTagB" style="display:none;margin-top:6px;font-size:.72rem;padding:4px 10px;background:#fdf7e8;border:1px solid #c8a040;border-radius:16px;color:#7c5a0a;align-items:center;gap:6px"></div>
+      </div>
+    </div>
+    <div id="cnResult" style="display:none">
+      <div id="cnBadge" style="margin-bottom:16px"></div>
+      <div id="cnDiagram" style="overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px"></div>
+    </div>
+    <div id="cnError" style="display:none;padding:12px 16px;background:#fff8f5;border:1px solid #d9917f;border-radius:8px;color:#7c2010;font-size:.82rem"></div>
+  </div>
+</div>
 
 <!-- ══ ABOUT US ══ -->
 <div id="aboutSection" class="hidden">
@@ -3751,6 +3780,360 @@ window.openAddRelationSheet=openAddRelationSheet,window.toggleAddRelMenu=toggleA
   if(typeof _ahr==="function")window.applyHashRoute=function(){const ok=_ahr();try{const parts=(location.hash||"").replace(/^#/,"").split("/");if(ok&&parts[0]==="tree"&&parts[2]==="full"){const tid=parseInt(parts[1]);let tries=0;const t=setInterval(()=>{tries++;if(MEMBERS.length||tries>25){clearInterval(t);if(MEMBERS.length){window.__pkRouting=!0;try{treeFocusId=tid;window.setTreeView("full")}finally{window.__pkRouting=!1}}}},300)}}catch(e){}return ok};
   location.hash&&/^#tree\/\d+\/full$/.test(location.hash)&&window.applyHashRoute();
 })();
+(function(){
+  'use strict';
+
+  /* ── hook setTreeView ── */
+  var _stv2 = window.setTreeView;
+  window.setTreeView = function(v) {
+    _stv2(v);
+    var c = document.getElementById('connectContainer');
+    var b = document.getElementById('vbtnConnect');
+    if (c) c.classList.toggle('hidden', v !== 'connect');
+    if (b) b.style.cssText = b.style.cssText.replace(/border-color:[^;]*;?|color:[^;]*;?/g, '') +
+      (v === 'connect' ? 'border-color:var(--gold);color:var(--gold);' : '');
+  };
+
+  /* ── utilities ── */
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function getMemberMap() {
+    var members = (typeof MEMBERS !== 'undefined' ? MEMBERS : []);
+    var map = {};
+    members.forEach(function(m) { if (m && m.id != null) map[String(m.id)] = m; });
+    return { members: members, map: map };
+  }
+
+  function getYear(m) {
+    if (!m || !m.date_of_birth) return null;
+    var match = String(m.date_of_birth).match(/\d{4}/);
+    return match ? match[0] : null;
+  }
+
+  function parentLabel(m, map) {
+    if (!m.parent_id) return null;
+    var p = map[String(m.parent_id)];
+    return p ? p.name : null;
+  }
+
+  function memberSearch(q, members, map) {
+    q = q.trim();
+    if (!q) return [];
+    if (/^\d+$/.test(q)) {
+      var m = map[q];
+      return m ? [m] : [];
+    }
+    var ql = q.toLowerCase();
+    return members.filter(function(m) {
+      if (!m || !m.name) return false;
+      return m.name.toLowerCase().indexOf(ql) !== -1 ||
+        (m.pet_name && m.pet_name.toLowerCase().indexOf(ql) !== -1);
+    }).slice(0, 10);
+  }
+
+  function ancestorChain(id, map) {
+    var chain = [], cur = String(id), seen = {};
+    while (cur) {
+      if (seen[cur]) break;
+      seen[cur] = true;
+      var m = map[cur];
+      if (!m) break;
+      chain.push(m);
+      cur = m.parent_id ? String(m.parent_id) : null;
+    }
+    return chain;
+  }
+
+  function findLCA(chainA, chainB) {
+    var idxB = {};
+    chainB.forEach(function(m, i) { idxB[String(m.id)] = i; });
+    for (var i = 0; i < chainA.length; i++) {
+      var id = String(chainA[i].id);
+      if (idxB.hasOwnProperty(id)) return { lca: chainA[i], genA: i, genB: idxB[id] };
+    }
+    return null;
+  }
+
+  function relationshipLabel(genA, genB) {
+    if (genA === 0 && genB === 0) return { label: 'Same Person', explain: '' };
+    if (genA === 0 || genB === 0) {
+      var depth = Math.max(genA, genB);
+      var aIsAnc = (genA === 0);
+      var up = aIsAnc ? 'A' : 'B', dn = aIsAnc ? 'B' : 'A';
+      if (depth === 1) return { label: 'Parent / Child', explain: up + ' is ' + dn + '’s parent' };
+      if (depth === 2) return { label: 'Grandparent / Grandchild', explain: up + ' is ' + dn + '’s grandparent' };
+      var pre = [];
+      for (var i = 0; i < depth - 2; i++) pre.push('Great');
+      pre = pre.join('-');
+      return { label: pre + '-Grandparent / ' + pre + '-Grandchild', explain: up + ' is ' + dn + '’s ' + pre.toLowerCase() + '-grandparent' };
+    }
+    var lo = Math.min(genA, genB), hi = Math.max(genA, genB);
+    var removed = hi - lo;
+    var aHigher = (genA < genB);
+    if (lo === 1 && hi === 1) return { label: 'Siblings', explain: 'Share the same parent' };
+    if (lo === 1) {
+      var greats = hi - 2, pre2 = '';
+      for (var j = 0; j < greats; j++) pre2 += (pre2 ? '-' : '') + 'Great';
+      if (pre2) pre2 += '-';
+      var unc = pre2 + 'Uncle / Aunt', nep = pre2 + 'Nephew / Niece';
+      return {
+        label: aHigher ? unc + ' & ' + nep : nep + ' & ' + unc,
+        explain: aHigher ? 'A is B’s ' + (pre2 + 'uncle or aunt') : 'B is A’s ' + (pre2 + 'uncle or aunt')
+      };
+    }
+    var degree = lo - 1;
+    var ordinals = ['', '1st', '2nd', '3rd', '4th', '5th'];
+    var ord = ordinals[degree] || (degree + 'th');
+    if (removed === 0) return { label: ord + ' Cousins', explain: '' };
+    var remStr = removed === 1 ? 'Once' : removed === 2 ? 'Twice' : (removed + '\xd7');
+    return { label: ord + ' Cousins, ' + remStr + ' Removed', explain: removed + ' generation' + (removed > 1 ? 's' : '') + ' apart' };
+  }
+
+  /* ── SVG builder ── */
+  function buildRelSvg(selA, selB, lcaResult, map) {
+    var NW=164, NH=50, VGAP=20, HGAP=36, STEP=70, M=18;
+    var lca = lcaResult.lca, genA = lcaResult.genA, genB = lcaResult.genB;
+
+    function buildPath(startId, depth) {
+      var path = [], cur = String(startId), seen = {};
+      for (var i = 0; i <= depth; i++) {
+        if (!cur || seen[cur]) break;
+        seen[cur] = true;
+        var m = map[cur];
+        if (!m) break;
+        path.push(m);
+        cur = m.parent_id ? String(m.parent_id) : null;
+      }
+      return path;
+    }
+
+    var pathA = buildPath(selA.id, genA);
+    var pathB = buildPath(selB.id, genB);
+    var isStraight = (genA === 0 || genB === 0);
+
+    function nodeLines(m) {
+      var name = m.name || '', words = name.split(' ');
+      return words.length > 2
+        ? [words.slice(0, Math.ceil(words.length / 2)).join(' '), words.slice(Math.ceil(words.length / 2)).join(' ')]
+        : [name];
+    }
+
+    function renderNode(m, x, y, isSubj, isLcaNode) {
+      var stroke = isLcaNode ? '#2a4c18' : (isSubj ? (String(m.id) === String(selA.id) ? '#7c2010' : '#7c5a0a') : '#5a4f44');
+      var fill   = isLcaNode ? '#eef5e8' : (isSubj ? (String(m.id) === String(selA.id) ? '#fdf0ed' : '#fdf7e8') : '#fff');
+      var sw = (isSubj || isLcaNode) ? '2.5' : '1.5';
+      var lines = nodeLines(m), cx = x + NW / 2;
+      var yr = getYear(m), yo = yr ? -4 : 0;
+      var h = '<rect x="' + x + '" y="' + y + '" width="' + NW + '" height="' + NH + '" rx="8" fill="' + fill + '" stroke="' + stroke + '" stroke-width="' + sw + '"/>';
+      if (lines.length === 1) {
+        h += '<text x="' + cx + '" y="' + (y+NH/2+yo) + '" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="13" fill="' + stroke + '" font-weight="600">' + esc(lines[0]) + '</text>';
+      } else {
+        h += '<text x="' + cx + '" y="' + (y+NH/2-7+yo) + '" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="13" fill="' + stroke + '" font-weight="600">' + esc(lines[0]) + '</text>';
+        h += '<text x="' + cx + '" y="' + (y+NH/2+7+yo) + '" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="13" fill="' + stroke + '" font-weight="600">' + esc(lines[1]) + '</text>';
+      }
+      if (yr) {
+        h += '<text x="' + cx + '" y="' + (y+NH-12) + '" text-anchor="middle" font-family="Jost,sans-serif" font-size="10" fill="#aaa">' + yr + '</text>';
+      }
+      if (isLcaNode) {
+        h += '<text x="' + (x+NW-10) + '" y="' + (y+14) + '" text-anchor="middle" font-size="10">&#x2605;</text>';
+      }
+      if (isSubj) {
+        h += '<rect x="' + x + '" y="' + y + '" width="' + NW + '" height="' + NH + '" rx="8" fill="none" stroke="' + stroke + '" stroke-width="1.5" stroke-dasharray="5,3"/>';
+      }
+      return h;
+    }
+
+    var svgContent = '', svgW, svgH;
+
+    if (isStraight) {
+      var path = (genA === 0) ? pathB : pathA;
+      svgW = NW + 2 * M;
+      var cx = M + NW / 2, y = M;
+      path.forEach(function(m, i) {
+        if (i > 0) {
+          svgContent += '<line x1="' + cx + '" y1="' + y + '" x2="' + cx + '" y2="' + (y + VGAP) + '" stroke="#c8bfb0" stroke-width="1.5" stroke-dasharray="4,3"/>';
+          y += VGAP;
+        }
+        var isLcaNode = (String(m.id) === String(lca.id));
+        var isSubj = (String(m.id) === String(selA.id) || String(m.id) === String(selB.id));
+        svgContent += renderNode(m, M, y, isSubj, isLcaNode);
+        y += NH;
+      });
+      svgH = y + M;
+    } else {
+      var leftPath  = pathA.slice(0, pathA.length - 1);
+      var rightPath = pathB.slice(0, pathB.length - 1);
+      var maxRows = Math.max(leftPath.length, rightPath.length);
+      svgW = 2 * NW + HGAP + 2 * M;
+      var lcaCX = svgW / 2, lcaX = lcaCX - NW / 2;
+      var leftX = M, rightX = M + NW + HGAP;
+      var lcaY = M;
+      svgContent += renderNode(lca, lcaX, lcaY, false, true);
+      if (leftPath.length) {
+        svgContent += '<line x1="' + lcaCX + '" y1="' + (lcaY + NH) + '" x2="' + (leftX + NW/2) + '" y2="' + (lcaY + STEP) + '" stroke="#c8bfb0" stroke-width="1.5" stroke-dasharray="4,3"/>';
+      }
+      if (rightPath.length) {
+        svgContent += '<line x1="' + lcaCX + '" y1="' + (lcaY + NH) + '" x2="' + (rightX + NW/2) + '" y2="' + (lcaY + STEP) + '" stroke="#c8bfb0" stroke-width="1.5" stroke-dasharray="4,3"/>';
+      }
+      leftPath.forEach(function(m, i) {
+        var ny = lcaY + (i + 1) * STEP;
+        if (i > 0) {
+          svgContent += '<line x1="' + (leftX+NW/2) + '" y1="' + (ny - STEP + NH) + '" x2="' + (leftX+NW/2) + '" y2="' + ny + '" stroke="#c8bfb0" stroke-width="1.5" stroke-dasharray="4,3"/>';
+        }
+        svgContent += renderNode(m, leftX, ny, String(m.id) === String(selA.id), false);
+      });
+      rightPath.forEach(function(m, i) {
+        var ny = lcaY + (i + 1) * STEP;
+        if (i > 0) {
+          svgContent += '<line x1="' + (rightX+NW/2) + '" y1="' + (ny - STEP + NH) + '" x2="' + (rightX+NW/2) + '" y2="' + ny + '" stroke="#c8bfb0" stroke-width="1.5" stroke-dasharray="4,3"/>';
+        }
+        svgContent += renderNode(m, rightX, ny, String(m.id) === String(selB.id), false);
+      });
+      svgH = M + (maxRows + 1) * STEP + M;
+    }
+
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + svgW + '" height="' + svgH + '" viewBox="0 0 ' + svgW + ' ' + svgH + '">' + svgContent + '</svg>';
+  }
+
+  /* ── state ── */
+  var selA = null, selB = null;
+
+  /* ── dropdown ── */
+  function buildDropdown(dropEl, inputEl, side, members, map) {
+    var results = memberSearch(inputEl.value, members, map);
+    if (!results.length) { dropEl.style.display = 'none'; return; }
+    dropEl.innerHTML = results.map(function(m) {
+      var par = parentLabel(m, map), yr = getYear(m);
+      var sub = [par ? 'child of ' + par : '', yr ? 'b. ' + yr : ''].filter(Boolean).join(' · ');
+      return '<div class="sr-item" onclick="window.cnSelect(\'' + side + '\',\'' + String(m.id) + '\')">'
+        + '<div class="sr-name">' + esc(m.name) + (m.pet_name ? ' <em style="font-size:.82em;color:#8a7060">“' + esc(m.pet_name) + '”</em>' : '') + '</div>'
+        + (sub ? '<div class="sr-sub">' + esc(sub) + '</div>' : '')
+        + '</div>';
+    }).join('');
+    dropEl.style.display = 'block';
+  }
+
+  /* ── selection handler ── */
+  window.cnSelect = function(side, id) {
+    var ref = getMemberMap(), members = ref.members, map = ref.map;
+    var m = map[String(id)];
+    if (!m) return;
+    if (side === 'a') selA = m; else selB = m;
+    var su = side.toUpperCase();
+    var inputEl = document.getElementById('cnSearch' + su);
+    var dropEl  = document.getElementById('cnDrop'   + su);
+    var tagEl   = document.getElementById('cnTag'    + su);
+    if (inputEl) inputEl.value = m.name;
+    if (dropEl)  dropEl.style.display = 'none';
+    var par = parentLabel(m, map), yr = getYear(m);
+    var sub = [par ? 'child of ' + par : '', yr ? 'b. ' + yr : ''].filter(Boolean).join(' · ');
+    if (tagEl) {
+      tagEl.style.display = 'inline-flex';
+      tagEl.innerHTML = '✓ <strong>' + esc(m.name) + '</strong>'
+        + (sub ? ' · ' + esc(sub) : '')
+        + ' <span style="cursor:pointer;opacity:.6;margin-left:4px" onclick="window.cnClear(\'' + side + '\')">×</span>';
+    }
+    tryFindRelationship(members, map);
+  };
+
+  window.cnClear = function(side) {
+    if (side === 'a') selA = null; else selB = null;
+    var su = side.toUpperCase();
+    var inp = document.getElementById('cnSearch' + su);
+    var tag = document.getElementById('cnTag'    + su);
+    var drp = document.getElementById('cnDrop'   + su);
+    if (inp) inp.value = '';
+    if (tag) tag.style.display = 'none';
+    if (drp) drp.style.display = 'none';
+    document.getElementById('cnResult').style.display = 'none';
+    document.getElementById('cnError').style.display = 'none';
+  };
+
+  /* ── compute & render ── */
+  function tryFindRelationship(members, map) {
+    if (!selA || !selB) return;
+    var errEl = document.getElementById('cnError');
+    var resEl = document.getElementById('cnResult');
+    var chainA = ancestorChain(selA.id, map);
+    var chainB = ancestorChain(selB.id, map);
+    var lcaResult = findLCA(chainA, chainB);
+    if (!lcaResult) {
+      errEl.textContent = 'No common ancestor found between ' + selA.name + ' and ' + selB.name + '. They may be from different family lines.';
+      errEl.style.display = 'block';
+      resEl.style.display = 'none';
+      return;
+    }
+    errEl.style.display = 'none';
+    var lca = lcaResult.lca, genA = lcaResult.genA, genB = lcaResult.genB;
+    var rel = relationshipLabel(genA, genB);
+    function makeCard(m, side) {
+      var par = parentLabel(m, map), yr = getYear(m);
+      var parStr = par ? 'child of ' + par : '', yrStr = yr ? 'b. ' + yr : '';
+      var sub = [parStr, yrStr].filter(Boolean).join(' · ');
+      var stripe  = side === 'a' ? '#d47060' : '#c8a040';
+      var cardBg  = side === 'a' ? '#fdf0ed' : '#fdf7e8';
+      var cardBrd = side === 'a' ? '#d9917f' : '#c8a040';
+      var cardClr = side === 'a' ? '#7c2010' : '#7c5a0a';
+      return '<div style="flex:1;min-width:160px;background:' + cardBg + ';border:1.5px solid ' + cardBrd + ';border-radius:12px;padding:12px 14px;position:relative;overflow:hidden">'
+        + '<div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:' + stripe + ';border-radius:12px 0 0 12px"></div>'
+        + '<div style="padding-left:8px">'
+        + '<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.8px;color:' + cardClr + ';font-weight:700;margin-bottom:3px">Person ' + side.toUpperCase() + '</div>'
+        + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.05rem;font-weight:700;color:' + cardClr + ';line-height:1.3">' + esc(m.name) + '</div>'
+        + (m.pet_name ? '<div style="font-size:.78rem;color:' + cardClr + ';font-style:italic;opacity:.8">“' + esc(m.pet_name) + '”</div>' : '')
+        + (sub ? '<div style="font-size:.7rem;color:#5a4f44;margin-top:3px">' + esc(sub) + '</div>' : '')
+        + '<div style="font-size:.65rem;color:#a09080;margin-top:4px">#' + m.id + '</div>'
+        + '</div></div>';
+    }
+    var badge = document.getElementById('cnBadge');
+    badge.innerHTML = '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">'
+      + makeCard(selA, 'a')
+      + '<div style="text-align:center;min-width:120px;padding:12px 8px;background:#eef5e8;border:1.5px solid #8ab870;border-radius:12px">'
+      + '<div style="font-size:1.2rem;margin-bottom:4px">⇔</div>'
+      + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:.88rem;font-weight:700;color:#2a4c18;line-height:1.3">' + esc(rel.label) + '</div>'
+      + (rel.explain ? '<div style="font-size:.68rem;color:#4a7c3a;margin-top:3px">' + esc(rel.explain) + '</div>' : '')
+      + '</div>'
+      + makeCard(selB, 'b')
+      + '</div>'
+      + '<div style="margin-top:8px;font-size:.7rem;color:var(--muted)">Common ancestor: <strong style="color:var(--text)">' + esc(lca.name) + '</strong>'
+      + (getYear(lca) ? ' (b. ' + getYear(lca) + ')' : '') + '</div>';
+    document.getElementById('cnDiagram').innerHTML = buildRelSvg(selA, selB, lcaResult, map);
+    resEl.style.display = 'block';
+  }
+
+  /* ── input wiring ── */
+  function wireInputs() {
+    ['A','B'].forEach(function(su) {
+      var inp = document.getElementById('cnSearch' + su);
+      var drp = document.getElementById('cnDrop'   + su);
+      if (!inp || !drp) return;
+      inp.addEventListener('input', function() {
+        var ref = getMemberMap();
+        buildDropdown(drp, inp, su.toLowerCase(), ref.members, ref.map);
+      });
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') drp.style.display = 'none';
+      });
+    });
+  }
+
+  document.addEventListener('click', function(e) {
+    ['A','B'].forEach(function(su) {
+      var inp = document.getElementById('cnSearch' + su);
+      var drp = document.getElementById('cnDrop'   + su);
+      if (drp && inp && !drp.contains(e.target) && e.target !== inp) drp.style.display = 'none';
+    });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wireInputs);
+  } else {
+    wireInputs();
+  }
+
+})();
+
 </script>
 
 <!-- Photo usage & removal popup -->
