@@ -471,6 +471,11 @@
     <div style="margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px">
       <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:4px">🔗 Relationship Finder</div>
       <div style="font-size:.78rem;color:var(--muted)">Enter two family members below to discover how they are related</div>
+      <div style="margin-top:8px;font-size:.73rem;color:var(--muted);background:#faf8f4;border:1px solid var(--border);border-radius:7px;padding:7px 12px;line-height:1.6">
+        <span style="font-weight:600;color:var(--text)">Note:</span> This tree has two separate lineages —
+        <span style="font-style:italic">Mallappally Varghese</span> and <span style="font-style:italic">Ulahannan Ittyavirah</span>.
+        The relationship finder traces connections within each lineage. Members from different lineages will show no common ancestor.
+      </div>
     </div>
     <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap">
       <div style="flex:1;min-width:220px;position:relative">
@@ -4065,7 +4070,7 @@ window.openAddRelationSheet=openAddRelationSheet,window.toggleAddRelMenu=toggleA
     var chainB = ancestorChain(selB.id, map);
     var lcaResult = findLCA(chainA, chainB);
     if (!lcaResult) {
-      errEl.textContent = 'No common ancestor found between ' + (selA.first_name||selA.name||selA.pet_name||'?') + ' and ' + (selB.first_name||selB.name||selB.pet_name||'?') + '. They may be from different family lines.';
+      errEl.innerHTML = '<strong>' + esc(selA.first_name||selA.name||selA.pet_name||'?') + '</strong> and <strong>' + esc(selB.first_name||selB.name||selB.pet_name||'?') + '</strong> share no common ancestor in the recorded tree. They likely belong to different lineages — this tree records two separate branches: <em>Mallappally Varghese</em> and <em>Ulahannan Ittyavirah</em>.';
       errEl.style.display = 'block';
       resEl.style.display = 'none';
       return;
