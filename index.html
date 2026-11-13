@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">h
 <head>
 <meta charset="UTF-8"/>h
 <!-- ===== Social share preview (Open Graph + Twitter) ===== -->
@@ -2159,7 +2159,7 @@
 .fname-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
 .fname-head h3{margin:0!important;padding:0!important;border:none!important}
 .fname-chev{color:#8a6a10;transition:transform .2s;margin-left:10px;flex-shrink:0}
-.fname-body{border-top:1px dashed #d4b968;padding:4px 16px 14px;background:rgba(255,255,255,.35)}
+.fname-body{border-top:1px dashed #d4b968;padding:4px 16px 14px;background:rgba(255,255,255,.35)}h
 .fname-body .sp-section{margin:0;padding-top:8px}
 .disc-share{color:var(--gold);opacity:.6;font-size:.8rem;cursor:pointer;transition:opacity .15s}
 .disc-share:hover{opacity:1}
@@ -4009,8 +4009,11 @@ window.openAddRelationSheet=openAddRelationSheet,window.toggleAddRelMenu=toggleA
     dropEl.innerHTML = results.map(function(m) {
       var par = parentLabel(m, map), yr = getYear(m);
       var sub = [par ? 'child of ' + par : '', yr ? 'b. ' + yr : ''].filter(Boolean).join(' · ');
+      var _dn = m.first_name || m.name || m.pet_name || '';
+      var _pn = (m.pet_name && m.pet_name !== _dn) ? ' <em style="font-size:.82em;color:#8a7060">\u201c' + esc(m.pet_name) + '\u201d</em>' : '';
       return '<div class="sr-item" onclick="window.cnSelect(\'' + side + '\',\'' + String(m.id) + '\')">'
-        + '<div class="sr-name">' + esc(m.name) + (m.pet_name ? ' <em style="font-size:.82em;color:#8a7060">“' + esc(m.pet_name) + '”</em>' : '') + '</div>'
+        + ''
+        + '<div class="sr-name">' + esc(_dn) + _pn + '</div>'
         + (sub ? '<div class="sr-sub">' + esc(sub) + '</div>' : '')
         + '</div>';
     }).join('');
